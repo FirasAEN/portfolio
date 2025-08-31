@@ -2,12 +2,15 @@
 import Icon from './Icon.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import type { iconPaths } from './IconPaths';
+import {computeUrl} from "../utils/computeUrl";
 
+
+type LinkRoute = { label: string; root: boolean; href: string };
 /** Main menu items */
-const textLinks: { label: string; href: string }[] = [
-	{ label: 'Home', href: '/' },
-	{ label: 'Work', href: '/work/' },
-	{ label: 'About', href: '/about/' },
+const textLinks: LinkRoute[] = [
+	{ label: 'Home', root: true, href: computeUrl(`/`) },
+	{ label: 'Work', root: false, href: computeUrl('/work/') },
+	{ label: 'About', root: false, href: computeUrl('/about/') },
 ];
 
 /** Icon links to social media — edit these with links to your profiles! */
@@ -16,11 +19,20 @@ const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[]
     { label: 'GitHub', href: 'https://github.com/FirasAEN', icon: 'github-logo' },
 	{ label: 'GitLab', href: 'https://gitlab.com/FirasAEN/nextjs-portfolio', icon: 'gitlab-logo' },
 ];
+
+const isCurrentRoute = (item: LinkRoute) => {
+    if (item.root) {
+        return Astro.url.pathname === item.href || Astro.url.pathname === import.meta.env.BASE_URL;
+    } else {
+        return Astro.url.pathname.includes(item.href);
+    }
+}
+
 ---
 
 <nav>
 	<div class="menu-header">
-		<a href="/" class="site-title">
+		<a href={computeUrl('/')} class="site-title">
 			<Icon icon="terminal-window" color="var(--accent-regular)" size="1.6em" gradient />
 			Francois ABED EL NABI
 		</a>
@@ -74,21 +86,17 @@ const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[]
 	<div id="menu-content" hidden>
 		<ul class="nav-items">
 			{
-				textLinks.map(({ label, href }) => (
+				textLinks.map((tl) => (
 					<li>
 						<a
-							aria-current={Astro.url.pathname === href}
+							aria-current={isCurrentRoute(tl)}
 							class:list={[
 								'link',
-								{
-									active:
-										Astro.url.pathname === href ||
-										(href !== '/' && Astro.url.pathname.startsWith(href)),
-								},
+								{active: isCurrentRoute(tl),},
 							]}
-							href={href}
+							href={tl.href}
 						>
-							{label}
+							{tl.label}
 						</a>
 					</li>
 				))

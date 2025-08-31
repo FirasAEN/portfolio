@@ -1,14 +1,16 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import {computeUrl} from "../utils/computeUrl";
 
 interface Props {
 	project: CollectionEntry<'work'>;
 }
 
 const { data, slug } = Astro.props.project;
+const goToLink = computeUrl(`/work/${slug}`);
 ---
 
-<a class="card" href={`/work/${slug}`}>
+<a class="card" href={goToLink}>
 	<span class="title">{data.title}</span>
 	<img src={data.img} alt={data.img_alt || ''} loading="lazy" decoding="async" />
 </a>

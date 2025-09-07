@@ -1,7 +1,8 @@
 ---
-title: Bloom Box
+title: Hybrid AngularJS/Angular application
 publishDate: 2019-12-01 00:00:00
-img: assets/stock-2.jpg
+img: assets/work/angularJS-angular-migration-2.png
+imgThumbnail: assets/work/angularJS-angular-migration.png
 img_alt: A bright pink sheet of paper used to wrap flowers curves in front of rich blue background
 description: |
   We paired with a cutting-edge music API and a team of horticulturalists

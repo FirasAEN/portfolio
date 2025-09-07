@@ -1,7 +1,8 @@
 ---
-title: Markdown Mystery Tour
+title: Keycloak Token mapping and group management
 publishDate: 2020-03-02 00:00:00
-img: assets/stock-1.jpg
+img: assets/work/security.png
+imgThumbnail: assets/work/oauth-keycloak.png
 img_alt: Iridescent ripples of a bright blue and pink liquid
 description: |
   We designed a whodunnit-style game to introduce Markdown formatting. Suspense — suspicion — syntax!

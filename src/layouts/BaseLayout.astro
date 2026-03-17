@@ -27,7 +27,7 @@ const { title, description } = Astro.props;
 		</div>
 
 		<script>
-			// Add “loaded” class once the document has completely loaded.
+			// Add "loaded" class once the document has completely loaded.
 			addEventListener('load', () => document.documentElement.classList.add('loaded'));
 		</script>
 
@@ -89,8 +89,16 @@ const { title, description } = Astro.props;
 			}
 
 			.backgrounds {
+				position: relative;
 				min-height: 100%;
 				isolation: isolate;
+			}
+			.backgrounds::before {
+				content: '';
+				position: absolute;
+				inset: 0;
+				z-index: -1;
+				filter: hue-rotate(160deg) saturate(0.8);
 				background:
 					/*noise*/
 					url('assets/backgrounds/noise.png') top center/220px repeat,
@@ -105,12 +113,16 @@ const { title, description } = Astro.props;
 					/*header2*/ normal,
 					/*base*/ normal;
 			}
+			:global(.theme-dark) .backgrounds::before {
+				filter: hue-rotate(160deg) saturate(0.8);
+			}
 			@media (forced-colors: active) {
 				/* Deactivate custom backgrounds for high contrast users. */
-				.backgrounds {
+				.backgrounds::before {
 					background: none;
 					background-blend-mode: none;
 					--bg-gradient-size: none;
+					filter: none;
 				}
 			}
 		</style>

@@ -1,24 +1,36 @@
 ---
-title: Hybrid AngularJS/Angular application
-publishDate: 2019-12-01 00:00:00
+title: AngularJS to Angular Migration
+publishDate: 2021-09-01 00:00:00
 img: assets/work/angularJS-angular-migration-2.png
 imgThumbnail: assets/work/angularJS-angular-migration.png
-img_alt: A bright pink sheet of paper used to wrap flowers curves in front of rich blue background
+img_alt: Diagram showing the migration path from AngularJS to Angular
 description: |
-  We paired with a cutting-edge music API and a team of horticulturalists
-  to build AI-generated playlists that maximize houseplant health.
+  Led an incremental migration of a large-scale AngularJS application to Angular,
+  using a hybrid architecture to ensure zero downtime and continuous feature delivery.
 tags:
   - Dev
-  - Branding
-  - Backend
+  - Frontend
+  - Angular
+company: adobis
 ---
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur posuere commodo venenatis. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nam non ligula vel metus efficitur hendrerit. In hac habitasse platea dictumst. Praesent et mauris ut mi dapibus semper. Curabitur tortor justo, efficitur sit amet pretium cursus, porta eget odio. Cras ac venenatis dolor. Donec laoreet posuere malesuada. Curabitur nec mi tempor, placerat leo sit amet, tincidunt est. Quisque pellentesque venenatis magna, eget tristique nibh pulvinar in. Vestibulum vitae volutpat arcu. Aenean ut malesuada odio, sit amet pellentesque odio. Suspendisse nunc elit, blandit nec hendrerit non, aliquet at magna. Donec id leo ut nulla sagittis sodales.
+## Incremental Migration Strategy
 
-Integer vitae nibh elit. Suspendisse eget urna eu neque bibendum pharetra. Sed interdum lectus sem, in pulvinar magna dignissim vel. Quisque maximus at urna nec laoreet. Suspendisse potenti. Vestibulum rhoncus sem ut mi pellentesque, in vestibulum erat blandit. Aliquam sodales dui ac maximus consectetur. Duis quis est vehicula, imperdiet nisl nec, fermentum erat. Duis tortor diam, pharetra eu euismod in, vehicula non eros. Curabitur facilisis dui at erat ultrices gravida. In at nunc ultricies, pulvinar mi vel, sagittis mauris. Praesent pharetra posuere purus ac imperdiet. Nulla facilisi.
+Orchestrated the migration of a mature AngularJS enterprise application to Angular, running both frameworks simultaneously in a hybrid setup using Angular's `UpgradeModule`. This approach allowed the team to migrate component by component without halting feature development.
 
-Sed pulvinar porttitor mi in ultricies. Etiam non dolor gravida eros pulvinar pellentesque et dictum ex. Proin eu ornare ligula, sed condimentum dui. Vivamus tincidunt tellus mi, sed semper ipsum pharetra a. Suspendisse sollicitudin at sapien nec volutpat. Etiam justo urna, laoreet ac lacus sed, ultricies facilisis dolor. Integer posuere, metus vel viverra gravida, risus elit ornare magna, id feugiat erat risus ullamcorper libero. Proin vitae diam auctor, laoreet lorem vitae, varius tellus.
+### Challenges
 
-Mauris sed eros in ex maximus volutpat. Suspendisse potenti. Donec lacinia justo consectetur sagittis tempor. Proin ullamcorper nisi vitae auctor rhoncus. Sed tristique aliquam augue. Pellentesque vitae fringilla ligula. Nulla arcu elit, efficitur eu nunc malesuada, eleifend tincidunt orci. Interdum et malesuada fames ac ante ipsum primis in faucibus. Integer mattis orci in bibendum ultricies. Quisque a dui erat. Phasellus et vulputate ipsum. Proin metus ex, lobortis nec ornare eget, bibendum ut sapien. Aliquam in dolor lobortis, aliquam tellus a, congue augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+- **Large codebase** — Hundreds of AngularJS directives, services, and filters to convert.
+- **Active development** — New features continued shipping during the migration, requiring careful coordination.
+- **Shared state** — AngularJS and Angular components needed to communicate and share data seamlessly.
 
-Aenean pretium purus augue, ut bibendum erat convallis quis. Cras condimentum quis velit ac mollis. Suspendisse non purus fringilla, venenatis nisl porta, finibus odio. Curabitur aliquet metus faucibus libero interdum euismod. Morbi sed magna nisl. Morbi odio nibh, facilisis vel sapien eu, tempus tincidunt erat. Nullam erat velit, sagittis at purus quis, tristique scelerisque tortor. Pellentesque lacinia tortor id est aliquam viverra. Vestibulum et diam ac ipsum mollis fringilla.
+### Approach
+
+- **Bottom-up migration** — Started with leaf components (no dependencies on other AngularJS code) and worked upward.
+- **Shared services** — Wrapped critical AngularJS services as Angular injectables using `downgradeInjectable` and `upgradeModule`, maintaining a single source of truth.
+- **Lazy-loaded Angular modules** — New features were built as lazy-loaded Angular modules, keeping the initial bundle size manageable.
+- **Automated testing** — Each migrated component was covered by unit and integration tests before the AngularJS version was removed.
+
+### Results
+
+The migration was completed over several months with zero production incidents. The resulting Angular application benefited from improved performance through ahead-of-time compilation, tree-shaking, and Angular's change detection strategy.

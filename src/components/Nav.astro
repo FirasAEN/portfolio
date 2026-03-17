@@ -10,6 +10,7 @@ type LinkRoute = { label: string; root: boolean; href: string };
 const textLinks: LinkRoute[] = [
 	{ label: 'Home', root: true, href: computeUrl(`/`) },
 	{ label: 'Work', root: false, href: computeUrl('/work/') },
+	{ label: 'Timeline', root: false, href: computeUrl('/timeline/') },
 	{ label: 'About', root: false, href: computeUrl('/about/') },
 ];
 

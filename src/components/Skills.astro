@@ -6,17 +6,17 @@ import Icon from './Icon.astro';
 	<div class="stack gap-2 lg:gap-4">
 		<Icon icon="terminal-window" color="var(--accent-regular)" size="2.5rem" gradient />
 		<h2>Full Stack</h2>
-		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.</p>
+		<p>Java/Spring Boot back-end and Angular/React front-end development. TypeScript, RxJS, NgRx, ThreeJS, and Ionic for cross-platform experiences.</p>
 	</div>
 	<div class="stack gap-2 lg:gap-4">
 		<Icon icon="trophy" color="var(--accent-regular)" size="2.5rem" gradient />
-		<h2>Industry Leader</h2>
-		<p>Neque viverra justo nec ultrices dui. Est ultricies integer quis auctor elit.</p>
+		<h2>Technical Leadership</h2>
+		<p>Leading a team of 5 developers with Scrum methodology, architecture decisions, code reviews, and a structured training program.</p>
 	</div>
 	<div class="stack gap-2 lg:gap-4">
 		<Icon icon="strategy" color="var(--accent-regular)" size="2.5rem" gradient />
-		<h2>Strategy-Minded</h2>
-		<p>Urna porttitor rhoncus dolor purus non enim praesent ornare.</p>
+		<h2>Architecture</h2>
+		<p>Domain-Driven Design, Hexagonal Architecture, micro-frontends with Nx and Module Federation, and CI/CD pipeline design.</p>
 	</div>
 </section>
 
@@ -27,6 +27,13 @@ import Icon from './Icon.astro';
 		padding: 1.5rem;
 		background-color: var(--gray-999_40);
 		box-shadow: var(--shadow-sm);
+		transition: box-shadow var(--transition-medium), transform var(--transition-medium), border-color var(--transition-medium);
+	}
+
+	.box:hover {
+		transform: translateY(-2px);
+		box-shadow: var(--shadow-md);
+		border-color: var(--accent-regular);
 	}
 
 	.skills {
@@ -41,6 +48,14 @@ import Icon from './Icon.astro';
 
 	.skills p {
 		color: var(--gray-400);
+	}
+
+	.skills :global(svg) {
+		transition: transform var(--transition-medium);
+	}
+
+	.box:hover :global(svg) {
+		transform: scale(1.1);
 	}
 
 	@media (min-width: 50em) {

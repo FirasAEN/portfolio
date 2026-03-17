@@ -1,23 +1,34 @@
 ---
-title: Workflow editor
-publishDate: 2019-10-02 00:00:00
+title: Workflow Editor
+publishDate: 2022-06-15 00:00:00
 img: assets/work/workflow.png
 imgThumbnail: assets/work/jointJs.png
-img_alt: Soft pink and baby blue water ripples together in a subtle texture.
+img_alt: Visual workflow editor interface with connected nodes and process flows
 description: |
-  We developed brand positioning and design assets for the launch
-  of a new colored water product.
+  Built a BPMN-like visual workflow editor using JointJS, enabling business users
+  to model and orchestrate complex processes through drag-and-drop interactions.
 tags:
-  - Design
-  - Branding
+  - Dev
+  - Frontend
+  - JointJS
+company: adobis
 ---
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur posuere commodo venenatis. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nam non ligula vel metus efficitur hendrerit. In hac habitasse platea dictumst. Praesent et mauris ut mi dapibus semper. Curabitur tortor justo, efficitur sit amet pretium cursus, porta eget odio. Cras ac venenatis dolor. Donec laoreet posuere malesuada. Curabitur nec mi tempor, placerat leo sit amet, tincidunt est. Quisque pellentesque venenatis magna, eget tristique nibh pulvinar in. Vestibulum vitae volutpat arcu. Aenean ut malesuada odio, sit amet pellentesque odio. Suspendisse nunc elit, blandit nec hendrerit non, aliquet at magna. Donec id leo ut nulla sagittis sodales.
+## Visual Process Modeling
 
-Integer vitae nibh elit. Suspendisse eget urna eu neque bibendum pharetra. Sed interdum lectus sem, in pulvinar magna dignissim vel. Quisque maximus at urna nec laoreet. Suspendisse potenti. Vestibulum rhoncus sem ut mi pellentesque, in vestibulum erat blandit. Aliquam sodales dui ac maximus consectetur. Duis quis est vehicula, imperdiet nisl nec, fermentum erat. Duis tortor diam, pharetra eu euismod in, vehicula non eros. Curabitur facilisis dui at erat ultrices gravida. In at nunc ultricies, pulvinar mi vel, sagittis mauris. Praesent pharetra posuere purus ac imperdiet. Nulla facilisi.
+Designed and implemented a full-featured workflow editor that allows business analysts and domain experts to visually define process flows without writing code. The editor leverages JointJS as its diagramming engine, providing a rich canvas for creating, connecting, and configuring workflow nodes.
 
-Sed pulvinar porttitor mi in ultricies. Etiam non dolor gravida eros pulvinar pellentesque et dictum ex. Proin eu ornare ligula, sed condimentum dui. Vivamus tincidunt tellus mi, sed semper ipsum pharetra a. Suspendisse sollicitudin at sapien nec volutpat. Etiam justo urna, laoreet ac lacus sed, ultricies facilisis dolor. Integer posuere, metus vel viverra gravida, risus elit ornare magna, id feugiat erat risus ullamcorper libero. Proin vitae diam auctor, laoreet lorem vitae, varius tellus.
+### Key Features
 
-Mauris sed eros in ex maximus volutpat. Suspendisse potenti. Donec lacinia justo consectetur sagittis tempor. Proin ullamcorper nisi vitae auctor rhoncus. Sed tristique aliquam augue. Pellentesque vitae fringilla ligula. Nulla arcu elit, efficitur eu nunc malesuada, eleifend tincidunt orci. Interdum et malesuada fames ac ante ipsum primis in faucibus. Integer mattis orci in bibendum ultricies. Quisque a dui erat. Phasellus et vulputate ipsum. Proin metus ex, lobortis nec ornare eget, bibendum ut sapien. Aliquam in dolor lobortis, aliquam tellus a, congue augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+- **Drag-and-drop node palette** — Users select from a library of pre-defined node types (actions, conditions, loops, sub-processes) and place them on an infinite canvas.
+- **Custom shape library** — Extended JointJS with domain-specific shapes representing business operations, approval gates, notification steps, and data transformations.
+- **Connection validation** — Enforced graph constraints at the UI level, preventing invalid connections (e.g., circular dependencies, incompatible port types).
+- **Properties panel** — Each node exposes a configurable form for parameters, expressions, and routing rules, bound to a reactive data model.
+- **Undo/Redo** — Full command-pattern history allowing users to step through changes.
+- **Import/Export** — Serialization to/from JSON for persistence and versioning of workflow definitions.
 
-Aenean pretium purus augue, ut bibendum erat convallis quis. Cras condimentum quis velit ac mollis. Suspendisse non purus fringilla, venenatis nisl porta, finibus odio. Curabitur aliquet metus faucibus libero interdum euismod. Morbi sed magna nisl. Morbi odio nibh, facilisis vel sapien eu, tempus tincidunt erat. Nullam erat velit, sagittis at purus quis, tristique scelerisque tortor. Pellentesque lacinia tortor id est aliquam viverra. Vestibulum et diam ac ipsum mollis fringilla.
+### Technical Approach
+
+The editor integrates into an Angular application, bridging JointJS's vanilla JS API with Angular's change detection and component lifecycle. Custom Angular directives wrap JointJS elements, enabling seamless two-way data binding between the diagram and the application state.
+
+The workflow definitions are validated server-side before execution, ensuring the visual model is always consistent with the runtime engine's expectations.

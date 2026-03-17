@@ -1,23 +1,38 @@
 ---
-title: Team Angular Training
-publishDate: 2019-10-02 00:00:00
+title: Developer Training Program
+publishDate: 2022-04-01 00:00:00
 img: assets/work/dev-training.png
 imgThumbnail: assets/work/dev-team-training.png
-img_alt: Soft pink and baby blue water ripples together in a subtle texture.
+img_alt: Team of developers collaborating during a training session
 description: |
-  We developed brand positioning and design assets for the launch
-  of a new colored water product.
+  Designed and delivered a comprehensive training curriculum for the development team,
+  covering Angular, TypeScript, RxJS, and software architecture best practices.
 tags:
-  - Design
-  - Branding
+  - Dev
+  - Leadership
+company: adobis
 ---
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur posuere commodo venenatis. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nam non ligula vel metus efficitur hendrerit. In hac habitasse platea dictumst. Praesent et mauris ut mi dapibus semper. Curabitur tortor justo, efficitur sit amet pretium cursus, porta eget odio. Cras ac venenatis dolor. Donec laoreet posuere malesuada. Curabitur nec mi tempor, placerat leo sit amet, tincidunt est. Quisque pellentesque venenatis magna, eget tristique nibh pulvinar in. Vestibulum vitae volutpat arcu. Aenean ut malesuada odio, sit amet pellentesque odio. Suspendisse nunc elit, blandit nec hendrerit non, aliquet at magna. Donec id leo ut nulla sagittis sodales.
+## Building Team Competence
 
-Integer vitae nibh elit. Suspendisse eget urna eu neque bibendum pharetra. Sed interdum lectus sem, in pulvinar magna dignissim vel. Quisque maximus at urna nec laoreet. Suspendisse potenti. Vestibulum rhoncus sem ut mi pellentesque, in vestibulum erat blandit. Aliquam sodales dui ac maximus consectetur. Duis quis est vehicula, imperdiet nisl nec, fermentum erat. Duis tortor diam, pharetra eu euismod in, vehicula non eros. Curabitur facilisis dui at erat ultrices gravida. In at nunc ultricies, pulvinar mi vel, sagittis mauris. Praesent pharetra posuere purus ac imperdiet. Nulla facilisi.
+As Tech Lead, I identified skill gaps within the team and created a structured training program to elevate the team's technical capabilities. The program combined theory, hands-on exercises, and code reviews to ensure knowledge transfer was practical and lasting.
 
-Sed pulvinar porttitor mi in ultricies. Etiam non dolor gravida eros pulvinar pellentesque et dictum ex. Proin eu ornare ligula, sed condimentum dui. Vivamus tincidunt tellus mi, sed semper ipsum pharetra a. Suspendisse sollicitudin at sapien nec volutpat. Etiam justo urna, laoreet ac lacus sed, ultricies facilisis dolor. Integer posuere, metus vel viverra gravida, risus elit ornare magna, id feugiat erat risus ullamcorper libero. Proin vitae diam auctor, laoreet lorem vitae, varius tellus.
+### Curriculum
 
-Mauris sed eros in ex maximus volutpat. Suspendisse potenti. Donec lacinia justo consectetur sagittis tempor. Proin ullamcorper nisi vitae auctor rhoncus. Sed tristique aliquam augue. Pellentesque vitae fringilla ligula. Nulla arcu elit, efficitur eu nunc malesuada, eleifend tincidunt orci. Interdum et malesuada fames ac ante ipsum primis in faucibus. Integer mattis orci in bibendum ultricies. Quisque a dui erat. Phasellus et vulputate ipsum. Proin metus ex, lobortis nec ornare eget, bibendum ut sapien. Aliquam in dolor lobortis, aliquam tellus a, congue augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+- **TypeScript deep dive** — Advanced types, generics, utility types, and strict mode patterns.
+- **Angular architecture** — Module organization, smart vs. presentational components, dependency injection patterns, and change detection strategies.
+- **RxJS & reactive programming** — Observable patterns, operator composition, error handling, and memory leak prevention.
+- **Testing strategies** — Unit testing with Jest, component testing with Angular Testing Library, and end-to-end testing approaches.
+- **Git workflow** — Branch strategies, code review best practices, and commit conventions.
 
-Aenean pretium purus augue, ut bibendum erat convallis quis. Cras condimentum quis velit ac mollis. Suspendisse non purus fringilla, venenatis nisl porta, finibus odio. Curabitur aliquet metus faucibus libero interdum euismod. Morbi sed magna nisl. Morbi odio nibh, facilisis vel sapien eu, tempus tincidunt erat. Nullam erat velit, sagittis at purus quis, tristique scelerisque tortor. Pellentesque lacinia tortor id est aliquam viverra. Vestibulum et diam ac ipsum mollis fringilla.
+### Onboarding Process
+
+New team members follow a structured onboarding path:
+1. Guided codebase walkthrough with architecture documentation
+2. Pair programming sessions on real tasks
+3. Incremental responsibility with mentored code reviews
+4. Independent feature delivery with architectural review
+
+### Impact
+
+The training program reduced onboarding time for new developers and improved overall code quality across the team, as measured by reduced bug density and faster code review cycles.

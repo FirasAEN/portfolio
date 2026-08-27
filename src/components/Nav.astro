@@ -234,7 +234,10 @@ const isCurrentRoute = (item: LinkRoute) => {
 
 	.social:hover,
 	.social:focus {
-		color: var(--accent-text-over);
+		/* --accent-text-over is for text drawn ON an accent fill; these icons sit
+		   on the page background, where it resolves to near-white in the light
+		   theme and the icon disappears. --gray-100 flips with the theme. */
+		color: var(--gray-100);
 	}
 
 	.theme-toggle {

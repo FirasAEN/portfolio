@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import {computeUrl} from "../utils/computeUrl";
 import { getCompanyLookup } from "../utils/cv";
+import Diagram from './diagrams/Diagram.astro';
 
 interface Props {
 	project: CollectionEntry<'work'>;
@@ -28,9 +29,13 @@ const accentColor = companies.get(company)?.accent || 'var(--accent-regular)';
 			<div class="card-image-overlay"></div>
 		</div>
 	) : (
-		<div class="card-plate">
+		<div class:list={['card-plate', { 'has-diagram': !!data.diagram }]}>
 			<span class="card-index">{index}</span>
-			{data.diagram && <span class="card-plate-note">diagram</span>}
+			{data.diagram && (
+				<div class="card-diagram">
+					<Diagram id={data.diagram} variant="thumb" />
+				</div>
+			)}
 		</div>
 	)}
 	<div class="card-content">
@@ -90,6 +95,7 @@ const accentColor = companies.get(company)?.accent || 'var(--accent-regular)';
 	}
 
 	.card-plate {
+		position: relative;
 		display: flex;
 		align-items: flex-end;
 		justify-content: space-between;
@@ -110,12 +116,42 @@ const accentColor = companies.get(company)?.accent || 'var(--accent-regular)';
 		font-variant-numeric: tabular-nums;
 	}
 
-	.card-plate-note {
-		font-family: var(--font-mono);
-		font-size: var(--text-xs);
-		text-transform: uppercase;
-		letter-spacing: var(--tracking-meta);
-		color: var(--gray-400);
+	/* A diagram makes its own height; the fixed ratio is only for the bare plate. */
+	.card-plate.has-diagram {
+		aspect-ratio: auto;
+		align-items: stretch;
+		padding: 1.5rem 1.5rem 1rem;
+	}
+
+	.card-diagram {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.card-plate.has-diagram .card-index {
+		position: absolute;
+		top: 1rem;
+		left: 1.5rem;
+		font-size: var(--text-lg);
+		z-index: 1;
+	}
+
+	/* Below the two-column breakpoint the diagram type is too small to read,
+	   so the card falls back to the plain index plate. */
+	@media (max-width: 34em) {
+		.card-plate.has-diagram {
+			aspect-ratio: 16 / 4;
+			align-items: flex-end;
+		}
+
+		.card-diagram {
+			display: none;
+		}
+
+		.card-plate.has-diagram .card-index {
+			position: static;
+			font-size: var(--text-3xl);
+		}
 	}
 
 	.card-content {
@@ -191,6 +227,7 @@ const accentColor = companies.get(company)?.accent || 'var(--accent-regular)';
 		}
 
 		.card-plate {
+		position: relative;
 		display: flex;
 		align-items: flex-end;
 		justify-content: space-between;
@@ -211,12 +248,42 @@ const accentColor = companies.get(company)?.accent || 'var(--accent-regular)';
 		font-variant-numeric: tabular-nums;
 	}
 
-	.card-plate-note {
-		font-family: var(--font-mono);
-		font-size: var(--text-xs);
-		text-transform: uppercase;
-		letter-spacing: var(--tracking-meta);
-		color: var(--gray-400);
+	/* A diagram makes its own height; the fixed ratio is only for the bare plate. */
+	.card-plate.has-diagram {
+		aspect-ratio: auto;
+		align-items: stretch;
+		padding: 1.5rem 1.5rem 1rem;
+	}
+
+	.card-diagram {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.card-plate.has-diagram .card-index {
+		position: absolute;
+		top: 1rem;
+		left: 1.5rem;
+		font-size: var(--text-lg);
+		z-index: 1;
+	}
+
+	/* Below the two-column breakpoint the diagram type is too small to read,
+	   so the card falls back to the plain index plate. */
+	@media (max-width: 34em) {
+		.card-plate.has-diagram {
+			aspect-ratio: 16 / 4;
+			align-items: flex-end;
+		}
+
+		.card-diagram {
+			display: none;
+		}
+
+		.card-plate.has-diagram .card-index {
+			position: static;
+			font-size: var(--text-3xl);
+		}
 	}
 
 	.card-content {

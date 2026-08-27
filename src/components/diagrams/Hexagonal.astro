@@ -2,8 +2,14 @@
 // Ports & Adapters. The point of the picture: the domain core has no outward
 // arrows - every dependency points inward, which is why it tests without a
 // database or an HTTP server.
+interface Props {
+	/** 'thumb' crops to the structural region for card previews. */
+	variant?: 'full' | 'thumb' | undefined;
+}
+const { variant = 'full' } = Astro.props;
+const viewBox = variant === 'thumb' ? '0 0 640 178' : '0 0 640 300';
 ---
-<svg class="diagram" viewBox="0 0 640 300" role="img" aria-labelledby="hex-t">
+<svg class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]} viewBox={viewBox} role="img" aria-labelledby="hex-t">
 	<title id="hex-t">Hexagonal architecture: adapters depend on ports, ports depend on the domain core</title>
 	<defs>
 		<marker id="hex-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">

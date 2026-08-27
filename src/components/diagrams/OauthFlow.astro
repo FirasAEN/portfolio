@@ -2,8 +2,14 @@
 // Keycloak OAuth2/OIDC with the custom token mapper. The mapper is the piece
 // that carries tenant identity into the token, which is what lets one flow
 // serve five tenants.
+interface Props {
+	/** 'thumb' crops to the structural region for card previews. */
+	variant?: 'full' | 'thumb' | undefined;
+}
+const { variant = 'full' } = Astro.props;
+const viewBox = variant === 'thumb' ? '0 0 640 202' : '0 0 640 300';
 ---
-<svg class="diagram" viewBox="0 0 640 300" role="img" aria-labelledby="oauth-t">
+<svg class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]} viewBox={viewBox} role="img" aria-labelledby="oauth-t">
 	<title id="oauth-t">Keycloak OAuth2 flow with a custom token mapper injecting tenant claims</title>
 	<defs>
 		<marker id="oa-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">

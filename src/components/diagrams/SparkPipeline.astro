@@ -2,8 +2,14 @@
 // SPARK (Politecnico di Milano). The point: a Java web stack and a C# rendering
 // subsystem had to co-operate in real time, and ActiveMQ is what let two
 // runtimes stay decoupled without blocking each other.
+interface Props {
+	/** 'thumb' crops to the structural region for card previews. */
+	variant?: 'full' | 'thumb' | undefined;
+}
+const { variant = 'full' } = Astro.props;
+const viewBox = variant === 'thumb' ? '0 0 640 200' : '0 0 640 300';
 ---
-<svg class="diagram" viewBox="0 0 640 300" role="img" aria-labelledby="spark-t">
+<svg class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]} viewBox={viewBox} role="img" aria-labelledby="spark-t">
 	<title id="spark-t">SPARK architecture: Java services and a C# projection subsystem bridged by ActiveMQ</title>
 	<defs>
 		<marker id="sp-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">

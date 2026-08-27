@@ -338,6 +338,11 @@ h5 {
 	overflow: visible;
 }
 
+/* Cropped preview: clip the caption that sits outside the thumb viewBox. */
+.diagram-thumb {
+	overflow: hidden;
+}
+
 .diagram text {
 	font-family: var(--font-mono);
 	font-size: 11px;

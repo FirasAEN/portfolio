@@ -2,8 +2,14 @@
 // The formula editor. The point: validation happens in the editor, before the
 // expression is ever handed to Spark, so authors find their mistakes in
 // milliseconds instead of after a cluster job fails.
+interface Props {
+	/** 'thumb' crops to the structural region for card previews. */
+	variant?: 'full' | 'thumb' | undefined;
+}
+const { variant = 'full' } = Astro.props;
+const viewBox = variant === 'thumb' ? '0 0 640 232' : '0 0 640 312';
 ---
-<svg class="diagram" viewBox="0 0 640 312" role="img" aria-labelledby="dsl-t">
+<svg class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]} viewBox={viewBox} role="img" aria-labelledby="dsl-t">
 	<title id="dsl-t">Formula DSL pipeline: Lezer grammar to CodeMirror feedback, then Spark execution</title>
 	<defs>
 		<marker id="dsl-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
@@ -23,11 +29,11 @@
 
 	<rect x="172" y="56" width="104" height="46" rx="3" class="d-core" />
 	<text x="184" y="76" class="d-core-text">Lezer</text>
-	<text x="184" y="92">incremental parse</text>
+	<text x="184" y="92">incremental</text>
 
 	<rect x="310" y="56" width="104" height="46" rx="3" class="d-core" />
 	<text x="322" y="76" class="d-core-text">Semantic</text>
-	<text x="322" y="92">column + type check</text>
+	<text x="322" y="92">column + type</text>
 
 	<rect x="448" y="56" width="150" height="46" rx="3" class="d-box-fill" />
 	<text x="460" y="76" class="d-title">CodeMirror</text>

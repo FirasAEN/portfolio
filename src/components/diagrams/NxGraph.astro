@@ -2,8 +2,14 @@
 // Nx monorepo with Module Federation. The point: five apps share libraries but
 // build and release on their own cadence, because the dependency graph is
 // enforced rather than conventional.
+interface Props {
+	/** 'thumb' crops to the structural region for card previews. */
+	variant?: 'full' | 'thumb' | undefined;
+}
+const { variant = 'full' } = Astro.props;
+const viewBox = variant === 'thumb' ? '0 0 640 242' : '0 0 640 320';
 ---
-<svg class="diagram" viewBox="0 0 640 320" role="img" aria-labelledby="nx-t">
+<svg class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]} viewBox={viewBox} role="img" aria-labelledby="nx-t">
 	<title id="nx-t">Nx dependency graph: five host applications over shared feature and UI libraries</title>
 	<defs>
 		<marker id="nx-a" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">

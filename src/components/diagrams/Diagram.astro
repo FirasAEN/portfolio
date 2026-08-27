@@ -27,17 +27,22 @@ type DiagramId = keyof typeof diagrams;
 interface Props {
 	id: string;
 	caption?: string | undefined;
+	/** 'thumb' crops to the structural region, for card previews. */
+	variant?: 'full' | 'thumb' | undefined;
 }
 
-const { id, caption } = Astro.props;
+const { id, caption, variant = 'full' } = Astro.props;
 const Component = diagrams[id as DiagramId];
 ---
 
 {
-	Component && (
-		<figure class="figure">
-			<Component />
-			{caption && <figcaption>{caption}</figcaption>}
-		</figure>
-	)
+	Component &&
+		(variant === 'thumb' ? (
+			<Component variant="thumb" />
+		) : (
+			<figure class="figure">
+				<Component />
+				{caption && <figcaption>{caption}</figcaption>}
+			</figure>
+		))
 }

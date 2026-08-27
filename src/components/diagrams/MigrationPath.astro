@@ -2,8 +2,14 @@
 // Strangler-fig migration off end-of-life AngularJS. The point: both frameworks
 // ran in the same page for 18 months, so modules moved one at a time and the
 // product never stopped shipping.
+interface Props {
+	/** 'thumb' crops to the structural region for card previews. */
+	variant?: 'full' | 'thumb' | undefined;
+}
+const { variant = 'full' } = Astro.props;
+const viewBox = variant === 'thumb' ? '0 0 640 174' : '0 0 640 300';
 ---
-<svg class="diagram" viewBox="0 0 640 300" role="img" aria-labelledby="mig-t">
+<svg class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]} viewBox={viewBox} role="img" aria-labelledby="mig-t">
 	<title id="mig-t">Incremental AngularJS to Angular migration with both frameworks running side by side</title>
 	<defs>
 		<marker id="mig-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">

@@ -275,16 +275,19 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 		padding: 0 0 2.25rem 0;
 	}
 
+	/* A rotated square rather than a clip-path hexagon: clip-path slices the
+	   border, which at this size renders as broken fragments. Rotation keeps
+	   the border intact and the edges crisp. */
 	.entry::before {
 		content: '';
 		position: absolute;
-		left: -1.5rem;
-		top: 0.5rem;
-		width: 7px;
-		height: 7px;
+		left: calc(-1.5rem + 1px);
+		top: 0.55rem;
+		width: 6px;
+		height: 6px;
 		border: 1px solid var(--accent-regular);
 		background: var(--gray-999);
-		clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+		transform: rotate(45deg);
 	}
 
 	.entry::after {
@@ -303,6 +306,10 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 
 	.entry-what h3 {
 		font-size: var(--text-2xl);
+	}
+
+	.entry-when .meta {
+		white-space: nowrap;
 	}
 
 	.entry-role {
@@ -363,7 +370,7 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 		}
 
 		.entry {
-			grid-template-columns: 10rem 1fr;
+			grid-template-columns: 11.5rem 1fr;
 			gap: 2rem;
 		}
 	}

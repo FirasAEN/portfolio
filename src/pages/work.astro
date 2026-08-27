@@ -21,7 +21,7 @@ const companies = await getWorkFilters();
 		<main class="wrapper stack gap-8">
 			<Hero
 				title="My Work"
-				tagline="Eleven projects, each written up as what I owned, what constrained it, what I traded away, and what changed."
+				tagline={`${projects.length} projects, each written up as what I owned, what constrained it, what I traded away, and what changed.`}
 				align="start"
 			/>
 			<div class="filters" role="group" aria-label="Filter by company">

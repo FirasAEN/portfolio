@@ -113,28 +113,20 @@ const accentColor = companies.get(company)?.accent || 'var(--accent-regular)';
 			var(--gray-999_40);
 	}
 
-	/* The index sits in a hexagon — the same marker the section nodes use. */
+	/*
+	 * A bare numeral. The previous version framed it in a hexagon drawn with
+	 * clip-path over a border — clip-path cuts the border, so at that size it
+	 * rendered as broken fragments rather than a shape. The hexagon motif is
+	 * carried properly by the section nodes, which draw a real SVG path.
+	 */
 	.card-index {
-		position: relative;
-		display: grid;
-		place-items: center;
-		width: 1.75rem;
-		height: 1.75rem;
 		font-family: var(--font-mono);
-		font-size: 0.625rem;
+		font-size: var(--text-2xl);
 		font-weight: 500;
 		line-height: 1;
-		color: var(--card-accent);
+		letter-spacing: 0.02em;
+		color: color-mix(in srgb, var(--card-accent) 70%, transparent);
 		font-variant-numeric: tabular-nums;
-	}
-
-	.card-index::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		border: 1px solid color-mix(in srgb, var(--card-accent) 45%, transparent);
-		clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-		background: color-mix(in srgb, var(--card-accent) 10%, transparent);
 	}
 
 	.card-plate.has-diagram {
@@ -158,9 +150,9 @@ const accentColor = companies.get(company)?.accent || 'var(--accent-regular)';
 
 	.card-plate.has-diagram .card-index {
 		position: absolute;
-		top: 1rem;
+		top: 0.9rem;
 		left: 1.5rem;
-		font-size: var(--text-lg);
+		font-size: var(--text-sm);
 		z-index: 1;
 	}
 
@@ -178,7 +170,7 @@ const accentColor = companies.get(company)?.accent || 'var(--accent-regular)';
 
 		.card-plate.has-diagram .card-index {
 			position: static;
-			font-size: var(--text-3xl);
+			font-size: var(--text-2xl);
 		}
 	}
 
@@ -247,96 +239,12 @@ const accentColor = companies.get(company)?.accent || 'var(--accent-regular)';
 		font-family: var(--font-body);
 		font-weight: 500;
 	}
-
-
 	@media (min-width: 50em) {
 		.title {
 			font-size: var(--text-xl);
 		}
 
-		.card-plate {
-		position: relative;
-		display: flex;
-		align-items: flex-end;
-		justify-content: space-between;
-		padding: 1.25rem;
-		aspect-ratio: 16 / 5;
-		border-bottom: 1px solid var(--rule-color);
-		background:
-			linear-gradient(160deg, color-mix(in srgb, var(--card-accent) 10%, transparent), transparent 70%),
-			var(--gray-999_40);
-	}
-
-	/* The index sits in a hexagon — the same marker the section nodes use. */
-	.card-index {
-		position: relative;
-		display: grid;
-		place-items: center;
-		width: 1.75rem;
-		height: 1.75rem;
-		font-family: var(--font-mono);
-		font-size: 0.625rem;
-		font-weight: 500;
-		line-height: 1;
-		color: var(--card-accent);
-		font-variant-numeric: tabular-nums;
-	}
-
-	.card-index::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		border: 1px solid color-mix(in srgb, var(--card-accent) 45%, transparent);
-		clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-		background: color-mix(in srgb, var(--card-accent) 10%, transparent);
-	}
-
-	.card-plate.has-diagram {
-		align-items: stretch;
-		padding: 1.75rem 1.5rem 1rem;
-	}
-
-	/* The six diagrams have different natural ratios; letting each set its own
-	   height left the grid ragged. Absolutely positioning the diagram gives it a
-	   definite box to fit inside, and the SVG's default preserveAspectRatio
-	   centres it there — so every plate is the same height. */
-	.card-diagram {
-		position: absolute;
-		inset: 2.25rem 1.5rem 1rem;
-	}
-
-	.card-diagram :global(.diagram-thumb) {
-		width: 100%;
-		height: 100%;
-	}
-
-	.card-plate.has-diagram .card-index {
-		position: absolute;
-		top: 1rem;
-		left: 1.5rem;
-		font-size: var(--text-lg);
-		z-index: 1;
-	}
-
-	/* Below the two-column breakpoint the diagram type is too small to read,
-	   so the card falls back to the plain index plate. */
-	@media (max-width: 34em) {
-		.card-plate.has-diagram {
-			aspect-ratio: 16 / 5;
-			align-items: flex-end;
-		}
-
-		.card-diagram {
-			display: none;
-		}
-
-		.card-plate.has-diagram .card-index {
-			position: static;
-			font-size: var(--text-3xl);
-		}
-	}
-
-	.card-content {
+		.card-content {
 			padding: 1.25rem 1.5rem 1.5rem;
 		}
 	}

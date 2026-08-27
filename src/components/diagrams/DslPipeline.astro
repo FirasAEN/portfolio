@@ -10,7 +10,7 @@ const { variant = 'full' } = Astro.props;
 const viewBox = variant === 'thumb' ? '0 0 640 232' : '0 0 640 312';
 ---
 <svg class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]} viewBox={viewBox} role="img" aria-labelledby="dsl-t">
-	<title id="dsl-t">Formula DSL pipeline: Lezer grammar to CodeMirror feedback, then Spark execution</title>
+	<title id="dsl-t">DC Core transformations: Lezer grammar to CodeMirror feedback, then Spark execution</title>
 	<defs>
 		<marker id="dsl-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
 			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow" />
@@ -24,8 +24,8 @@ const viewBox = variant === 'thumb' ? '0 0 640 232' : '0 0 640 312';
 	<rect x="16" y="30" width="600" height="96" rx="4" class="d-box d-dashed" />
 
 	<rect x="34" y="56" width="104" height="46" rx="3" class="d-box-fill" />
-	<text x="46" y="76" class="d-title">Author types</text>
-	<text x="46" y="92">expression</text>
+	<text x="46" y="76" class="d-title">Analyst</text>
+	<text x="46" y="92">writes expr</text>
 
 	<rect x="172" y="56" width="104" height="46" rx="3" class="d-core" />
 	<text x="184" y="76" class="d-core-text">Lezer</text>
@@ -33,7 +33,7 @@ const viewBox = variant === 'thumb' ? '0 0 640 232' : '0 0 640 312';
 
 	<rect x="310" y="56" width="104" height="46" rx="3" class="d-core" />
 	<text x="322" y="76" class="d-core-text">Semantic</text>
-	<text x="322" y="92">column + type</text>
+	<text x="322" y="92">schema + type</text>
 
 	<rect x="448" y="56" width="150" height="46" rx="3" class="d-box-fill" />
 	<text x="460" y="76" class="d-title">CodeMirror</text>

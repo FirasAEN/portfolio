@@ -10,7 +10,7 @@ const { variant = 'full' } = Astro.props;
 const viewBox = variant === 'thumb' ? '0 0 640 202' : '0 0 640 300';
 ---
 <svg class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]} viewBox={viewBox} role="img" aria-labelledby="oauth-t">
-	<title id="oauth-t">Keycloak OAuth2 flow with a custom token mapper injecting tenant claims</title>
+	<title id="oauth-t">One Keycloak flow for the whole suite, with a custom mapper injecting tenant claims</title>
 	<defs>
 		<marker id="oa-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
 			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow" />
@@ -22,7 +22,7 @@ const viewBox = variant === 'thumb' ? '0 0 640 202' : '0 0 640 300';
 
 	<rect x="16" y="40" width="120" height="48" rx="3" class="d-box-fill" />
 	<text x="30" y="62" class="d-title">Browser</text>
-	<text x="30" y="78">Angular SPA</text>
+	<text x="30" y="78">a module UI</text>
 
 	<rect x="260" y="40" width="130" height="48" rx="3" class="d-core" />
 	<text x="274" y="62" class="d-title">Keycloak</text>
@@ -30,7 +30,7 @@ const viewBox = variant === 'thumb' ? '0 0 640 202' : '0 0 640 300';
 
 	<rect x="504" y="40" width="120" height="48" rx="3" class="d-box-fill" />
 	<text x="518" y="62" class="d-title">Resource API</text>
-	<text x="518" y="78">Spring Security</text>
+	<text x="518" y="78">any module API</text>
 
 	<rect x="260" y="132" width="130" height="52" rx="3" class="d-core" />
 	<text x="274" y="152" class="d-core-text">Custom token</text>

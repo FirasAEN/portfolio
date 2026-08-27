@@ -48,7 +48,7 @@ const goBack = computeUrl('/work/');
 			</header>
 			<main class="wrapper">
 				<div class="stack gap-10 content">
-					{entry.data.diagram && <Diagram id={entry.data.diagram} caption={entry.data.img_alt} />}
+					{entry.data.diagram && <Diagram id={entry.data.diagram} />}
 					{entry.data.img && <img src={computeUrl(entry.data.img)} alt={entry.data.img_alt || ''} />}
 					<div class="content">
 						<Content />

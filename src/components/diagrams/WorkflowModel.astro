@@ -9,7 +9,7 @@ const { variant = 'full' } = Astro.props;
 const viewBox = variant === 'thumb' ? '0 0 640 200' : '0 0 640 300';
 ---
 <svg class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]} viewBox={viewBox} role="img" aria-labelledby="wf-t">
-	<title id="wf-t">Workflow graph: tasks with per-task configuration, validated before save</title>
+	<title id="wf-t">DC Maestro: a pipeline as a task graph, validated before save</title>
 	<defs>
 		<marker id="wf-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
 			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow" />
@@ -19,7 +19,7 @@ const viewBox = variant === 'thumb' ? '0 0 640 200' : '0 0 640 300';
 		</marker>
 	</defs>
 
-	<text x="16" y="18" class="d-meta">Process owner edits the graph directly</text>
+	<text x="16" y="18" class="d-meta">DC Maestro · the process owner edits the graph directly</text>
 
 	<rect x="16" y="40" width="104" height="40" rx="3" class="d-box-fill" />
 	<text x="28" y="58" class="d-title">Trigger</text>

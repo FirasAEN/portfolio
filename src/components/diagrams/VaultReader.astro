@@ -1,0 +1,57 @@
+---
+// Vault reader. The point: ignore rules layer innermost-first and decide what
+// becomes public, so they follow git exactly — including the pruning behaviour
+// that makes a lone negation useless.
+interface Props {
+	variant?: 'full' | 'thumb' | undefined;
+}
+const { variant = 'full' } = Astro.props;
+const viewBox = variant === 'thumb' ? '0 0 640 200' : '0 0 640 300';
+---
+<svg class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]} viewBox={viewBox} role="img" aria-labelledby="vr-t">
+	<title id="vr-t">Layered ignore rules decide what is published; innermost wins</title>
+	<defs>
+		<marker id="vr-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow-accent" />
+		</marker>
+	</defs>
+
+	<text x="16" y="18" class="d-meta">Ignore layers · innermost wins</text>
+
+	<rect x="16" y="30" width="140" height="38" rx="3" class="d-box-fill" />
+	<text x="28" y="47" class="d-title">defaults</text>
+	<text x="28" y="61">built in</text>
+
+	<rect x="172" y="30" width="140" height="38" rx="3" class="d-box-fill" />
+	<text x="184" y="47" class="d-title">.gitignore</text>
+	<text x="184" y="61">the vault's own</text>
+
+	<rect x="328" y="30" width="140" height="38" rx="3" class="d-core" />
+	<text x="340" y="47" class="d-core-text">.pkmignore</text>
+	<text x="340" y="61">can rescue files</text>
+
+	<rect x="484" y="30" width="136" height="38" rx="3" class="d-box-fill" />
+	<text x="496" y="47" class="d-title">nested</text>
+	<text x="496" y="61">scoped to subtree</text>
+
+	<path d="M156 49 H168" class="d-line-accent" marker-end="url(#vr-a)" />
+	<path d="M312 49 H324" class="d-line-accent" marker-end="url(#vr-a)" />
+	<path d="M468 49 H480" class="d-line-accent" marker-end="url(#vr-a)" />
+
+	<text x="16" y="100" class="d-meta">Index, rebuilt on every change</text>
+	<rect x="16" y="112" width="290" height="36" rx="3" class="d-box-fill" />
+	<text x="28" y="130">notes: full text</text>
+	<text x="28" y="143">searchable</text>
+
+	<rect x="330" y="112" width="290" height="36" rx="3" class="d-box d-dashed" />
+	<text x="342" y="130">code: names and paths only</text>
+	<text x="342" y="143">navigable, not searchable</text>
+
+	<path d="M16 176 H624" class="d-line d-dashed" />
+	<text x="16" y="198" class="d-meta">The pruning rule, reproduced on purpose</text>
+	<text x="16" y="218">In git, "!dist/keep.ts" does nothing while dist/ is excluded — the walk never opens</text>
+	<text x="16" y="234">dist/ to find the exception. Reproducing that means reproducing a limitation, and</text>
+	<text x="16" y="250">that is the right call: a tool almost compatible with a familiar format is worse</text>
+	<text x="16" y="266">than one exactly compatible, because the gap only ever surfaces as surprise — in</text>
+	<text x="16" y="282">the mechanism that decides what becomes public.</text>
+</svg>

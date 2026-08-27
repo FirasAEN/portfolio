@@ -11,6 +11,10 @@ import OnboardingPath from './OnboardingPath.astro';
 import StreamingState from './StreamingState.astro';
 import BlePairing from './BlePairing.astro';
 import AiPipeline from './AiPipeline.astro';
+import RlsTenancy from './RlsTenancy.astro';
+import SchemaTenancy from './SchemaTenancy.astro';
+import JobPipeline from './JobPipeline.astro';
+import VaultReader from './VaultReader.astro';
 
 /**
  * Renders a hand-authored architecture diagram by id.
@@ -32,6 +36,10 @@ const diagrams = {
 	'streaming-state': StreamingState,
 	'ble-pairing': BlePairing,
 	'ai-pipeline': AiPipeline,
+	'rls-tenancy': RlsTenancy,
+	'schema-tenancy': SchemaTenancy,
+	'job-pipeline': JobPipeline,
+	'vault-reader': VaultReader,
 } as const;
 
 type DiagramId = keyof typeof diagrams;

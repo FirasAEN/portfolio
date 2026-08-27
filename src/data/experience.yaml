@@ -57,12 +57,18 @@
   end: null # current
   accent: var(--accent-regular)
   summary: >-
-    Building and running my own developer tooling — code-generation scripts, test
-    scaffolding and documentation generators driven by Claude Code with custom
-    agents and MCP integrations — self-hosted on a managed Linux VPS.
+    Building and self-hosting my own systems — a healthcare scheduling platform, a
+    Spark/Kafka job execution engine, a knowledge-vault reader, and two different
+    answers to multi-tenancy — alongside AI-assisted developer tooling. Where the
+    architectural decisions are mine end to end, and the reasoning is written down
+    next to the code.
   highlights:
     - group: Tooling & infrastructure
       items:
+        - "Built two production-shaped answers to multi-tenancy a week apart: row-level security retrofitted onto a 27-model schema already carrying data, and greenfield schema-per-tenant on Hibernate 7 — both fail-closed by construction"
+        - Built a business-agnostic job execution platform on Spring Modulith, Kafka and Spark Structured Streaming, with the domain surface narrowed to four extension points and two domains built on it
+        - Built and run a knowledge-vault reader that reimplements git's layered ignore semantics, directory-pruning behaviour included, because it decides what becomes public
+        - Prototyped a drag-and-drop studio for composing read-only business UIs from API calls, and recorded the security boundary it deferred rather than claiming it shipped
         - Build and run my own developer tooling — code-generation scripts, test scaffolding and documentation generators — driven by Claude Code with custom agents and MCP integrations
         - Use the same pipeline for prototyping and architectural exploration, keeping architecture, domain modelling and production-critical decisions under human ownership
         - Evaluate AI tooling on the code quality, maintainability and correctness it produces, not on output volume

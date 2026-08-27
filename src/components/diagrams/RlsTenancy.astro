@@ -1,0 +1,55 @@
+---
+// Retrofitted RLS tenancy. The point of the picture is the pool: the tenant is a
+// session setting, so it outlives the request that set it unless every checkout
+// path resets it — including the rare one used by transactions.
+interface Props {
+	variant?: 'full' | 'thumb' | undefined;
+}
+const { variant = 'full' } = Astro.props;
+const viewBox = variant === 'thumb' ? '0 0 640 200' : '0 0 640 300';
+---
+<svg class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]} viewBox={viewBox} role="img" aria-labelledby="rls-t">
+	<title id="rls-t">Both pool checkout paths set the tenant; unset connections match nothing</title>
+	<defs>
+		<marker id="rls-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow-accent" />
+		</marker>
+		<marker id="rls-b" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow" />
+		</marker>
+	</defs>
+
+	<text x="16" y="18" class="d-meta">Request</text>
+	<rect x="16" y="30" width="118" height="40" rx="3" class="d-box-fill" />
+	<text x="28" y="48" class="d-title">Tenant claim</text>
+	<text x="28" y="63">from the token</text>
+
+	<text x="176" y="18" class="d-meta">Pool wrapper · both paths</text>
+	<rect x="176" y="30" width="250" height="94" rx="3" class="d-core" />
+	<rect x="190" y="44" width="222" height="30" rx="2" class="d-box-fill" />
+	<text x="200" y="63">query()  ·  192 call sites</text>
+	<rect x="190" y="82" width="222" height="30" rx="2" class="d-box-fill" />
+	<text x="200" y="101">connect()  ·  2, transactions</text>
+
+	<text x="466" y="18" class="d-meta">Postgres</text>
+	<rect x="466" y="30" width="154" height="40" rx="3" class="d-box-fill" />
+	<text x="478" y="48" class="d-title">RLS policy</text>
+	<text x="478" y="63">rows for this tenant</text>
+
+	<path d="M134 50 H172" class="d-line-accent" marker-end="url(#rls-a)" />
+	<path d="M426 58 H462" class="d-line-accent" marker-end="url(#rls-a)" />
+
+	<rect x="466" y="84" width="154" height="40" rx="3" class="d-box d-dashed" />
+	<text x="478" y="102">unset → sentinel</text>
+	<text x="478" y="117">matches nothing</text>
+	<path d="M426 100 H462" class="d-line d-dashed" marker-end="url(#rls-b)" />
+
+	<rect x="16" y="146" width="604" height="34" rx="3" class="d-box d-dashed" />
+	<text x="28" y="167">the setting is session-scoped — it survives release back into the pool</text>
+
+	<path d="M16 210 H624" class="d-line d-dashed" />
+	<text x="16" y="232" class="d-meta">Why both paths</text>
+	<text x="16" y="252">Wrapping only query() would cover 192 of 194 call sites and look complete. The two</text>
+	<text x="16" y="268">that take a raw connection are transactions — precisely where an inherited tenant</text>
+	<text x="16" y="284">would read another tenant's rows with no error to notice.</text>
+</svg>

@@ -1,0 +1,65 @@
+---
+// Schema-per-tenant on Hibernate 7. The point: Hibernate performs and reverses
+// the switch itself, so the connection provider is a registration formality —
+// adding a manual search_path there would double-switch and break the restore.
+interface Props {
+	variant?: 'full' | 'thumb' | undefined;
+}
+const { variant = 'full' } = Astro.props;
+const viewBox = variant === 'thumb' ? '0 0 640 200' : '0 0 640 300';
+---
+<svg class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]} viewBox={viewBox} role="img" aria-labelledby="spt-t">
+	<title id="spt-t">Hibernate 7 switches and restores the schema itself; the provider only registers</title>
+	<defs>
+		<marker id="spt-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow-accent" />
+		</marker>
+		<marker id="spt-b" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow" />
+		</marker>
+	</defs>
+
+	<text x="16" y="18" class="d-meta">Per request</text>
+	<rect x="16" y="30" width="120" height="38" rx="3" class="d-box-fill" />
+	<text x="28" y="47" class="d-title">Resolver</text>
+	<text x="28" y="61">fail closed</text>
+
+	<rect x="172" y="30" width="140" height="38" rx="3" class="d-core" />
+	<text x="184" y="47" class="d-core-text">Hibernate 7</text>
+	<text x="184" y="61">setSchema + restore</text>
+
+	<rect x="348" y="30" width="130" height="38" rx="3" class="d-box-fill" />
+	<text x="360" y="47" class="d-title">tenant_acme</text>
+	<text x="360" y="61">its own schema</text>
+
+	<rect x="514" y="30" width="106" height="38" rx="3" class="d-box-fill" />
+	<text x="526" y="47" class="d-title">public</text>
+	<text x="526" y="61">registry</text>
+
+	<path d="M136 49 H168" class="d-line-accent" marker-end="url(#spt-a)" />
+	<path d="M312 49 H344" class="d-line-accent" marker-end="url(#spt-a)" />
+
+	<rect x="172" y="88" width="140" height="36" rx="3" class="d-box d-dashed" />
+	<text x="184" y="105">provider: empty</text>
+	<text x="184" y="119">registration only</text>
+	<path d="M242 88 V72" class="d-line d-dashed" marker-end="url(#spt-b)" />
+
+	<text x="16" y="152" class="d-meta">Provisioning · serialised by an advisory lock</text>
+	<rect x="16" y="164" width="140" height="30" rx="3" class="d-box-fill" />
+	<text x="28" y="183">insert row</text>
+	<rect x="172" y="164" width="140" height="30" rx="3" class="d-box-fill" />
+	<text x="184" y="183">create schema</text>
+	<rect x="328" y="164" width="140" height="30" rx="3" class="d-box-fill" />
+	<text x="340" y="183">migrate</text>
+	<rect x="484" y="164" width="136" height="30" rx="3" class="d-box-fill" />
+	<text x="496" y="183">activate</text>
+	<path d="M156 179 H168" class="d-line" marker-end="url(#spt-b)" />
+	<path d="M312 179 H324" class="d-line" marker-end="url(#spt-b)" />
+	<path d="M468 179 H480" class="d-line" marker-end="url(#spt-b)" />
+
+	<path d="M16 220 H624" class="d-line d-dashed" />
+	<text x="16" y="242" class="d-meta">Why the provider is empty</text>
+	<text x="16" y="262">Hibernate 7 sets the schema and restores it before releasing the connection. A manual</text>
+	<text x="16" y="278">SET search_path — the Hibernate 6 pattern — would double-switch and defeat that restore.</text>
+	<text x="16" y="294">Verified with a pool of one: after a scoped session, the connection reports public.</text>
+</svg>

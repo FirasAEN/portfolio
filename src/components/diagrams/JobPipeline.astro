@@ -1,0 +1,63 @@
+---
+// Compute engine. The point: the write path is transactional at both ends — an
+// outbox on submission, and a reconciler that proposes rather than decides — so
+// no single component can put the system into a wrong state on its own.
+interface Props {
+	variant?: 'full' | 'thumb' | undefined;
+}
+const { variant = 'full' } = Astro.props;
+const viewBox = variant === 'thumb' ? '0 0 640 200' : '0 0 640 300';
+---
+<svg class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]} viewBox={viewBox} role="img" aria-labelledby="jp-t">
+	<title id="jp-t">Job path: outbox to Kafka to Spark, status back over SSE under one trace id</title>
+	<defs>
+		<marker id="jp-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow-accent" />
+		</marker>
+		<marker id="jp-b" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow" />
+		</marker>
+	</defs>
+
+	<text x="16" y="18" class="d-meta">Submit · one trace id end to end</text>
+
+	<rect x="16" y="30" width="112" height="40" rx="3" class="d-box-fill" />
+	<text x="28" y="48" class="d-title">BFF</text>
+	<text x="28" y="63">holds token</text>
+
+	<rect x="164" y="30" width="112" height="40" rx="3" class="d-core" />
+	<text x="176" y="48" class="d-core-text">Outbox</text>
+	<text x="176" y="63">same txn</text>
+
+	<rect x="312" y="30" width="112" height="40" rx="3" class="d-box-fill" />
+	<text x="324" y="48" class="d-title">Kafka</text>
+	<text x="324" y="63">job queue</text>
+
+	<rect x="460" y="30" width="160" height="40" rx="3" class="d-box-fill" />
+	<text x="472" y="48" class="d-title">Spark streaming</text>
+	<text x="472" y="63">handler per domain</text>
+
+	<path d="M128 50 H160" class="d-line-accent" marker-end="url(#jp-a)" />
+	<path d="M276 50 H308" class="d-line-accent" marker-end="url(#jp-a)" />
+	<path d="M424 50 H456" class="d-line-accent" marker-end="url(#jp-a)" />
+
+	<rect x="164" y="92" width="260" height="32" rx="3" class="d-box-fill" />
+	<text x="176" y="112">status topic → SSE → browser</text>
+	<path d="M540 70 V108 H428" class="d-line-accent" marker-end="url(#jp-a)" />
+	<path d="M164 108 H80 V70" class="d-line-accent" marker-end="url(#jp-a)" />
+
+	<text x="16" y="152" class="d-meta">Stuck jobs</text>
+	<rect x="16" y="164" width="150" height="36" rx="3" class="d-box d-dashed" />
+	<text x="28" y="182">Reconciler</text>
+	<text x="28" y="195">sends bare ids</text>
+
+	<rect x="220" y="164" width="204" height="36" rx="3" class="d-core" />
+	<text x="232" y="182" class="d-core-text">Backend decides</text>
+	<text x="232" y="195">re-reads, applies own rules</text>
+	<path d="M166 182 H216" class="d-line" marker-end="url(#jp-b)" />
+
+	<path d="M16 226 H624" class="d-line d-dashed" />
+	<text x="16" y="248" class="d-meta">Why the reconciler carries no verdict</text>
+	<text x="16" y="268">It sends job ids and nothing else — no thresholds, no reasons. A bug in its query</text>
+	<text x="16" y="284">cannot talk the backend into failing a healthy job; it costs a wasted round trip.</text>
+</svg>

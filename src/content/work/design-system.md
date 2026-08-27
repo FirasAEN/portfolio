@@ -1,6 +1,7 @@
 ---
 title: Design System Library
 publishDate: 2023-01-20 00:00:00
+diagram: design-system
 description: |
   Built a shared design system library providing consistent, reusable UI components
   across multiple micro-frontend applications with Storybook documentation.

@@ -1,6 +1,7 @@
 ---
 title: EATON — Intelligent Power Manager
 publishDate: 2020-09-01 00:00:00
+diagram: streaming-state
 description: |
   Built Angular reactive UIs for EATON's Intelligent Power Manager (IPM2),
   a data center UPS monitoring platform with real-time state management using NgRx.

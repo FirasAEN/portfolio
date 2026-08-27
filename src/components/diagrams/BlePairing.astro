@@ -1,0 +1,59 @@
+---
+// Wiser Energy home automation. The point: BLE is not request/response. A device
+// can drift out of range between one command and the next, so the interface has
+// to represent probable state and recover on its own.
+interface Props {
+	variant?: 'full' | 'thumb' | undefined;
+}
+const { variant = 'full' } = Astro.props;
+const viewBox = variant === 'thumb' ? '0 0 640 200' : '0 0 640 300';
+---
+<svg class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]} viewBox={viewBox} role="img" aria-labelledby="ble-t">
+	<title id="ble-t">BLE device lifecycle: scan, pair, control, with drop-out and recovery paths</title>
+	<defs>
+		<marker id="ble-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow-accent" />
+		</marker>
+		<marker id="ble-c" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow" />
+		</marker>
+	</defs>
+
+	<text x="16" y="18" class="d-meta">Happy path</text>
+
+	<rect x="16" y="32" width="120" height="44" rx="3" class="d-core" />
+	<text x="28" y="52" class="d-core-text">Scan</text>
+	<text x="28" y="68">discover nearby</text>
+
+	<rect x="180" y="32" width="120" height="44" rx="3" class="d-core" />
+	<text x="192" y="52" class="d-core-text">Pair</text>
+	<text x="192" y="68">bond, may fail</text>
+
+	<rect x="344" y="32" width="120" height="44" rx="3" class="d-core" />
+	<text x="356" y="52" class="d-core-text">Control</text>
+	<text x="356" y="68">lights, shutters</text>
+
+	<rect x="508" y="32" width="112" height="44" rx="3" class="d-box-fill" />
+	<text x="520" y="52" class="d-title">Scenes</text>
+	<text x="520" y="68">grouped</text>
+
+	<path d="M136 54 H176" class="d-line-accent" marker-end="url(#ble-a)" />
+	<path d="M300 54 H340" class="d-line-accent" marker-end="url(#ble-a)" />
+	<path d="M464 54 H504" class="d-line-accent" marker-end="url(#ble-a)" />
+
+	<text x="16" y="112" class="d-meta">Reality</text>
+	<rect x="140" y="124" width="400" height="40" rx="3" class="d-box d-dashed" />
+	<text x="152" y="141">device drifts out of range · command times out</text>
+	<text x="152" y="157">UI shows probable state, retries, never traps the user</text>
+
+	<path d="M240 76 V120" class="d-line d-dashed" marker-end="url(#ble-c)" />
+	<path d="M404 76 V120" class="d-line d-dashed" marker-end="url(#ble-c)" />
+	<path d="M140 144 H100 V80" class="d-line d-dashed" marker-end="url(#ble-c)" />
+
+	<path d="M16 194 H624" class="d-line d-dashed" />
+	<text x="16" y="216" class="d-meta">The design constraint</text>
+	<text x="16" y="236">An operation that succeeded a moment ago may not now, so the interface cannot</text>
+	<text x="16" y="252">pretend to know a device's state — it represents what is probable and recovers</text>
+	<text x="16" y="268">without a restart. Residential software is used by people who did not choose</text>
+	<text x="16" y="284">it and will not read documentation, so defaults must be right unconfigured.</text>
+</svg>

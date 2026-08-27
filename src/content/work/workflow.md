@@ -1,9 +1,8 @@
 ---
 title: Workflow Editor
 publishDate: 2022-06-15 00:00:00
-img: assets/work/workflow.png
-imgThumbnail: assets/work/workflow.png
 img_alt: Visual workflow editor interface with connected nodes and process flows
+diagram: workflow-model
 description: |
   Built a BPMN-like visual workflow editor using JointJS, enabling business users
   to model and orchestrate complex processes through drag-and-drop interactions.

@@ -5,6 +5,11 @@ import OauthFlow from './OauthFlow.astro';
 import DslPipeline from './DslPipeline.astro';
 import MigrationPath from './MigrationPath.astro';
 import SparkPipeline from './SparkPipeline.astro';
+import WorkflowModel from './WorkflowModel.astro';
+import DesignSystemLayers from './DesignSystemLayers.astro';
+import OnboardingPath from './OnboardingPath.astro';
+import StreamingState from './StreamingState.astro';
+import BlePairing from './BlePairing.astro';
 
 /**
  * Renders a hand-authored architecture diagram by id.
@@ -20,6 +25,11 @@ const diagrams = {
 	'dsl-pipeline': DslPipeline,
 	'migration-path': MigrationPath,
 	'spark-pipeline': SparkPipeline,
+	'workflow-model': WorkflowModel,
+	'design-system': DesignSystemLayers,
+	'onboarding-path': OnboardingPath,
+	'streaming-state': StreamingState,
+	'ble-pairing': BlePairing,
 } as const;
 
 type DiagramId = keyof typeof diagrams;

@@ -1,0 +1,48 @@
+---
+// The design system. The point of the split: atomic components know nothing
+// about the domain, so they stay stable; integration components carry product
+// opinion and can change without destabilising the primitives beneath.
+interface Props {
+	variant?: 'full' | 'thumb' | undefined;
+}
+const { variant = 'full' } = Astro.props;
+const viewBox = variant === 'thumb' ? '0 0 640 200' : '0 0 640 314';
+---
+<svg class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]} viewBox={viewBox} role="img" aria-labelledby="ds-t">
+	<title id="ds-t">Design system: 15 atomic components under 8 integration components, consumed by every module</title>
+	<defs>
+		<marker id="ds-a" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+			<path d="M0 0 L6 3 L0 6 z" class="d-arrow" />
+		</marker>
+	</defs>
+
+	<text x="16" y="18" class="d-meta">Consumers</text>
+	<rect x="16" y="28" width="140" height="30" rx="3" class="d-box-fill" />
+	<text x="28" y="47">module · admin</text>
+	<rect x="172" y="28" width="140" height="30" rx="3" class="d-box-fill" />
+	<text x="184" y="47">module · portal</text>
+	<rect x="328" y="28" width="140" height="30" rx="3" class="d-box-fill" />
+	<text x="340" y="47">module · studio</text>
+	<rect x="484" y="28" width="136" height="30" rx="3" class="d-box-fill" />
+	<text x="496" y="47">module · reports</text>
+
+	<text x="16" y="88" class="d-meta">8 integration components · product opinion</text>
+	<rect x="16" y="98" width="604" height="34" rx="3" class="d-core" />
+	<text x="28" y="119" class="d-core-text">filterable table · form layout · wizard · data panel …</text>
+
+	<text x="16" y="158" class="d-meta">15 atomic components · no domain knowledge</text>
+	<rect x="16" y="168" width="604" height="34" rx="3" class="d-box" />
+	<text x="28" y="189">button · input · select · checkbox · badge · tooltip …</text>
+
+	<path d="M86 58 V94" class="d-line" marker-end="url(#ds-a)" />
+	<path d="M242 58 V94" class="d-line" marker-end="url(#ds-a)" />
+	<path d="M398 58 V94" class="d-line" marker-end="url(#ds-a)" />
+	<path d="M552 58 V94" class="d-line" marker-end="url(#ds-a)" />
+	<path d="M318 132 V164" class="d-line" marker-end="url(#ds-a)" />
+
+	<path d="M16 226 H624" class="d-line d-dashed" />
+	<text x="16" y="248" class="d-meta">Why the split, and what it costs</text>
+	<text x="16" y="268">Atomic components stay stable because they know nothing about the domain.</text>
+	<text x="16" y="284">Storybook documents each one's states and API — without that a shared library</text>
+	<text x="16" y="300">becomes a folder people copy out of rather than depend on.</text>
+</svg>

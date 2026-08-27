@@ -1,0 +1,53 @@
+---
+// The onboarding programme. The point: ad-hoc onboarding is invisible until it
+// fails, and its cost lands on whoever happens to be nearest. A defined path
+// makes ramp-up repeatable rather than dependent on who is free.
+interface Props {
+	variant?: 'full' | 'thumb' | undefined;
+}
+const { variant = 'full' } = Astro.props;
+const viewBox = variant === 'thumb' ? '0 0 640 200' : '0 0 640 314';
+---
+<svg class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]} viewBox={viewBox} role="img" aria-labelledby="ob-t">
+	<title id="ob-t">Onboarding programme: a defined path from setup to supervised delivery</title>
+	<defs>
+		<marker id="ob-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow-accent" />
+		</marker>
+	</defs>
+
+	<text x="16" y="18" class="d-meta">Before · ad hoc</text>
+	<rect x="16" y="28" width="604" height="34" rx="3" class="d-box d-dashed" />
+	<text x="28" y="49">whoever is free answers the same questions again · ramp-up varies by who helps</text>
+
+	<text x="16" y="90" class="d-meta">After · defined path · 4 engineers to date</text>
+
+	<rect x="16" y="102" width="140" height="52" rx="3" class="d-core" />
+	<text x="28" y="122" class="d-core-text">1 · Environment</text>
+	<text x="28" y="138">build, run, debug</text>
+
+	<rect x="172" y="102" width="140" height="52" rx="3" class="d-core" />
+	<text x="184" y="122" class="d-core-text">2 · Architecture</text>
+	<text x="184" y="138">why hexagonal</text>
+
+	<rect x="328" y="102" width="140" height="52" rx="3" class="d-core" />
+	<text x="340" y="122" class="d-core-text">3 · Conventions</text>
+	<text x="340" y="138">why the graph rules</text>
+
+	<rect x="484" y="102" width="136" height="52" rx="3" class="d-core" />
+	<text x="496" y="122" class="d-core-text">4 · Real tickets</text>
+	<text x="496" y="138">supervised</text>
+
+	<path d="M156 128 H168" class="d-line-accent" marker-end="url(#ob-a)" />
+	<path d="M312 128 H324" class="d-line-accent" marker-end="url(#ob-a)" />
+	<path d="M468 128 H480" class="d-line-accent" marker-end="url(#ob-a)" />
+
+	<rect x="16" y="170" width="604" height="30" rx="3" class="d-box-fill" />
+	<text x="28" y="190">reasoning taught, not just rules — a joiner who understands why stops asking what</text>
+
+	<path d="M16 226 H624" class="d-line d-dashed" />
+	<text x="16" y="248" class="d-meta">The maintenance cost</text>
+	<text x="16" y="268">A written programme goes stale faster than code, because nothing fails when it</text>
+	<text x="16" y="284">does. It is kept alive by being used every time someone joins, rather than by</text>
+	<text x="16" y="300">being reviewed on a schedule.</text>
+</svg>

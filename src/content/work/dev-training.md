@@ -1,6 +1,7 @@
 ---
 title: Developer Training Program
 publishDate: 2022-04-01 00:00:00
+diagram: onboarding-path
 description: |
   Designed and delivered a comprehensive training curriculum for the development team,
   covering Angular, TypeScript, RxJS, and software architecture best practices.

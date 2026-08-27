@@ -100,7 +100,7 @@ const accentColor = companies.get(company)?.accent || 'var(--accent-regular)';
 		align-items: flex-end;
 		justify-content: space-between;
 		padding: 1.25rem;
-		aspect-ratio: 16 / 4;
+		aspect-ratio: 16 / 5;
 		border-bottom: 1px solid var(--rule-color);
 		background:
 			linear-gradient(160deg, color-mix(in srgb, var(--card-accent) 10%, transparent), transparent 70%),
@@ -116,16 +116,23 @@ const accentColor = companies.get(company)?.accent || 'var(--accent-regular)';
 		font-variant-numeric: tabular-nums;
 	}
 
-	/* A diagram makes its own height; the fixed ratio is only for the bare plate. */
 	.card-plate.has-diagram {
-		aspect-ratio: auto;
 		align-items: stretch;
-		padding: 1.5rem 1.5rem 1rem;
+		padding: 1.75rem 1.5rem 1rem;
 	}
 
+	/* The six diagrams have different natural ratios; letting each set its own
+	   height left the grid ragged. Absolutely positioning the diagram gives it a
+	   definite box to fit inside, and the SVG's default preserveAspectRatio
+	   centres it there — so every plate is the same height. */
 	.card-diagram {
-		flex: 1;
-		min-width: 0;
+		position: absolute;
+		inset: 2.25rem 1.5rem 1rem;
+	}
+
+	.card-diagram :global(.diagram-thumb) {
+		width: 100%;
+		height: 100%;
 	}
 
 	.card-plate.has-diagram .card-index {
@@ -140,7 +147,7 @@ const accentColor = companies.get(company)?.accent || 'var(--accent-regular)';
 	   so the card falls back to the plain index plate. */
 	@media (max-width: 34em) {
 		.card-plate.has-diagram {
-			aspect-ratio: 16 / 4;
+			aspect-ratio: 16 / 5;
 			align-items: flex-end;
 		}
 
@@ -232,7 +239,7 @@ const accentColor = companies.get(company)?.accent || 'var(--accent-regular)';
 		align-items: flex-end;
 		justify-content: space-between;
 		padding: 1.25rem;
-		aspect-ratio: 16 / 4;
+		aspect-ratio: 16 / 5;
 		border-bottom: 1px solid var(--rule-color);
 		background:
 			linear-gradient(160deg, color-mix(in srgb, var(--card-accent) 10%, transparent), transparent 70%),
@@ -248,16 +255,23 @@ const accentColor = companies.get(company)?.accent || 'var(--accent-regular)';
 		font-variant-numeric: tabular-nums;
 	}
 
-	/* A diagram makes its own height; the fixed ratio is only for the bare plate. */
 	.card-plate.has-diagram {
-		aspect-ratio: auto;
 		align-items: stretch;
-		padding: 1.5rem 1.5rem 1rem;
+		padding: 1.75rem 1.5rem 1rem;
 	}
 
+	/* The six diagrams have different natural ratios; letting each set its own
+	   height left the grid ragged. Absolutely positioning the diagram gives it a
+	   definite box to fit inside, and the SVG's default preserveAspectRatio
+	   centres it there — so every plate is the same height. */
 	.card-diagram {
-		flex: 1;
-		min-width: 0;
+		position: absolute;
+		inset: 2.25rem 1.5rem 1rem;
+	}
+
+	.card-diagram :global(.diagram-thumb) {
+		width: 100%;
+		height: 100%;
 	}
 
 	.card-plate.has-diagram .card-index {
@@ -272,7 +286,7 @@ const accentColor = companies.get(company)?.accent || 'var(--accent-regular)';
 	   so the card falls back to the plain index plate. */
 	@media (max-width: 34em) {
 		.card-plate.has-diagram {
-			aspect-ratio: 16 / 4;
+			aspect-ratio: 16 / 5;
 			align-items: flex-end;
 		}
 

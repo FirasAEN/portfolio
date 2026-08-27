@@ -1,0 +1,61 @@
+---
+// IPM2 monitoring. The point: several views show overlapping slices of the same
+// readings, so they must agree by construction. One normalised store is what
+// makes that true; per-component subscriptions would let views disagree.
+interface Props {
+	variant?: 'full' | 'thumb' | undefined;
+}
+const { variant = 'full' } = Astro.props;
+const viewBox = variant === 'thumb' ? '0 0 640 200' : '0 0 640 300';
+---
+<svg class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]} viewBox={viewBox} role="img" aria-labelledby="ss-t">
+	<title id="ss-t">Streaming readings into one normalised NgRx store, with views selecting from it</title>
+	<defs>
+		<marker id="ss-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow" />
+		</marker>
+		<marker id="ss-b" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow-accent" />
+		</marker>
+	</defs>
+
+	<text x="16" y="18" class="d-meta">UPS estate · continuous readings</text>
+	<rect x="16" y="30" width="120" height="26" rx="3" class="d-box-fill" />
+	<text x="28" y="47">device · rack A</text>
+	<rect x="16" y="64" width="120" height="26" rx="3" class="d-box-fill" />
+	<text x="28" y="81">device · rack B</text>
+	<rect x="16" y="98" width="120" height="26" rx="3" class="d-box-fill" />
+	<text x="28" y="115">device · site</text>
+
+	<rect x="216" y="44" width="176" height="66" rx="3" class="d-core" />
+	<text x="230" y="66" class="d-title">NgRx store</text>
+	<text x="230" y="84" class="d-core-text">normalised, one truth</text>
+	<text x="230" y="100">RxJS derives per view</text>
+
+	<text x="470" y="18" class="d-meta">Views</text>
+	<rect x="470" y="30" width="150" height="26" rx="3" class="d-box-fill" />
+	<text x="482" y="47">estate overview</text>
+	<rect x="470" y="64" width="150" height="26" rx="3" class="d-box-fill" />
+	<text x="482" y="81">rack detail</text>
+	<rect x="470" y="98" width="150" height="26" rx="3" class="d-box-fill" />
+	<text x="482" y="115">alert list</text>
+
+	<path d="M136 43 H196 V70" class="d-line" marker-end="url(#ss-a)" />
+	<path d="M136 77 H212" class="d-line" marker-end="url(#ss-a)" />
+	<path d="M136 111 H196 V84" class="d-line" marker-end="url(#ss-a)" />
+
+	<path d="M392 70 H432 V43 H466" class="d-line-accent" marker-end="url(#ss-b)" />
+	<path d="M392 77 H466" class="d-line-accent" marker-end="url(#ss-b)" />
+	<path d="M392 84 H432 V111 H466" class="d-line-accent" marker-end="url(#ss-b)" />
+
+	<rect x="216" y="140" width="176" height="30" rx="3" class="d-box" />
+	<text x="230" y="160">components hold no state</text>
+	<path d="M304 140 V114" class="d-line d-dashed" marker-end="url(#ss-a)" />
+
+	<path d="M16 200 H624" class="d-line d-dashed" />
+	<text x="16" y="222" class="d-meta">Why one store, and when it is not worth it</text>
+	<text x="16" y="242">Two views showing the same device read the same value by construction rather</text>
+	<text x="16" y="258">than by coincidence — views that disagree are the worst failure mode for</text>
+	<text x="16" y="274">monitoring software, because nothing signals that it happened. The ceremony</text>
+	<text x="16" y="290">is not repaid on a form-driven screen; it is repaid here.</text>
+</svg>

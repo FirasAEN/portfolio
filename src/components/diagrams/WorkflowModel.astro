@@ -1,0 +1,64 @@
+---
+// The visual workflow engine. The point: the graph IS the definition, so there
+// is no second representation to drift, and validation runs before save because
+// moving process definitions out of code gives up the compiler.
+interface Props {
+	variant?: 'full' | 'thumb' | undefined;
+}
+const { variant = 'full' } = Astro.props;
+const viewBox = variant === 'thumb' ? '0 0 640 200' : '0 0 640 300';
+---
+<svg class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]} viewBox={viewBox} role="img" aria-labelledby="wf-t">
+	<title id="wf-t">Workflow graph: tasks with per-task configuration, validated before save</title>
+	<defs>
+		<marker id="wf-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow" />
+		</marker>
+		<marker id="wf-b" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow-accent" />
+		</marker>
+	</defs>
+
+	<text x="16" y="18" class="d-meta">Process owner edits the graph directly</text>
+
+	<rect x="16" y="40" width="104" height="40" rx="3" class="d-box-fill" />
+	<text x="28" y="58" class="d-title">Trigger</text>
+	<text x="28" y="72">on event</text>
+
+	<rect x="164" y="40" width="104" height="40" rx="3" class="d-core" />
+	<text x="176" y="58" class="d-core-text">Task A</text>
+	<text x="176" y="72">configured</text>
+
+	<rect x="164" y="104" width="104" height="40" rx="3" class="d-core" />
+	<text x="176" y="122" class="d-core-text">Task B</text>
+	<text x="176" y="136">configured</text>
+
+	<rect x="312" y="72" width="104" height="40" rx="3" class="d-box-fill" />
+	<text x="324" y="90" class="d-title">Decision</text>
+	<text x="324" y="104">condition</text>
+
+	<rect x="460" y="40" width="104" height="40" rx="3" class="d-box-fill" />
+	<text x="472" y="58" class="d-title">Persist</text>
+	<text x="472" y="72">datablock</text>
+
+	<rect x="460" y="104" width="104" height="40" rx="3" class="d-box" />
+	<text x="472" y="122">unreachable</text>
+	<text x="472" y="136">flagged</text>
+
+	<path d="M120 60 H160" class="d-line" marker-end="url(#wf-a)" />
+	<path d="M68 80 V124 H160" class="d-line" marker-end="url(#wf-a)" />
+	<path d="M268 60 H290 V88 H308" class="d-line" marker-end="url(#wf-a)" />
+	<path d="M268 124 V92 H308" class="d-line" marker-end="url(#wf-a)" />
+	<path d="M416 84 H438 V60 H456" class="d-line" marker-end="url(#wf-a)" />
+	<path d="M416 100 H438 V124 H456" class="d-line d-dashed" marker-end="url(#wf-a)" />
+
+	<rect x="16" y="152" width="248" height="34" rx="3" class="d-core" />
+	<text x="28" y="173" class="d-core-text">Validate before save</text>
+	<path d="M264 168 H452 V148" class="d-line-accent d-dashed" marker-end="url(#wf-b)" />
+
+	<path d="M16 214 H624" class="d-line d-dashed" />
+	<text x="16" y="236" class="d-meta">What moves, and what it costs</text>
+	<text x="16" y="256">Each node carries its own configuration, so a step is tuned without changing</text>
+	<text x="16" y="272">the graph's shape. Moving definitions out of code gives up compile-time</text>
+	<text x="16" y="288">checking, so the graph is validated before save instead.</text>
+</svg>

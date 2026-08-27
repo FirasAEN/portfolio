@@ -1,0 +1,55 @@
+---
+// AI-assisted tooling. The point of the picture is the boundary: generation is
+// applied where being wrong is cheap and visible, and the decisions whose cost
+// arrives late stay on the human side of the line.
+interface Props {
+	variant?: 'full' | 'thumb' | undefined;
+}
+const { variant = 'full' } = Astro.props;
+const viewBox = variant === 'thumb' ? '0 0 640 200' : '0 0 640 300';
+---
+<svg class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]} viewBox={viewBox} role="img" aria-labelledby="ai-t">
+	<title id="ai-t">Where generation is applied, and where decisions stay human</title>
+	<defs>
+		<marker id="ai-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow-accent" />
+		</marker>
+	</defs>
+
+	<text x="16" y="18" class="d-meta">Human ownership · cost arrives late</text>
+	<rect x="16" y="28" width="604" height="46" rx="3" class="d-core" />
+	<text x="30" y="48" class="d-core-text">architecture</text>
+	<text x="150" y="48" class="d-core-text">domain modelling</text>
+	<text x="300" y="48" class="d-core-text">production-critical decisions</text>
+	<text x="30" y="65">reviewable only if the reasoning was made explicit</text>
+
+	<text x="16" y="108" class="d-meta">Generated · wrong is cheap and visible</text>
+	<rect x="16" y="120" width="140" height="42" rx="3" class="d-box-fill" />
+	<text x="28" y="139" class="d-title">Scaffolding</text>
+	<text x="28" y="154">boilerplate</text>
+
+	<rect x="172" y="120" width="140" height="42" rx="3" class="d-box-fill" />
+	<text x="184" y="139" class="d-title">Tests</text>
+	<text x="184" y="154">harness + cases</text>
+
+	<rect x="328" y="120" width="140" height="42" rx="3" class="d-box-fill" />
+	<text x="340" y="139" class="d-title">Docs</text>
+	<text x="340" y="154">generated, current</text>
+
+	<rect x="484" y="120" width="136" height="42" rx="3" class="d-box-fill" />
+	<text x="496" y="139" class="d-title">Prototypes</text>
+	<text x="496" y="154">explore, discard</text>
+
+	<path d="M86 74 V116" class="d-line-accent d-dashed" marker-end="url(#ai-a)" />
+	<path d="M242 74 V116" class="d-line-accent d-dashed" marker-end="url(#ai-a)" />
+	<path d="M398 74 V116" class="d-line-accent d-dashed" marker-end="url(#ai-a)" />
+	<path d="M552 74 V116" class="d-line-accent d-dashed" marker-end="url(#ai-a)" />
+
+	<rect x="16" y="178" width="604" height="30" rx="3" class="d-box" />
+	<text x="30" y="197">judged on quality, maintainability and correctness — not on output volume</text>
+
+	<path d="M16 234 H624" class="d-line d-dashed" />
+	<text x="16" y="256" class="d-meta">Why the line sits there</text>
+	<text x="16" y="276">Generated code is reviewable. A generated decision is not, because the reasoning</text>
+	<text x="16" y="292">that would let you review it was never written down.</text>
+</svg>

@@ -1,5 +1,5 @@
 ---
-title: DDD & Hexagonal Architecture
+title: Untangling an Inherited Java Monolith
 publishDate: 2022-08-15 00:00:00
 diagram: hexagonal
 description: |
@@ -23,49 +23,55 @@ order: 2
 company: adobis
 ---
 
-## Making DataChain's services testable without infrastructure
+## Untangling an inherited Java monolith
 
-DataChain's back-end sits between customer data sources and everything the
-platform does with them — virtualising, transforming, tracking lineage. Those
-services could not be tested without a database and a running framework, which
-made the suite slow to verify and its rules hard to change safely. I led a
-redesign onto Domain-Driven Design with a Hexagonal (Ports and Adapters)
-architecture, and extended the same shape to the front end.
+The back end I inherited was a monolithic Java application with the business
+logic tangled into it. Over four years I have moved new services out of it onto
+Domain-Driven Design and Hexagonal boundaries — setting the boundaries, writing
+the reference implementation, and driving adoption through pairing sessions.
 
 ### The constraint
 
-The business rules were both the valuable part and the risky part. Lineage
-semantics, permission resolution, how a transformation composes — these were
-entangled with JPA entities and Spring annotations, so exercising a rule meant
-standing up infrastructure first.
+The monolith was working and paying the bills. Rewriting it wholesale was never
+on the table, and a rewrite is the failure mode this kind of work usually dies
+of. Whatever the approach, the monolith had to keep running while it shrank.
 
-That matters more than usual here. DataChain runs in pharmaceutical and public
-administration contexts where auditability is the product; a rule that cannot be
-tested in isolation is a rule nobody can confidently assert is correct.
+The deeper problem was that the rules and the framework were the same code.
+Exercising a business rule meant standing up a database and a Spring context, so
+the rules were hard to test and therefore hard to change with any confidence.
 
 ### The decision
 
-Invert the dependencies. The domain core holds entities, value objects and
-aggregates, and imports nothing from the outer rings. Ports define the
-interfaces it needs; adapters implement them. Every arrow points inward.
+Draw the boundary at every *new* service rather than retrofitting the old ones.
+Each new service gets a domain core that imports nothing from the outer rings,
+ports that define what it needs, and adapters that implement them. The monolith
+stays where it is and stops growing.
 
-Bounded contexts partition the platform along business boundaries, each owning
-its data and exposing a defined API, with anti-corruption layers translating
-between them so one context's model cannot leak into another.
+Two things mattered more than the pattern itself:
 
-The front end takes the same shape: Ports and Adapters over reactive Angular
-components, so view logic is decoupled from framework concerns.
+- **A reference implementation.** I wrote the first service end to end, so the
+  shape was something people could read rather than a diagram in a wiki. "Follow
+  this" beats "apply Hexagonal Architecture".
+- **Pairing sessions.** Adoption happened by sitting with people while they
+  built the second, third and fourth service. An architecture nobody can apply
+  unaided is not adopted, it is imposed.
+
+The front end took the same shape: Ports and Adapters, with NgRx for state, RxJS
+for streams, and ImmutableJS and Immer for immutability.
 
 ### The trade-off
 
-Ports and adapters mean more types and more indirection, and on a genuinely
-CRUD-shaped service that overhead is never repaid. It was applied where the
-rules are complex enough to be worth isolating — new services — rather than
-retrofitted across everything.
+Two idioms now coexist — the monolith's and the new services'. That is a real
+cost in navigation and in explaining the codebase to a new joiner, and it is the
+price of not stopping to rewrite. It is also why the onboarding programme covers
+the architecture explicitly.
+
+Ports and adapters add types and indirection that a CRUD-shaped service never
+repays, which is why the boundary is drawn at new services rather than
+everywhere.
 
 ### Outcome
 
-Domain logic runs in unit tests with no database, no broker and no HTTP server.
-Swapping an infrastructure component means rewriting one adapter. The explicit
-boundaries also gave new joiners a map of the platform, which fed directly into
-the onboarding programme.
+New services are tested with no database, no broker and no HTTP server. The
+monolith is no longer where new business logic lands, and the pattern spreads by
+people having built one, not by having been told about it.

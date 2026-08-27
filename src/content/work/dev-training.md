@@ -1,5 +1,5 @@
 ---
-title: Developer Onboarding Programme
+title: Onboarding by Pairing
 publishDate: 2022-04-01 00:00:00
 diagram: onboarding-path
 description: |
@@ -15,41 +15,41 @@ tags:
 company: adobis
 ---
 
-## Turning onboarding from folklore into a programme
+## Onboarding by pairing, not by documentation
 
-New developers were ramped up ad hoc, so how quickly someone became productive
-depended on who happened to be free to help them. I built and ran a structured
-onboarding programme; four engineers have been through it.
+New developers were ramped up ad hoc, so how fast someone became productive
+depended on who happened to be free. I built and ran the training programme;
+four engineers have been through it.
 
 ### The problem with ad-hoc onboarding
 
-It is invisible until it fails. The cost lands on whoever is nearest, the
+It is invisible until it fails. The cost lands on whoever sits nearest, the
 quality varies with who that is, and the same questions get answered from
 scratch every time.
 
-DataChain makes this worse than average. A new joiner has to hold several ideas
-at once before they can change anything safely: virtualisation rather than
-copying, lineage as a first-class concern, tenant-scoped permissions, and a
-suite of modules over a shared codebase with enforced dependency rules.
+This codebase makes it harder than average. A new joiner meets two idioms at
+once — the inherited monolith and the DDD/Hexagonal services moving out of it —
+plus an Nx graph with enforced dependency rules and a platform whose core
+concepts (virtualisation, lineage, tenancy) are not the ones they arrive with.
 
 ### The programme
 
-A defined path — environment setup, then the architecture and the reasoning
-behind it, then supervised work on real tickets.
+The method is pairing, not reading. New joiners are paired through the
+architecture: they build inside it while someone who knows it is sitting there,
+which is the same way the DDD boundaries were adopted across the team.
 
-The architectural decisions are taught explicitly: why Hexagonal, why the Nx
-graph rules exist, why tenancy lives in the token. A joiner who understands the
-reasoning stops needing to ask what the rules are, and starts being able to tell
-when a rule does not apply.
+Written material exists, but it supports the pairing rather than replacing it. A
+document can state that the domain core imports nothing from the outer rings. It
+cannot catch you the first time you reach for a repository from inside it.
 
 ### The trade-off
 
-A written programme has to be maintained, and it goes stale faster than code
-because nothing fails when it does. It is kept alive by being used every time
-someone joins, rather than by being reviewed on a schedule.
+Pairing costs a senior engineer's time in real hours, and it does not scale past
+a handful of joiners a year. At four engineers to date, that is the right trade;
+at a much higher intake it would have to become something more scalable and less
+effective.
 
 ### Outcome
 
-Ramp-up is repeatable rather than dependent on who is available. Four engineers
-onboarded to date, and the explicit architecture documentation it required is
-now used by the whole team.
+Ramp-up no longer depends on who is free. Four engineers onboarded, and the
+architecture gets explained the way it is actually applied.

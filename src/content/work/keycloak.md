@@ -1,5 +1,5 @@
 ---
-title: Identity & Access Across the Suite
+title: Keycloak Across Five Tenants
 publishDate: 2022-02-01 00:00:00
 diagram: oauth-flow
 description: |
@@ -18,41 +18,41 @@ tags:
 company: adobis
 ---
 
-## One identity model for the whole suite
+## One authentication server for hundreds of users across five tenants
 
-DataChain ships as several modules, each of which had been handling
-authentication for itself. I built the centralised identity and access module
-for the suite — users, groups and permissions in one place — behind a single
-Keycloak OAuth2/OIDC flow serving hundreds of users across five tenants.
+Authentication was being handled per module. I integrated Keycloak as the
+authentication server for the whole suite — the full OAuth2/OIDC lifecycle for
+hundreds of users across five tenants — and built the centralised module where
+users, groups and permissions are administered in one place.
 
 ### The constraint
 
 Multi-tenancy was the hard part. DataChain runs for organisations with real
 separation requirements — a pharmaceutical company, a public administration, a
 consultancy — so every request has to be authorised in the context of its
-tenant, and the standard OIDC claim set carries no notion of tenant at all.
+tenant. The standard OIDC claim set carries no notion of tenant at all.
 
 ### The decision
 
-Rather than resolving tenancy per request inside each service — a lookup on
-every call, and a rule each service could get subtly wrong — I wrote a custom
-token mapper that injects the tenant claim into the token at issue time.
+Take the whole lifecycle to Keycloak rather than only the login step: issuance,
+refresh, logout, and session handling across modules, so a user moves between
+them without re-authenticating and a revocation actually revokes.
 
-Services then authorise from the token alone. Tenant identity arrives already
-verified and signed by Keycloak, on every request, identically everywhere.
-
-Groups sit on top of that: permissions are granted to groups rather than to
-individuals, so access is administered once for a team instead of per person
-per module.
+For tenancy, I wrote a custom OAuth2 token mapper that injects the tenant claim
+into the token at issue time. Services then authorise from the token alone —
+tenant identity arrives already verified and signed, on every request,
+identically everywhere. The alternative was a lookup per request in every
+service, and a rule each service could get subtly wrong in its own way.
 
 ### The trade-off
 
 Claims are fixed for the lifetime of a token, so a permission change does not
-take effect until the token refreshes. In exchange, authorisation costs nothing
-per request and the tenancy rule lives in exactly one place instead of being
-restated — and eventually diverging — in every service.
+take effect until the token refreshes. That is a real window, and it buys
+authorisation that costs nothing per request and a tenancy rule that exists in
+exactly one place rather than being restated — and eventually diverging — across
+every service in the suite.
 
 ### Outcome
 
-One flow serves all five tenants and every module in the suite. Adding a service
-means trusting the token rather than re-implementing tenancy.
+One authentication server for the suite, five tenants, hundreds of users, and a
+single place where access is administered.

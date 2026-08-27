@@ -10,10 +10,11 @@
   end: null # current
   accent: var(--accent-regular)
   summary: >-
-    Leading a team of 5 developers on DataChain®, a European sovereign data
-    platform — a virtualization layer that queries sources in place rather than
-    replicating them, with native lineage throughout. Angular micro-frontends,
-    Spring Boot back-ends, DDD/Hexagonal architecture. In production at
+    Leading a team of 5 on DataChain®, a European sovereign data platform. Four
+    years moving new services off an inherited Java monolith onto DDD and
+    Hexagonal boundaries, and building the tooling the platform's business users
+    work in daily — a visual composer for automation workflows and an IDE-style
+    editor for the formulas Spark evaluates over their data. In production at
     Boehringer, the State of Geneva and Ayming.
   highlights:
     - group: Leadership & architecture
@@ -22,14 +23,14 @@
         - Made new-joiner ramp-up repeatable rather than ad-hoc — built and ran the onboarding programme, 4 engineers onboarded to date
         - Made new back-end services testable independently of database and framework by rolling out DDD + Hexagonal Architecture
         - Decoupled front-end logic from framework concerns with a Ports & Adapters architecture over reactive Angular components
-        - Enabled 5 applications — DC Viz, DC MarketPlace, DC Code, DC Tag IA and the access console — to build and release independently from one codebase, via an Nx monorepo with Module Federation
+        - Restructured the front end into an Nx monorepo of 5 applications — DC Viz, DC MarketPlace, DC Code, DC Tag IA and the access console — so micro-frontends build and release independently
         - Removed the AngularJS dependency, end-of-life since 2021, by migrating 7 legacy modules to Angular over 18 months
     - group: Delivery
       items:
-        - "Let analysts write and check dataframe expressions in-editor before Spark executes them — a business DSL on a Lezer parser with CodeMirror, powering DC Core's no-code transformation layer"
-        - Built the visual editor behind DC Maestro — drag-and-drop task sequencing with per-task configuration, so automation is reconfigured without a release
-        - Gave every module in the suite one source of UI truth — a Storybook-documented design system of 23 components (15 atomic, 8 integration)
-        - Centralised identity for hundreds of users across 5 tenants behind one Keycloak OAuth2/OIDC flow, including a custom token mapper carrying tenant claims
+        - "Replaced raw text files as the way business users author domain rules: an IDE-style editor with a from-scratch Lezer grammar, CodeMirror integration, domain-aware autocomplete and live validation, for the formulas Spark evaluates over their dataframes"
+        - Built the workflow module where automation processes are composed visually and configured per task (JointJS), replacing hand-coded process definitions
+        - "Ended the duplicated, inconsistent UI components each team was maintaining: a Storybook-documented Angular Material library of 23 shared components (15 atomic, 8 integration), with contribution guidelines, versioning and adoption sessions"
+        - Integrated Keycloak as the authentication server for hundreds of users across 5 tenants — full OAuth2/OIDC lifecycle plus a custom OAuth2 token mapper
   stack:
     - Java 11/17/21
     - Spring Boot
@@ -56,17 +57,17 @@
   end: null # current
   accent: var(--accent-regular)
   summary: >-
-    Building and self-hosting AI-assisted development tooling on Linux VPS
-    infrastructure, with a deliberately critical line on where AI belongs in an
-    engineering workflow.
+    Building and running my own developer tooling — code-generation scripts, test
+    scaffolding and documentation generators driven by Claude Code with custom
+    agents and MCP integrations — self-hosted on a managed Linux VPS.
   highlights:
     - group: Tooling & infrastructure
       items:
-        - Remove repetitive scaffolding by shipping internal tooling — code generation, test scaffolding, and documentation generators
-        - Integrate AI-assisted development into daily engineering workflow (Claude Code, custom agents, MCP integrations, automated pipelines)
-        - "Hold a critical line on where AI belongs: high value for boilerplate, tests, and rapid exploration; human ownership retained for architecture, domain modelling, and production-critical decisions"
-        - Own the full production path on a Hostinger VPS — deployment, domains, DNS, SSL/TLS, and server configuration
-        - Keep releases repeatable and low-ceremony by automating deployment through scripting and CI/CD workflows
+        - Build and run my own developer tooling — code-generation scripts, test scaffolding and documentation generators — driven by Claude Code with custom agents and MCP integrations
+        - Use the same pipeline for prototyping and architectural exploration, keeping architecture, domain modelling and production-critical decisions under human ownership
+        - Evaluate AI tooling on the code quality, maintainability and correctness it produces, not on output volume
+        - Run personal and professional applications on a self-managed Hostinger VPS — Linux, deployment, domains, DNS, SSL/TLS and server configuration
+        - Automate deployment and maintenance with scripting and CI/CD workflows
   stack:
     - Linux
     - Docker

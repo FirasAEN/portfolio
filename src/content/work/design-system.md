@@ -17,42 +17,47 @@ tags:
 company: adobis
 ---
 
-## One source of UI truth across the DataChain suite
+## Ending five teams' worth of duplicated components
 
-Every module in the suite renders the same platform concepts — datasets,
-connectors, permissions, lineage — and each was re-implementing the interface
-for them. The product drifted visually between modules and every fix had to be
-made several times. I built the shared component library, documented in
-Storybook, and drove its adoption across all of them.
+Every front-end team was maintaining its own version of the same interface
+components. The product drifted between modules, and each fix had to be made
+several times over. I built the shared library that ended it.
 
 ### The library
 
-Twenty-three components, split deliberately:
+Twenty-three shared components on Angular Material, documented in Storybook and
+split deliberately:
 
-- **15 atomic components** — buttons, inputs, selects, and the rest of the
-  primitives. No platform knowledge, usable anywhere.
-- **8 integration components** — composed, opinionated pieces encoding patterns
-  the suite repeats: filterable tables over large datasets, form layouts,
-  permission pickers.
+- **15 atomic components** — the primitives. No domain knowledge, usable anywhere.
+- **8 integration components** — composed pieces encoding the patterns the suite
+  repeats.
 
-The split is what makes it hold. Atomic components stay stable because they
-know nothing about DataChain; integration components can follow the product
-without destabilising the primitives beneath them.
+The split is what keeps it stable: atomic components have no reason to change
+when the product does, so the foundation stays still while the layer above moves.
 
-### Storybook as the contract
+### Why a library alone would have failed
 
-Storybook is where each component's states and API are demonstrated. Without it
-a shared library becomes a folder people copy out of rather than depend on —
-documentation is what makes reuse cheaper than reimplementation, and it is also
-where a designer and a developer can disagree about a state before it ships.
+A shared library is not a technical problem, it is an adoption problem. Teams
+already had working components; "use this instead" is a cost to them before it is
+a benefit. So the library shipped with the things that make adoption rational:
+
+- **Storybook documentation** — every state and API visible, so using a component
+  is cheaper than rebuilding it.
+- **Contribution guidelines** — a team that needs something the library lacks has
+  a route to add it, rather than a reason to fork.
+- **Versioning** — consumers upgrade deliberately instead of being broken by
+  someone else's change.
+- **Adoption sessions** — I ran these with the teams. Nothing gets adopted by
+  announcement.
 
 ### The trade-off
 
-A shared library adds coordination cost: changing a primitive means checking
-every consumer across five applications. That cost is real, and smaller than the
-same fix being applied five times inconsistently.
+A shared library concentrates coordination: changing a primitive means checking
+every consumer, and versioning means supporting more than one version at a time.
+That is strictly more process than each team owning its own copy — and cheaper
+than the same bug being fixed five times, differently.
 
 ### Outcome
 
-Every module takes its UI from one place, as an enforced dependency in the Nx
-graph rather than a convention people are asked to follow.
+One library, adopted by every front-end team, with a contribution path that
+keeps it that way.

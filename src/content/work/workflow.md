@@ -1,5 +1,5 @@
 ---
-title: DC Maestro — Visual Orchestration Editor
+title: DC Maestro — Visual Workflow Engine
 publishDate: 2022-06-15 00:00:00
 diagram: workflow-model
 description: |
@@ -18,43 +18,45 @@ tags:
 company: adobis
 ---
 
-## The visual editor behind DC Maestro
+## The module where automation gets composed, not coded
 
-DC Maestro is DataChain's orchestration module: it runs the data production
-pipelines that keep a customer's datasets current. I built its editor — the
-drag-and-drop surface where the people who own a process define it, rather than
-filing a ticket for a developer to encode it.
+Automation processes on the platform were hand-coded: every change to a business
+process meant a developer and a release. I built the module that replaced that —
+where processes are composed visually and each task is configured in place.
 
 ### The constraint
 
-Pipeline definitions used to live in code, so every change to a business
-process — a new step, a different order, an altered condition — needed a
-developer and a release. The people who understood the process were not the
-people who could change it.
+The people who understood a process were not the people who could change it. A
+new step or a different condition became a ticket, a sprint, a deployment. The
+definitions also lived only as code, which is an awkward fit for a platform
+whose proposition is that you can see how your data got the way it is.
 
 ### The decision
 
-Model a pipeline as a graph and edit it as one. Each node is a task carrying
-its own configuration; edges define sequencing and conditions. Tasks are
-ordered by their dependencies, so the graph expresses what must happen before
-what.
+Model a process as a graph and edit it as one, on JointJS. Each node is a task
+carrying its own configuration; edges define sequencing and conditions. Tasks
+are ordered by their dependencies, so the graph states what must happen before
+what rather than merely suggesting it.
 
-The graph is the definition — not a picture of a definition stored elsewhere.
-There is no second representation to drift out of sync, which matters on a
-platform whose whole proposition is traceability.
+The graph *is* the definition — not a picture of a definition kept somewhere
+else. There is no second representation to drift out of sync.
+
+Per-task configuration is the part that makes it usable in practice: a step can
+be retuned without touching the shape of the process, which is the change people
+actually need to make most often.
 
 ### The trade-off
 
 Moving definitions out of code gives up compile-time checking of them. The
-compensation is validation before save: an unreachable task, a cycle, or a step
+compensation is validation before save — an unreachable task, a cycle, or a step
 pointing at something the user cannot access is caught in the editor and
 surfaced on the node itself. That moves the guarantee from the compiler to the
-tool — a real shift in where correctness is enforced, and a deliberate one.
+tool, deliberately.
 
-Failure states are part of the model rather than an afterthought: a task can be
-failed, or blocked because something upstream failed, and the graph shows which.
+Failure states are modelled rather than bolted on: a task can be failed, or
+blocked because something upstream failed, and the graph shows which is which.
 
 ### Outcome
 
-Automation is reconfigured without a code change or a release, by the people who
-own the process.
+Automation processes are composed and reconfigured by the people who own them,
+without a code change or a release.

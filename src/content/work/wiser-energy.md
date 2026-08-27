@@ -22,20 +22,24 @@ order: 3
 company: capgemini
 ---
 
-## Energy monitoring and home automation for Schneider Electric
+## Energy monitoring and BLE home automation for Schneider Electric
 
-As a consultant at Capgemini-Sogeti High Tech, I built front-ends for Schneider
-Electric's Wiser Energy platform — energy monitoring and photovoltaic
-production tracking for residential installations, delivered as internal and
-end-user applications across EMEA.
+As a consultant at Capgemini-Sogeti High Tech, I built interfaces for Schneider
+Electric's Wiser Energy platform: energy consumption monitoring and photovoltaic
+production tracking for residential installations, delivered as both internal
+and end-user applications across EMEA.
 
-### Two product front-ends
+### Two products, two framework generations
 
-The platform shipped as two applications on different framework generations:
-**WiserEnergy** on AngularJS and **WiserOne** on Angular. Working across both
-meant keeping shared concepts consistent while the two codebases had genuinely
-different idioms — and it is where the case for migrating rather than
-maintaining two generations became concrete.
+The platform shipped as **WiserEnergy** on AngularJS and **WiserOne** on Angular.
+Working across both meant keeping shared concepts consistent while the codebases
+had genuinely different idioms — and it is where the case for migrating rather
+than maintaining two generations stops being theoretical.
+
+Two audiences, too: internal tools for people who use them daily and know the
+domain, and end-user applications for residents who did not choose the software
+and will never read documentation. The same data, presented with different
+assumptions about what the reader already knows.
 
 ### Home automation over Bluetooth Low Energy
 
@@ -44,17 +48,11 @@ application deployed to Android and iOS via Ionic Cordova.
 
 BLE is the interesting constraint. It is not a request/response transport:
 devices drift out of range, pairing fails intermittently, and an operation that
-succeeded a moment ago may not now. The interface has to represent devices that
-are *probably* in a given state rather than pretending it knows, and has to
-recover without making the user restart.
-
-### The end-user constraint
-
-Residential software is used by people who did not choose it and will not read
-documentation. That pushed the work toward defaults that are correct without
-configuration, and toward failure states that explain themselves.
+succeeded a moment ago may not now. The interface has to represent a device as
+*probably* in a state rather than pretending it knows, and it has to recover
+without making someone restart the app.
 
 ### Technical environment
 
-Angular, AngularJS and React on the front end; ThreeJS for visualisation;
-Ionic Cordova for the mobile build; Java 8 services behind them.
+Java 8 behind React, Angular, AngularJS and TypeScript on the front end, NodeJS,
+ThreeJS for visualisation, and Ionic Cordova for the mobile build.

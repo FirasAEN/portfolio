@@ -10,6 +10,7 @@ import DesignSystemLayers from './DesignSystemLayers.astro';
 import OnboardingPath from './OnboardingPath.astro';
 import StreamingState from './StreamingState.astro';
 import BlePairing from './BlePairing.astro';
+import AiPipeline from './AiPipeline.astro';
 
 /**
  * Renders a hand-authored architecture diagram by id.
@@ -30,6 +31,7 @@ const diagrams = {
 	'onboarding-path': OnboardingPath,
 	'streaming-state': StreamingState,
 	'ble-pairing': BlePairing,
+	'ai-pipeline': AiPipeline,
 } as const;
 
 type DiagramId = keyof typeof diagrams;

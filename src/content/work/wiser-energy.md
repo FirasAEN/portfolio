@@ -1,41 +1,59 @@
 ---
 title: Schneider Electric — Wiser Energy
 publishDate: 2019-06-01 00:00:00
-img: assets/work/Gemini_Generated_Image_w1fyl1w1fyl1w1fy.png
-imgThumbnail: assets/work/Gemini_Generated_Image_w1fyl1w1fyl1w1fy.png
-img_alt: Energy monitoring dashboard showing solar panel performance data
 description: |
   Developed energy monitoring interfaces for PV solar facilities and a BLE-based
   home automation mobile app for Schneider Electric's Wiser Energy platform.
+tech:
+  - Angular
+  - AngularJS
+  - React
+  - TypeScript
+  - ThreeJS
+  - Ionic Cordova
+  - Java
 tags:
   - Dev
   - Frontend
   - IoT
+featured: true
+order: 3
 company: capgemini
 ---
 
-## Energy Monitoring & Home Automation
+## Energy monitoring and home automation for Schneider Electric
 
-As a full-stack consultant at Capgemini-Sogeti High Tech, I worked on Schneider Electric's Wiser Energy platform — a suite of applications for residential and commercial energy management.
+As a consultant at Capgemini-Sogeti High Tech, I built front-ends for Schneider
+Electric's Wiser Energy platform — energy monitoring and photovoltaic
+production tracking for residential installations, delivered as internal and
+end-user applications across EMEA.
 
-### PV Solar Monitoring
+### Two product front-ends
 
-Built web interfaces for monitoring photovoltaic solar installations:
-- **Real-time dashboards** — Visualized power generation, consumption, and grid injection using Angular and ThreeJS for 3D representations of solar panel layouts.
-- **Historical analytics** — Charts and reports for daily, monthly, and yearly energy production trends.
-- **Alert system** — Threshold-based notifications for underperforming panels or system faults.
+The platform shipped as two applications on different framework generations:
+**WiserEnergy** on AngularJS and **WiserOne** on Angular. Working across both
+meant keeping shared concepts consistent while the two codebases had genuinely
+different idioms — and it is where the case for migrating rather than
+maintaining two generations became concrete.
 
-### BLE Home Automation
+### Home automation over Bluetooth Low Energy
 
-Developed a cross-platform mobile application using Ionic Cordova for controlling connected home devices via Bluetooth Low Energy:
-- **Device pairing** — BLE scanning and pairing flow for lights, shutters, and thermostats.
-- **Scene management** — Users create and trigger pre-configured scenes (e.g., "leaving home" turns off all lights and closes shutters).
-- **Scheduling** — Timer-based automation for energy optimization.
+I delivered control of BLE actuators — light bulbs and shutters — through a web
+application deployed to Android and iOS via Ionic Cordova.
 
-### Technology Stack
+BLE is the interesting constraint. It is not a request/response transport:
+devices drift out of range, pairing fails intermittently, and an operation that
+succeeded a moment ago may not now. The interface has to represent devices that
+are *probably* in a given state rather than pretending it knows, and has to
+recover without making the user restart.
 
-- Angular and AngularJS for web applications
-- React for specific dashboard components
-- Ionic Cordova for the mobile app
-- ThreeJS for 3D visualizations
-- Java 8 back-end services
+### The end-user constraint
+
+Residential software is used by people who did not choose it and will not read
+documentation. That pushed the work toward defaults that are correct without
+configuration, and toward failure states that explain themselves.
+
+### Technical environment
+
+Angular, AngularJS and React on the front end; ThreeJS for visualisation;
+Ionic Cordova for the mobile build; Java 8 services behind them.

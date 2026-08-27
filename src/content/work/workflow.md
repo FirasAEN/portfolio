@@ -2,11 +2,17 @@
 title: Workflow Editor
 publishDate: 2022-06-15 00:00:00
 img: assets/work/workflow.png
-imgThumbnail: assets/work/jointJs.png
+imgThumbnail: assets/work/workflow.png
 img_alt: Visual workflow editor interface with connected nodes and process flows
 description: |
   Built a BPMN-like visual workflow editor using JointJS, enabling business users
   to model and orchestrate complex processes through drag-and-drop interactions.
+tech:
+  - Angular
+  - TypeScript
+  - JointJS
+  - Java
+  - Spring Boot
 tags:
   - Dev
   - Frontend
@@ -14,21 +20,30 @@ tags:
 company: adobis
 ---
 
-## Visual Process Modeling
+## Making automation reconfigurable without a release
 
-Designed and implemented a full-featured workflow editor that allows business analysts and domain experts to visually define process flows without writing code. The editor leverages JointJS as its diagramming engine, providing a rich canvas for creating, connecting, and configuring workflow nodes.
+Automation workflows were defined in code, so every change to a business
+process — a new step, a different order, an altered condition — required a
+developer and a deployment. I replaced them with a visual editor that lets the
+people who own the process change it directly.
 
-### Key Features
+### The decision
 
-- **Drag-and-drop node palette** — Users select from a library of pre-defined node types (actions, conditions, loops, sub-processes) and place them on an infinite canvas.
-- **Custom shape library** — Extended JointJS with domain-specific shapes representing business operations, approval gates, notification steps, and data transformations.
-- **Connection validation** — Enforced graph constraints at the UI level, preventing invalid connections (e.g., circular dependencies, incompatible port types).
-- **Properties panel** — Each node exposes a configurable form for parameters, expressions, and routing rules, bound to a reactive data model.
-- **Undo/Redo** — Full command-pattern history allowing users to step through changes.
-- **Import/Export** — Serialization to/from JSON for persistence and versioning of workflow definitions.
+Model workflows as a graph and edit them as one. Each node is a task with its
+own configuration; edges define ordering and conditions. The editor is built on
+JointJS, with per-task configuration panels so a step can be tuned without
+touching the graph's shape.
 
-### Technical Approach
+Crucially, the graph is the definition — not a picture of a definition that
+lives somewhere else. There is no second representation to drift out of sync.
 
-The editor integrates into an Angular application, bridging JointJS's vanilla JS API with Angular's change detection and component lifecycle. Custom Angular directives wrap JointJS elements, enabling seamless two-way data binding between the diagram and the application state.
+### The trade-off
 
-The workflow definitions are validated server-side before execution, ensuring the visual model is always consistent with the runtime engine's expectations.
+Moving process definitions out of code means giving up compile-time checking of
+them. That is mitigated by validating the graph before it is saved — the
+screenshot shows the editor flagging an unreachable element — but it is a real
+shift of responsibility from the compiler to the tool.
+
+### Outcome
+
+Automation processes are now reconfigured without a code change or a release.

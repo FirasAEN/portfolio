@@ -1,12 +1,15 @@
 ---
 title: AngularJS to Angular Migration
 publishDate: 2021-09-01 00:00:00
-img: assets/work/angularJS-angular-migration-2.png
-imgThumbnail: assets/work/angularJS-angular-migration.png
-img_alt: Diagram showing the migration path from AngularJS to Angular
+diagram: migration-path
 description: |
   Led an incremental migration of a large-scale AngularJS application to Angular,
   using a hybrid architecture to ensure zero downtime and continuous feature delivery.
+tech:
+  - Angular
+  - AngularJS
+  - TypeScript
+  - Nx
 tags:
   - Dev
   - Frontend
@@ -14,23 +17,34 @@ tags:
 company: adobis
 ---
 
-## Incremental Migration Strategy
+## Retiring an end-of-life framework without pausing delivery
 
-Orchestrated the migration of a mature AngularJS enterprise application to Angular, running both frameworks simultaneously in a hybrid setup using Angular's `UpgradeModule`. This approach allowed the team to migrate component by component without halting feature development.
+AngularJS reached end of life in 2021 while seven modules still depended on it.
+I planned and carried out the migration to Angular over 18 months, with the
+product shipping features throughout.
 
-### Challenges
+### The constraint
 
-- **Large codebase** — Hundreds of AngularJS directives, services, and filters to convert.
-- **Active development** — New features continued shipping during the migration, requiring careful coordination.
-- **Shared state** — AngularJS and Angular components needed to communicate and share data seamlessly.
+A framework past end of life is an accumulating security and hiring liability,
+so it had to go. But a big-bang rewrite would have frozen feature delivery for
+the entire period — not an acceptable trade for a product with active users.
 
-### Approach
+### The decision
 
-- **Bottom-up migration** — Started with leaf components (no dependencies on other AngularJS code) and worked upward.
-- **Shared services** — Wrapped critical AngularJS services as Angular injectables using `downgradeInjectable` and `upgradeModule`, maintaining a single source of truth.
-- **Lazy-loaded Angular modules** — New features were built as lazy-loaded Angular modules, keeping the initial bundle size manageable.
-- **Automated testing** — Each migrated component was covered by unit and integration tests before the AngularJS version was removed.
+Migrate incrementally, one module at a time, with both frameworks running in
+the same page behind a bridge layer. Each module could be moved, released and
+verified on its own, and the work could be paused whenever feature delivery
+needed the capacity.
 
-### Results
+### The trade-off
 
-The migration was completed over several months with zero production incidents. The resulting Angular application benefited from improved performance through ahead-of-time compilation, tree-shaking, and Angular's change detection strategy.
+Running two frameworks side by side means a heavier bundle and a bridge layer
+that is itself code to maintain — for a year and a half. That was the
+deliberate price of never stopping delivery. The bridge was deleted once the
+last module moved.
+
+### Outcome
+
+All seven modules now run on Angular and the AngularJS dependency is gone. The
+migration rode on the Nx monorepo structure, which is what made module-by-module
+movement practical.

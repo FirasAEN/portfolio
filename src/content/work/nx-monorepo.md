@@ -1,41 +1,58 @@
 ---
 title: Nx Monorepo & Micro-Frontends
 publishDate: 2023-05-10 00:00:00
-img: assets/work/Gemini_Generated_Image_wsnqj0wsnqj0wsnq.png
-imgThumbnail: assets/work/Gemini_Generated_Image_wsnqj0wsnqj0wsnq.png
-img_alt: Monorepo architecture diagram showing interconnected micro-frontends
+diagram: nx-graph
 description: |
   Set up an Nx monorepo with Module Federation for micro-frontend architecture,
   enabling independent deployment, shared libraries, and optimized builds.
+tech:
+  - Angular
+  - TypeScript
+  - Nx
+  - Module Federation
+  - Ports & Adapters
 tags:
   - Dev
   - Frontend
   - DevOps
+featured: true
+order: 1
 company: adobis
 ---
 
-## Scalable Micro-Frontend Architecture
+## Five applications, one codebase, independent releases
 
-Architected and implemented an Nx monorepo hosting multiple Angular micro-frontends, a shared component library, and common utilities. The setup uses Webpack Module Federation to compose independently deployable applications into a unified user experience.
+Five front-end applications shared a codebase but could not ship
+independently — any release meant coordinating all of them. I designed and
+rolled out an Nx monorepo with Module Federation so each app builds, tests and
+releases on its own cadence.
 
-### Monorepo Structure
+### The constraint
 
-- **Shell application** — The host that bootstraps routing and dynamically loads remote micro-frontends.
-- **Feature remotes** — Each business domain is a standalone Angular application that can be developed, tested, and deployed independently.
-- **Shared libraries** — Common code (design system, auth, data access, utilities) lives in Nx libraries, shared at build time to avoid duplication.
+The shared code was real and worth keeping: one design system, one HTTP layer,
+one set of domain types. Splitting into five repositories would have bought
+independence at the cost of duplicating all of it, and of version drift between
+copies.
 
-### Module Federation
+### The decision
 
-- **Dynamic remotes** — Remote entry points are resolved at runtime, allowing independent deployment without rebuilding the shell.
-- **Shared singleton dependencies** — Angular, RxJS, and other framework libraries are shared across remotes to reduce bundle sizes.
-- **Version alignment** — Nx workspace constraints ensure all applications use compatible dependency versions.
+Keep one repository, but make the dependency graph explicit and enforced.
+Applications sit at the top, feature libraries below them, shared UI and
+data-access below that. Dependencies only point downward, and the build fails
+if that rule is broken — the constraint is checked, not merely documented.
 
-### Build Optimization
+Module Federation then lets each application load its own bundle at runtime
+rather than everything being linked into one artefact.
 
-- **Affected commands** — Nx's dependency graph enables building and testing only what changed, reducing CI times significantly.
-- **Distributed caching** — Nx Cloud caches build artifacts, so unchanged libraries are never rebuilt across the team.
-- **Parallel execution** — Build and test tasks run in parallel across available CPU cores.
+### The trade-off
 
-### Developer Experience
+A monorepo concentrates risk: a bad change to a shared library can affect every
+application at once. That is the price of not duplicating the shared code, and
+it is why the graph rules are enforced by tooling and why CI rebuilds only what
+a change actually affects.
 
-The monorepo provides a consistent developer experience: shared ESLint rules, unified testing configuration, code generators for new features, and a single `package.json` for dependency management.
+### Outcome
+
+Five applications now build and release independently from one codebase. This
+architecture also carried the AngularJS-to-Angular migration of seven modules,
+because modules could move one at a time behind the same federation boundary.

@@ -1,40 +1,68 @@
 ---
 title: SPARK — Spatial Augmented Reality
 publishDate: 2017-09-01 00:00:00
-img: assets/work/Gemini_Generated_Image_wsnqj0wsnqj0wsnq3.png
-imgThumbnail: assets/work/Gemini_Generated_Image_wsnqj0wsnqj0wsnq3.png
-img_alt: 3D projection mapping on a physical model demonstrating spatial augmented reality
+diagram: spark-pipeline
 description: |
   Developed a Spatial Augmented Reality platform for Politecnico di Milano,
   enabling real-time 3D projection onto physical 3D-printed models.
+tech:
+  - Spring MVC
+  - Spring Data
+  - Apache Storm
+  - Hibernate
+  - ElasticSearch
+  - AngularJS
+  - ThreeJS
+  - C#
+  - ActiveMQ
 tags:
   - Dev
   - Full-Stack
   - 3D
+featured: true
+order: 4
 company: viseo
 ---
 
-## Spatial Augmented Reality Research Platform
+## Spatial Augmented Reality for an EU research project
 
-As a full-stack consultant at VISEO Technologies, I contributed to the SPARK project in collaboration with Politecnico di Milano — a research initiative exploring Spatial Augmented Reality (SAR) for industrial and educational applications.
+At VISEO Technologies I worked as a full-stack developer on **SPARK** — Spatial
+Augmented Reality as a Key for co-creativity — an EU research project with
+Politecnico di Milano that projects digital designs onto 3D-printed physical
+models in real time, so designers can iterate on an object they can hold.
 
-### Project Overview
+### The constraint: two runtimes, one real-time loop
 
-SPARK enables users to project dynamic visual information directly onto physical 3D-printed models, eliminating the need for head-mounted displays or handheld devices. This approach is particularly valuable for collaborative design reviews, architectural visualization, and educational demonstrations.
+The rendering and projector calibration ran in C#; the web stack, services and
+data ran on the JVM. They had to co-operate closely enough for the projected
+image to track a physical object in real time, while remaining separately
+developed and separately restartable.
 
-### Technical Contributions
+### The decision
 
-- **3D rendering pipeline** — Implemented real-time rendering using ThreeJS and C# for projector-calibrated output, ensuring pixel-accurate alignment between the digital model and the physical object.
-- **Back-end services** — Built data management APIs with Spring MVC and Spring Data for storing model metadata, projection configurations, and user sessions.
-- **Real-time data processing** — Integrated Apache Storm for processing sensor data streams that trigger dynamic projection updates.
-- **Search and indexing** — Used ElasticSearch for indexing and searching 3D model repositories.
-- **Messaging** — ActiveMQ for asynchronous communication between the rendering engine, back-end services, and sensor inputs.
+Bridge them with message-oriented middleware rather than direct calls. ActiveMQ
+sits between the Java and C# subsystems, so neither blocks on the other and
+either can restart without taking the system down.
 
-### Technology Stack
+Behind the web tier, Spring MVC and Spring Data handle services and
+persistence, with Apache Storm processing the incoming streams and
+ElasticSearch backing retrieval. The front end renders in AngularJS with
+ThreeJS.
 
-- Spring MVC & Spring Data (Java)
-- Apache Storm for stream processing
-- ElasticSearch for search
-- ThreeJS for 3D web rendering
-- C# for projector-side rendering
-- ActiveMQ for messaging
+### The trade-off
+
+A broker adds a component to operate and makes end-to-end debugging harder — a
+failure is now somewhere in a pipeline rather than in a call stack. In exchange
+the two runtimes stay genuinely decoupled, which matters when their failure and
+restart characteristics differ as much as these did.
+
+### Research versus product
+
+Requirements in a research project are discovered rather than specified. The
+architecture had to tolerate the goal moving, which is much of why the
+integration seam was kept loose.
+
+### Technical environment
+
+Spring MVC, Spring Data, Apache Storm, JPA/Hibernate, ElasticSearch, AngularJS,
+ThreeJS, Gradle, Gulp, C#, ActiveMQ.

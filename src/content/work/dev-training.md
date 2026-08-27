@@ -1,38 +1,47 @@
 ---
 title: Developer Training Program
 publishDate: 2022-04-01 00:00:00
-img: assets/work/dev-training.png
-imgThumbnail: assets/work/dev-team-training.png
-img_alt: Team of developers collaborating during a training session
 description: |
   Designed and delivered a comprehensive training curriculum for the development team,
   covering Angular, TypeScript, RxJS, and software architecture best practices.
+tech:
+  - Domain-Driven Design
+  - Hexagonal Architecture
+  - Nx
 tags:
   - Dev
   - Leadership
 company: adobis
 ---
 
-## Building Team Competence
+## Turning onboarding from folklore into a programme
 
-As Tech Lead, I identified skill gaps within the team and created a structured training program to elevate the team's technical capabilities. The program combined theory, hands-on exercises, and code reviews to ensure knowledge transfer was practical and lasting.
+New developers were ramped up ad hoc, so how quickly someone became productive
+depended on who happened to be free to help them. I built and ran a structured
+onboarding programme; four engineers have been through it.
 
-### Curriculum
+### The problem with ad-hoc onboarding
 
-- **TypeScript deep dive** — Advanced types, generics, utility types, and strict mode patterns.
-- **Angular architecture** — Module organization, smart vs. presentational components, dependency injection patterns, and change detection strategies.
-- **RxJS & reactive programming** — Observable patterns, operator composition, error handling, and memory leak prevention.
-- **Testing strategies** — Unit testing with Jest, component testing with Angular Testing Library, and end-to-end testing approaches.
-- **Git workflow** — Branch strategies, code review best practices, and commit conventions.
+It is invisible until it fails. The cost lands on whoever is nearest, the
+quality varies with who that is, and the same questions get answered from
+scratch every time.
 
-### Onboarding Process
+### The programme
 
-New team members follow a structured onboarding path:
-1. Guided codebase walkthrough with architecture documentation
-2. Pair programming sessions on real tasks
-3. Incremental responsibility with mentored code reviews
-4. Independent feature delivery with architectural review
+A defined path from environment setup, through the architecture and the
+conventions behind it, to supervised work on real tickets. The architectural
+decisions are taught explicitly — why Hexagonal, why the Nx graph rules exist —
+because a new joiner who understands the reasoning stops needing to ask what
+the rules are.
 
-### Impact
+### The trade-off
 
-The training program reduced onboarding time for new developers and improved overall code quality across the team, as measured by reduced bug density and faster code review cycles.
+A written programme has to be maintained, and it goes stale faster than code
+because nothing fails when it does. It is kept alive by being used every time
+someone joins, rather than by being reviewed on a schedule.
+
+### Outcome
+
+Ramp-up is repeatable rather than dependent on who is available. Four engineers
+onboarded to date, and the explicit architecture documentation it required is
+now useful to the whole team.

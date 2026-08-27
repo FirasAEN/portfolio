@@ -1,12 +1,16 @@
 ---
 title: Formula Editor
 publishDate: 2023-03-10 00:00:00
-img: assets/work/formula-editor.png
-imgThumbnail: assets/work/formula-editor.png
-img_alt: Code editor interface with syntax highlighting for business formulas
+diagram: dsl-pipeline
 description: |
   Created a custom DSL editor using CodeMirror 6 and Lezer, providing syntax highlighting,
   autocomplete, and real-time error reporting for business formula expressions.
+tech:
+  - TypeScript
+  - CodeMirror
+  - Lezer
+  - Scala
+  - Spark
 tags:
   - Dev
   - Frontend
@@ -14,25 +18,37 @@ tags:
 company: adobis
 ---
 
-## Custom DSL for Business Formulas
+## Catching formula errors before Spark runs them
 
-Developed a specialized formula editor that empowers business users to write calculation expressions in a domain-specific language (DSL). The editor is built on CodeMirror 6 with a custom Lezer grammar, providing a professional IDE-like experience within the application.
+Business users author formulas over dataframes that Spark then executes. A
+mistake surfaced only when the cluster job failed — slow, and opaque to the
+person who wrote it. I built an IDE-style editor that validates the expression
+as it is typed.
 
-### Language Design
+### The constraint
 
-The DSL supports:
-- **Arithmetic and logical operators** with proper precedence
-- **Variable references** to data model fields, with dot-notation for nested access
-- **Built-in functions** for aggregation (SUM, AVG, COUNT), string manipulation, date arithmetic, and conditional logic (IF/THEN/ELSE)
-- **Type inference** to catch type mismatches before execution
+The formulas are a business language, not general-purpose code. The people
+writing them are domain experts, not developers, so the feedback has to arrive
+in the editor and speak in their terms.
 
-### Editor Features
+### The decision
 
-- **Syntax highlighting** — Color-coded tokens based on the Lezer parse tree, making formulas easy to read and debug.
-- **Autocomplete** — Context-aware suggestions for variables, functions, and operators, populated dynamically from the application's data model.
-- **Error diagnostics** — Real-time error markers with descriptive messages, powered by the Lezer parser's error recovery and a custom semantic analysis pass.
-- **Inline documentation** — Hover tooltips showing function signatures, parameter descriptions, and usage examples.
+Define the language as a real grammar with a Lezer parser, and drive a
+CodeMirror editor from it. Lezer parses incrementally, so every keystroke
+reparses only what changed and the editor stays responsive.
 
-### Technical Implementation
+On top of the syntax tree sits a semantic layer that resolves column
+references and checks types against the dataframe schema, producing inline
+errors and completion.
 
-The Lezer grammar was written from scratch to define the DSL's syntax. A custom CodeMirror extension bridges the parse tree with the application's type system, enabling semantic checks beyond what the grammar alone can express. The editor component is fully encapsulated as an Angular library, reusable across multiple application contexts.
+### The trade-off
+
+The grammar is effectively maintained twice — once to give editor feedback,
+once to compile to an execution plan — and the two must not disagree. That is
+a real cost, accepted because the alternative is an author discovering a typo
+after a cluster job fails.
+
+### Outcome
+
+Authors write and check expressions in the editor and see mistakes in
+milliseconds instead of after a failed Spark run.

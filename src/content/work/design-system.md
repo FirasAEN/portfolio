@@ -1,12 +1,14 @@
 ---
 title: Design System Library
 publishDate: 2023-01-20 00:00:00
-img: assets/work/Gemini_Generated_Image_oiv064oiv064oiv0.png
-imgThumbnail: assets/work/Gemini_Generated_Image_oiv064oiv064oiv0.png
-img_alt: UI component library with consistent design tokens and reusable elements
 description: |
   Built a shared design system library providing consistent, reusable UI components
   across multiple micro-frontend applications with Storybook documentation.
+tech:
+  - Angular
+  - TypeScript
+  - Storybook
+  - Jest
 tags:
   - Dev
   - Frontend
@@ -14,24 +16,39 @@ tags:
 company: adobis
 ---
 
-## Unified Component Library
+## One source of UI truth across every module
 
-Created and maintained a design system library that serves as the single source of truth for UI components across the platform's micro-frontend ecosystem. The library ensures visual consistency, reduces duplication, and accelerates feature development.
+Each front-end module was re-implementing the same interface elements, so the
+product drifted visually and every fix had to be made several times. I built a
+shared component library, documented in Storybook, and drove its adoption
+across all modules.
 
-### Component Architecture
+### The library
 
-- **Presentational components** — Stateless, purely visual components (buttons, inputs, cards, modals, tables) driven entirely by inputs and outputs.
-- **Theming system** — CSS custom properties and design tokens enabling light/dark mode and client-specific branding without code changes.
-- **Responsive by default** — All components are designed mobile-first with consistent breakpoint behavior.
-- **Accessibility built-in** — ARIA attributes, keyboard navigation, and screen reader support baked into every component.
+Twenty-three components, split deliberately:
 
-### Storybook Integration
+- **15 atomic components** — buttons, inputs, selects, and the rest of the
+  primitives. No business knowledge, usable anywhere.
+- **8 integration components** — composed, opinionated pieces that encode
+  product patterns such as filterable tables and form layouts.
 
-Each component is documented in Storybook with:
-- Interactive examples showing all variants and states
-- API documentation generated from TypeScript interfaces
-- Usage guidelines and do's/don'ts for consistent application
+The split matters: atomic components stay stable because they know nothing
+about the domain, while integration components can change with the product
+without destabilising the primitives beneath them.
 
-### Distribution
+### Storybook as the contract
 
-The library is published as an Angular package within the Nx monorepo, versioned and consumed by all micro-frontends. Breaking changes follow a deprecation cycle with migration guides.
+Storybook is where each component's states and API are demonstrated. Without
+it, a shared library becomes a folder people copy out of rather than depend on
+— documentation is what makes reuse cheaper than reimplementation.
+
+### The trade-off
+
+A shared library adds a coordination cost: changing a primitive means checking
+every consumer. That cost is real, and it is smaller than the cost of the same
+fix being applied inconsistently in each module.
+
+### Outcome
+
+Every front-end module now takes its UI from one place, and the library is a
+dependency of the Nx graph rather than a convention.

@@ -3,8 +3,8 @@ title: AngularJS to Angular Migration
 publishDate: 2021-09-01 00:00:00
 diagram: migration-path
 description: |
-  Seven DataChain modules moved off end-of-life AngularJS over 18 months, both frameworks
-  running side by side so feature delivery never stopped.
+  Seven modules off end-of-life AngularJS over 18 months, both frameworks live behind a
+  bridge so feature delivery never paused.
 tech:
   - Angular
   - AngularJS

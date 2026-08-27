@@ -76,8 +76,8 @@
 	--fg-subtle: color-mix(in srgb, var(--gray-100) 44%, transparent);
 
 	/* Surfaces */
-	--surface: color-mix(in srgb, var(--gray-100) 4%, transparent);
-	--surface-border: color-mix(in srgb, var(--gray-100) 12%, transparent);
+	--surface: color-mix(in srgb, var(--gray-100) 4%, var(--gray-999));
+	--surface-border: color-mix(in srgb, var(--gray-100) 11%, transparent);
 	--radius: 0.875rem;
 	--radius-lg: 1.25rem;
 

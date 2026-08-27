@@ -18,14 +18,17 @@ export const backgroundVarsCss = `
 	:root {
 		--bg-image-noise: url(${noise.src});
 
-		/* Drafting grid: 1px hairlines, a heavier line every 5th cell. */
-		--grid-line: color-mix(in srgb, var(--gray-100) 8%, transparent);
-		--grid-line-major: color-mix(in srgb, var(--gray-100) 13%, transparent);
-		--grid-size: 28px;
+		/*
+		 * One sparse grid rather than a minor/major pair. A 28px mesh with a
+		 * heavier line every fifth cell reads as texture at a glance and as
+		 * noise once you try to read over it; at 72px and a third of the
+		 * contrast it sits behind the page instead of competing with it.
+		 */
+		--grid-line: color-mix(in srgb, var(--gray-100) 5%, transparent);
+		--grid-size: 72px;
 	}
 
 	:root.theme-dark {
-		--grid-line: color-mix(in srgb, var(--gray-100) 9%, transparent);
-		--grid-line-major: color-mix(in srgb, var(--gray-100) 15%, transparent);
+		--grid-line: color-mix(in srgb, var(--gray-100) 6%, transparent);
 	}
 `;

@@ -20,8 +20,10 @@ const experience = await getExperience();
 const companyWork = new Map(
 	await Promise.all(experience.map(async (e) => [e.id, await getWorkForCompany(e.id)] as const)),
 );
+// Chronological: physics, then the PhD, then retraining as a developer. The
+// sequence is the story, so it reads forwards rather than newest-first.
 const education = (await getCollection('education')).sort(
-	(a, b) => b.data.end.valueOf() - a.data.end.valueOf(),
+	(a, b) => a.data.start.valueOf() - b.data.start.valueOf(),
 );
 const languages = (await getCollection('languages')).sort((a, b) => a.data.rank - b.data.rank);
 
@@ -127,8 +129,8 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 				<li class="entry">
 					<div class="entry-when">
 						<span class="meta">
-							{education.at(-1)!.data.start.toLocaleDateString('en-GB', YEAR)} – {
-								education[0]!.data.end.toLocaleDateString('en-GB', YEAR)
+							{education[0]!.data.start.toLocaleDateString('en-GB', YEAR)} – {
+								education.at(-1)!.data.end.toLocaleDateString('en-GB', YEAR)
 							}
 						</span>
 					</div>

@@ -3,8 +3,8 @@ title: Onboarding by Pairing
 publishDate: 2022-04-01 00:00:00
 diagram: onboarding-path
 description: |
-  Turned ad-hoc ramp-up into a defined path through the architecture and its reasoning.
-  Four engineers onboarded to date.
+  Onboarding by pairing people through the architecture rather than handing them
+  documentation. Four engineers to date.
 tech:
   - Domain-Driven Design
   - Hexagonal Architecture

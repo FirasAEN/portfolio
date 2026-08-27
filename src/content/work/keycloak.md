@@ -3,7 +3,7 @@ title: Keycloak Across Five Tenants
 publishDate: 2022-02-01 00:00:00
 diagram: oauth-flow
 description: |
-  Centralised users, groups and permissions behind one Keycloak OAuth2/OIDC flow —
+  Keycloak as the authentication server for the suite — full OAuth2/OIDC lifecycle for
   hundreds of users across five tenants, with a custom token mapper carrying tenancy.
 tech:
   - Keycloak

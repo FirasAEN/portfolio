@@ -3,8 +3,8 @@ title: DC Maestro — Visual Workflow Engine
 publishDate: 2022-06-15 00:00:00
 diagram: workflow-model
 description: |
-  The drag-and-drop editor behind DataChain's orchestration module: task graphs with
-  per-task configuration, dependency sequencing, and validation before save.
+  The module where automation processes are composed visually and configured per task,
+  replacing hand-coded process definitions.
 tech:
   - Angular
   - TypeScript

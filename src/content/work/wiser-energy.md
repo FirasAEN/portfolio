@@ -3,8 +3,8 @@ title: Schneider Electric — Wiser Energy
 publishDate: 2019-06-01 00:00:00
 diagram: ble-pairing
 description: |
-  Developed energy monitoring interfaces for PV solar facilities and a BLE-based
-  home automation mobile app for Schneider Electric's Wiser Energy platform.
+  Energy and photovoltaic monitoring across EMEA, plus BLE control of lights and shutters
+  from a web app on Android and iOS — where a device is only ever probably in a state.
 tech:
   - Angular
   - AngularJS

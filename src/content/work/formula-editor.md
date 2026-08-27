@@ -3,8 +3,8 @@ title: DC Core — IDE-Style Formula Editor
 publishDate: 2023-03-10 00:00:00
 diagram: dsl-pipeline
 description: |
-  A business DSL on a Lezer grammar driving a CodeMirror editor, so analysts see column
-  and type errors as they type rather than after Spark fails.
+  Replaced raw text files as the way business users author domain rules: a from-scratch
+  Lezer grammar, CodeMirror, and domain-aware autocomplete over their own schema.
 tech:
   - TypeScript
   - CodeMirror

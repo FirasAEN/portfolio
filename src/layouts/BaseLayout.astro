@@ -47,18 +47,10 @@ const { title, description } = Astro.props;
 				z-index: -1;
 				background-color: var(--gray-999);
 				background-image:
-					/* major lines */
-					linear-gradient(to right, var(--grid-line-major) 1px, transparent 1px),
-					linear-gradient(to bottom, var(--grid-line-major) 1px, transparent 1px),
-					/* minor lines */
 					linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
 					linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
-				background-size:
-					calc(var(--grid-size) * 5) calc(var(--grid-size) * 5),
-					calc(var(--grid-size) * 5) calc(var(--grid-size) * 5),
-					var(--grid-size) var(--grid-size),
-					var(--grid-size) var(--grid-size);
-				mask-image: linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%);
+				background-size: var(--grid-size) var(--grid-size);
+				mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 92%);
 			}
 
 			/* Paper grain, so the sheet reads as material rather than as CSS. */

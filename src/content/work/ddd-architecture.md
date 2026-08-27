@@ -3,8 +3,8 @@ title: Untangling an Inherited Java Monolith
 publishDate: 2022-08-15 00:00:00
 diagram: hexagonal
 description: |
-  Inverted DataChain's back-end dependencies onto Ports and Adapters, so domain logic
-  runs in tests with no database, broker or HTTP server.
+  Moved new services off an inherited Java monolith onto DDD and Hexagonal boundaries —
+  writing the reference implementation and driving adoption through pairing sessions.
 tech:
   - Java
   - Spring Boot

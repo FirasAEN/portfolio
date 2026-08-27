@@ -3,8 +3,8 @@ title: DataChain Design System
 publishDate: 2023-01-20 00:00:00
 diagram: design-system
 description: |
-  23 Storybook-documented components — 15 atomic, 8 integration — giving every module
-  in the suite one source of UI truth instead of five re-implementations.
+  Ended the duplicated components each team was maintaining — 23 shared Angular Material
+  components, plus the contribution guidelines and versioning that made adoption stick.
 tech:
   - Angular
   - TypeScript

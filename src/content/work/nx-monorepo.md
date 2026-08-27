@@ -3,8 +3,8 @@ title: Nx Micro-Frontend Architecture
 publishDate: 2023-05-10 00:00:00
 diagram: nx-graph
 description: |
-  Five DataChain modules building and releasing independently from one codebase,
-  on an Nx monorepo with Module Federation and an enforced dependency graph.
+  Restructured the front end into an Nx monorepo of five applications on Ports and Adapters,
+  so micro-frontends build and release independently.
 tech:
   - Angular
   - TypeScript

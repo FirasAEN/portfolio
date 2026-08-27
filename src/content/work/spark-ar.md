@@ -3,8 +3,8 @@ title: SPARK — Spatial Augmented Reality
 publishDate: 2017-09-01 00:00:00
 diagram: spark-pipeline
 description: |
-  Developed a Spatial Augmented Reality platform for Politecnico di Milano,
-  enabling real-time 3D projection onto physical 3D-printed models.
+  An EU research project projecting 3D designs onto printed models in real time, with
+  ActiveMQ holding a Java web stack and a C# projection loop apart.
 tech:
   - Spring MVC
   - Spring Data

@@ -65,7 +65,7 @@
   highlights:
     - group: Tooling & infrastructure
       items:
-        - "Built two production-shaped answers to multi-tenancy a week apart: row-level security retrofitted onto a 27-model schema already carrying data, and greenfield schema-per-tenant on Hibernate 7 — both fail-closed by construction"
+        - "Built two answers to multi-tenancy a week apart: row-level security for a practice-management SaaS where every customer is a tenant, and greenfield schema-per-tenant on Hibernate 7 — both fail-closed by construction"
         - Built a business-agnostic job execution platform on Spring Modulith, Kafka and Spark Structured Streaming, with the domain surface narrowed to four extension points and two domains built on it
         - Built and run a knowledge-vault reader that reimplements git's layered ignore semantics, directory-pruning behaviour included, because it decides what becomes public
         - Prototyped a drag-and-drop studio for composing read-only business UIs from API calls, and recorded the security boundary it deferred rather than claiming it shipped

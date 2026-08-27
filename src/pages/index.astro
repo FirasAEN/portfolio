@@ -78,6 +78,14 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 					See the work
 					<Icon icon="arrow-right" size="1.2em" />
 				</CallToAction>
+				{
+					site.cv.href && (
+						<CallToAction href={computeUrl(site.cv.href)}>
+							{site.cv.label}
+							<Icon icon="arrow-right" size="1.2em" />
+						</CallToAction>
+					)
+				}
 			</div>
 		</header>
 

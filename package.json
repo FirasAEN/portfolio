@@ -1,5 +1,5 @@
 {
-  "name": "mechanical-moon",
+  "name": "cv-astro",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -13,5 +13,8 @@
     "@astrojs/check": "^0.9.8",
     "astro": "^6.0.5",
     "typescript": "^5.5.4"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

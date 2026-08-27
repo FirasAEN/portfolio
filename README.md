@@ -1,30 +1,63 @@
-# Astro Starter Kit: Portfolio
+# cv-astro
+
+Personal portfolio and CV site for François Abed El Nabi — Tech Lead & Full-Stack
+Engineer, Grenoble.
+
+Built with [Astro](https://astro.build) as a static site. No UI framework, no CSS
+framework: styling is hand-rolled CSS custom properties in `src/styles/global.css`.
+
+## Local development
 
 ```sh
-npm create astro@latest -- --template portfolio
+npm install
+npm run dev      # http://localhost:4321
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/portfolio)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/portfolio)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/portfolio/devcontainer.json)
+| Command | Does |
+| --- | --- |
+| `npm run dev` | Dev server with HMR |
+| `npm run build` | Type-check (`astro check`) then build to `dist/` |
+| `npm run preview` | Serve the production build locally |
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Node 22+ (`.nvmrc`, and `engines` in `package.json`).
 
-![portfolio](https://user-images.githubusercontent.com/357379/210779178-a98f0fb7-6b1a-4068-894c-8e1403e26654.jpg)
+## Deployment
 
-## 🧞 Commands
+Pushing to **`dev`** triggers `.github/workflows/deploy.yml`, which builds and
+publishes to GitHub Pages at **https://firasaen.github.io/portfolio**.
 
-All commands are run from the root of the project, from a terminal:
+Note `main` is not the deploy branch.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+### The base path
 
-## 👀 Want to learn more?
+The site is served from the `/portfolio` sub-path, so **every internal URL must
+go through `computeUrl()`** (`src/utils/computeUrl.ts`). There is no `<base>` tag —
+it was removed because it silently rewrites every relative URL and cannot affect
+external stylesheets.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Background images live in `src/assets/` rather than `public/` for the same reason:
+CSS `url()` resolves relative to the *stylesheet*, so an extracted stylesheet at
+`/_astro/…` would resolve `assets/…` to the wrong place. Importing them through
+Vite (`src/styles/backgrounds.ts`) yields absolute, base-aware, hashed URLs.
+
+## Content
+
+All CV data lives in content collections, defined in `src/content.config.ts`:
+
+| Collection | Source | Holds |
+| --- | --- | --- |
+| `work` | `src/content/work/*.md` | Project entries |
+| `experience` | `src/data/experience.yaml` | Career history — **also the company registry** |
+| `education` | `src/data/education.yaml` | Degrees |
+| `skills` | `src/data/skills.yaml` | Expert / Working / Familiar tiers |
+| `languages` | `src/data/languages.yaml` | Spoken languages |
+
+`work` entries reference a company by the `experience` entry's `id`. That single
+link drives the work-page filters, the card labels and accent colours, and the
+timeline groupings — so adding a company means adding it to `experience.yaml` only.
+
+Set `featured: true` (and optionally `order:`) on a `work` entry to surface it on
+the homepage.
+
+Derived lookups live in `src/utils/cv.ts`; prefer them over re-querying collections
+in a page.

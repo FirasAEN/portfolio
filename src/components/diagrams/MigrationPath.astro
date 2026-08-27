@@ -1,0 +1,50 @@
+---
+// Strangler-fig migration off end-of-life AngularJS. The point: both frameworks
+// ran in the same page for 18 months, so modules moved one at a time and the
+// product never stopped shipping.
+---
+<svg class="diagram" viewBox="0 0 640 300" role="img" aria-labelledby="mig-t">
+	<title id="mig-t">Incremental AngularJS to Angular migration with both frameworks running side by side</title>
+	<defs>
+		<marker id="mig-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow" />
+		</marker>
+	</defs>
+
+	<text x="16" y="18" class="d-meta">Month 0</text>
+	<rect x="16" y="28" width="150" height="120" rx="3" class="d-box" />
+	<rect x="28" y="44" width="126" height="20" rx="2" class="d-box-fill" />
+	<text x="36" y="58">7 legacy modules</text>
+	<rect x="28" y="72" width="126" height="20" rx="2" class="d-box-fill" />
+	<text x="36" y="86">AngularJS 1.x</text>
+	<rect x="28" y="100" width="126" height="20" rx="2" class="d-box-fill" />
+	<text x="36" y="114">end of life 2021</text>
+
+	<text x="245" y="18" class="d-meta">Months 1 – 18 · both frameworks live</text>
+	<rect x="245" y="28" width="150" height="120" rx="3" class="d-core" />
+	<rect x="257" y="44" width="126" height="20" rx="2" class="d-box-fill" />
+	<text x="265" y="58">migrated modules</text>
+	<rect x="257" y="72" width="126" height="20" rx="2" class="d-core" />
+	<text x="265" y="86" class="d-core-text">bridge layer</text>
+	<rect x="257" y="100" width="126" height="20" rx="2" class="d-box-fill" />
+	<text x="265" y="114">remaining legacy</text>
+
+	<text x="474" y="18" class="d-meta">Month 18</text>
+	<rect x="474" y="28" width="150" height="120" rx="3" class="d-box" />
+	<rect x="486" y="44" width="126" height="20" rx="2" class="d-box-fill" />
+	<text x="494" y="58">7 modules on Angular</text>
+	<rect x="486" y="72" width="126" height="20" rx="2" class="d-box-fill" />
+	<text x="494" y="86">bridge removed</text>
+	<rect x="486" y="100" width="126" height="20" rx="2" class="d-box-fill" />
+	<text x="494" y="114">dependency gone</text>
+
+	<path d="M166 88 H241" class="d-line" marker-end="url(#mig-a)" />
+	<path d="M395 88 H470" class="d-line" marker-end="url(#mig-a)" />
+
+	<path d="M16 186 H624" class="d-line d-dashed" />
+	<text x="16" y="208" class="d-meta">Why incremental rather than a rewrite</text>
+	<text x="16" y="228">A big-bang rewrite would have frozen feature delivery for the whole period.</text>
+	<text x="16" y="244">Running both frameworks in one page costs a bridge layer and a heavier bundle</text>
+	<text x="16" y="260">while the migration is in flight — a deliberate trade for continuous shipping.</text>
+	<text x="16" y="276">The bridge was deleted once the last module moved.</text>
+</svg>

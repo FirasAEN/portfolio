@@ -1,0 +1,51 @@
+---
+// Keycloak OAuth2/OIDC with the custom token mapper. The mapper is the piece
+// that carries tenant identity into the token, which is what lets one flow
+// serve five tenants.
+---
+<svg class="diagram" viewBox="0 0 640 300" role="img" aria-labelledby="oauth-t">
+	<title id="oauth-t">Keycloak OAuth2 flow with a custom token mapper injecting tenant claims</title>
+	<defs>
+		<marker id="oa-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow" />
+		</marker>
+		<marker id="oa-b" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow-accent" />
+		</marker>
+	</defs>
+
+	<rect x="16" y="40" width="120" height="48" rx="3" class="d-box-fill" />
+	<text x="30" y="62" class="d-title">Browser</text>
+	<text x="30" y="78">Angular SPA</text>
+
+	<rect x="260" y="40" width="130" height="48" rx="3" class="d-core" />
+	<text x="274" y="62" class="d-title">Keycloak</text>
+	<text x="274" y="78">authorisation server</text>
+
+	<rect x="504" y="40" width="120" height="48" rx="3" class="d-box-fill" />
+	<text x="518" y="62" class="d-title">Resource API</text>
+	<text x="518" y="78">Spring Security</text>
+
+	<rect x="260" y="132" width="130" height="52" rx="3" class="d-core" />
+	<text x="274" y="152" class="d-core-text">Custom token</text>
+	<text x="274" y="167" class="d-core-text">mapper</text>
+	<text x="274" y="180">adds tenant claim</text>
+
+	<path d="M136 56 H256" class="d-line" marker-end="url(#oa-a)" />
+	<text x="150" y="50" class="d-meta">1 · authorisation code</text>
+
+	<path d="M325 88 V128" class="d-line-accent" marker-end="url(#oa-b)" />
+	<text x="333" y="112" class="d-meta">2 · on issue</text>
+
+	<path d="M390 158 H430 V72 H500" class="d-line-accent" marker-end="url(#oa-b)" />
+	<text x="404" y="66" class="d-meta">3 · JWT + tenant</text>
+
+	<path d="M504 84 H150 V60" class="d-line d-dashed" marker-end="url(#oa-a)" />
+	<text x="230" y="100" class="d-meta">4 · scoped response</text>
+
+	<path d="M16 214 H624" class="d-line d-dashed" />
+	<text x="16" y="236" class="d-meta">Why the mapper exists</text>
+	<text x="16" y="256">Tenant identity is not part of the standard claim set. Injecting it at issue time</text>
+	<text x="16" y="272">means the API authorises from the token alone — no extra lookup per request,</text>
+	<text x="16" y="288">and one flow serves all five tenants.</text>
+</svg>

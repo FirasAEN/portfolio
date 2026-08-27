@@ -1,0 +1,59 @@
+---
+// Nx monorepo with Module Federation. The point: five apps share libraries but
+// build and release on their own cadence, because the dependency graph is
+// enforced rather than conventional.
+---
+<svg class="diagram" viewBox="0 0 640 320" role="img" aria-labelledby="nx-t">
+	<title id="nx-t">Nx dependency graph: five host applications over shared feature and UI libraries</title>
+	<defs>
+		<marker id="nx-a" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+			<path d="M0 0 L6 3 L0 6 z" class="d-arrow" />
+		</marker>
+	</defs>
+
+	<text x="16" y="18" class="d-meta">Host applications · independently deployable</text>
+	<rect x="16" y="28" width="108" height="34" rx="3" class="d-core" />
+	<text x="28" y="49" class="d-core-text">app · admin</text>
+	<rect x="140" y="28" width="108" height="34" rx="3" class="d-core" />
+	<text x="152" y="49" class="d-core-text">app · portal</text>
+	<rect x="264" y="28" width="108" height="34" rx="3" class="d-core" />
+	<text x="276" y="49" class="d-core-text">app · studio</text>
+	<rect x="388" y="28" width="108" height="34" rx="3" class="d-core" />
+	<text x="400" y="49" class="d-core-text">app · reports</text>
+	<rect x="512" y="28" width="108" height="34" rx="3" class="d-core" />
+	<text x="524" y="49" class="d-core-text">app · console</text>
+
+	<text x="16" y="104" class="d-meta">Feature libraries</text>
+	<rect x="16" y="114" width="140" height="32" rx="3" class="d-box-fill" />
+	<text x="28" y="134">feature · workflow</text>
+	<rect x="172" y="114" width="140" height="32" rx="3" class="d-box-fill" />
+	<text x="184" y="134">feature · formula</text>
+	<rect x="328" y="114" width="140" height="32" rx="3" class="d-box-fill" />
+	<text x="340" y="134">feature · identity</text>
+	<rect x="484" y="114" width="136" height="32" rx="3" class="d-box-fill" />
+	<text x="496" y="134">feature · billing</text>
+
+	<text x="16" y="186" class="d-meta">Shared</text>
+	<rect x="16" y="196" width="188" height="32" rx="3" class="d-box-fill" />
+	<text x="28" y="216">ui · design system</text>
+	<rect x="220" y="196" width="188" height="32" rx="3" class="d-box-fill" />
+	<text x="232" y="216">data-access · http</text>
+	<rect x="424" y="196" width="196" height="32" rx="3" class="d-box-fill" />
+	<text x="436" y="216">util · types, testing</text>
+
+	<path d="M70 62 V110" class="d-line" marker-end="url(#nx-a)" />
+	<path d="M194 62 V110" class="d-line" marker-end="url(#nx-a)" />
+	<path d="M318 62 V110" class="d-line" marker-end="url(#nx-a)" />
+	<path d="M442 62 V110" class="d-line" marker-end="url(#nx-a)" />
+	<path d="M566 62 V110" class="d-line" marker-end="url(#nx-a)" />
+
+	<path d="M86 146 V192" class="d-line" marker-end="url(#nx-a)" />
+	<path d="M242 146 V176 H314 V192" class="d-line" marker-end="url(#nx-a)" />
+	<path d="M398 146 V176 H522 V192" class="d-line" marker-end="url(#nx-a)" />
+	<path d="M552 146 V192" class="d-line" marker-end="url(#nx-a)" />
+
+	<path d="M16 254 H624" class="d-line d-dashed" />
+	<text x="16" y="276" class="d-meta">What the graph buys</text>
+	<text x="16" y="296">Dependencies only ever point downward, and Nx fails the build if that is violated.</text>
+	<text x="16" y="312">Affected-based CI means touching one feature rebuilds one app, not five.</text>
+</svg>

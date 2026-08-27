@@ -1,0 +1,53 @@
+---
+// SPARK (Politecnico di Milano). The point: a Java web stack and a C# rendering
+// subsystem had to co-operate in real time, and ActiveMQ is what let two
+// runtimes stay decoupled without blocking each other.
+---
+<svg class="diagram" viewBox="0 0 640 300" role="img" aria-labelledby="spark-t">
+	<title id="spark-t">SPARK architecture: Java services and a C# projection subsystem bridged by ActiveMQ</title>
+	<defs>
+		<marker id="sp-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow" />
+		</marker>
+		<marker id="sp-b" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow-accent" />
+		</marker>
+	</defs>
+
+	<text x="16" y="18" class="d-meta">JVM</text>
+	<rect x="16" y="28" width="150" height="112" rx="3" class="d-box" />
+	<rect x="28" y="44" width="126" height="26" rx="2" class="d-box-fill" />
+	<text x="36" y="61">Spring MVC / Data</text>
+	<rect x="28" y="78" width="126" height="26" rx="2" class="d-box-fill" />
+	<text x="36" y="95">Apache Storm</text>
+	<rect x="28" y="112" width="126" height="20" rx="2" class="d-box-fill" />
+	<text x="36" y="126">ElasticSearch</text>
+
+	<rect x="245" y="56" width="150" height="56" rx="3" class="d-core" />
+	<text x="257" y="78" class="d-title">ActiveMQ</text>
+	<text x="257" y="96" class="d-core-text">message bridge</text>
+
+	<text x="474" y="18" class="d-meta">.NET</text>
+	<rect x="474" y="28" width="150" height="112" rx="3" class="d-box" />
+	<rect x="486" y="44" width="126" height="26" rx="2" class="d-box-fill" />
+	<text x="494" y="61">C# projection</text>
+	<rect x="486" y="78" width="126" height="26" rx="2" class="d-box-fill" />
+	<text x="494" y="95">calibration</text>
+	<rect x="486" y="112" width="126" height="20" rx="2" class="d-box-fill" />
+	<text x="494" y="126">physical model</text>
+
+	<path d="M166 74 H241" class="d-line-accent" marker-end="url(#sp-b)" />
+	<path d="M395 74 H470" class="d-line-accent" marker-end="url(#sp-b)" />
+	<path d="M470 100 H399" class="d-line-accent d-dashed" marker-end="url(#sp-b)" />
+	<path d="M241 100 H170" class="d-line-accent d-dashed" marker-end="url(#sp-b)" />
+
+	<rect x="245" y="150" width="150" height="34" rx="3" class="d-box-fill" />
+	<text x="257" y="171">AngularJS + ThreeJS</text>
+	<path d="M320 140 V146" class="d-line" marker-end="url(#sp-a)" />
+
+	<path d="M16 212 H624" class="d-line d-dashed" />
+	<text x="16" y="234" class="d-meta">Why a broker rather than direct calls</text>
+	<text x="16" y="254">The two runtimes have different failure and restart characteristics. A broker</text>
+	<text x="16" y="270">between them means the projection side can drop out and recover without</text>
+	<text x="16" y="286">stalling the web stack, at the cost of one more piece of infrastructure to run.</text>
+</svg>

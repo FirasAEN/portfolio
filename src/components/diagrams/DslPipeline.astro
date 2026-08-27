@@ -1,0 +1,57 @@
+---
+// The formula editor. The point: validation happens in the editor, before the
+// expression is ever handed to Spark, so authors find their mistakes in
+// milliseconds instead of after a cluster job fails.
+---
+<svg class="diagram" viewBox="0 0 640 300" role="img" aria-labelledby="dsl-t">
+	<title id="dsl-t">Formula DSL pipeline: Lezer grammar to CodeMirror feedback, then Spark execution</title>
+	<defs>
+		<marker id="dsl-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow" />
+		</marker>
+		<marker id="dsl-b" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow-accent" />
+		</marker>
+	</defs>
+
+	<text x="16" y="18" class="d-meta">In the editor · milliseconds</text>
+	<rect x="16" y="30" width="600" height="96" rx="4" class="d-box d-dashed" />
+
+	<rect x="34" y="56" width="104" height="46" rx="3" class="d-box-fill" />
+	<text x="46" y="76" class="d-title">Author types</text>
+	<text x="46" y="92">expression</text>
+
+	<rect x="172" y="56" width="104" height="46" rx="3" class="d-core" />
+	<text x="184" y="76" class="d-core-text">Lezer</text>
+	<text x="184" y="92">incremental parse</text>
+
+	<rect x="310" y="56" width="104" height="46" rx="3" class="d-core" />
+	<text x="322" y="76" class="d-core-text">Semantic</text>
+	<text x="322" y="92">column + type check</text>
+
+	<rect x="448" y="56" width="150" height="46" rx="3" class="d-box-fill" />
+	<text x="460" y="76" class="d-title">CodeMirror</text>
+	<text x="460" y="92">inline errors, completion</text>
+
+	<path d="M138 79 H168" class="d-line-accent" marker-end="url(#dsl-b)" />
+	<path d="M276 79 H306" class="d-line-accent" marker-end="url(#dsl-b)" />
+	<path d="M414 79 H444" class="d-line-accent" marker-end="url(#dsl-b)" />
+	<path d="M522 102 V116 H86 V106" class="d-line-accent d-dashed" marker-end="url(#dsl-b)" />
+
+	<text x="16" y="160" class="d-meta">On submit · cluster</text>
+	<rect x="34" y="172" width="130" height="44" rx="3" class="d-box-fill" />
+	<text x="46" y="192" class="d-title">Compile to plan</text>
+	<text x="46" y="208">dataframe ops</text>
+
+	<rect x="210" y="172" width="130" height="44" rx="3" class="d-box-fill" />
+	<text x="222" y="192" class="d-title">Spark</text>
+	<text x="222" y="208">executes</text>
+
+	<path d="M99 126 V168" class="d-line" marker-end="url(#dsl-a)" />
+	<path d="M164 194 H206" class="d-line" marker-end="url(#dsl-a)" />
+
+	<path d="M16 244 H624" class="d-line d-dashed" />
+	<text x="16" y="266" class="d-meta">The trade-off</text>
+	<text x="16" y="284">The grammar is maintained twice — once for editor feedback, once for the</text>
+	<text x="16" y="298">execution plan. That buys an error in the editor, not a failed cluster job.</text>
+</svg>

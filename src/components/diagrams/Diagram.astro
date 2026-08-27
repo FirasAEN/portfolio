@@ -1,0 +1,43 @@
+---
+import Hexagonal from './Hexagonal.astro';
+import NxGraph from './NxGraph.astro';
+import OauthFlow from './OauthFlow.astro';
+import DslPipeline from './DslPipeline.astro';
+import MigrationPath from './MigrationPath.astro';
+import SparkPipeline from './SparkPipeline.astro';
+
+/**
+ * Renders a hand-authored architecture diagram by id.
+ *
+ * Diagrams exist only where a picture teaches something prose does not. Entries
+ * without one render as a typographic card — an image is evidence or it is
+ * absent.
+ */
+const diagrams = {
+	hexagonal: Hexagonal,
+	'nx-graph': NxGraph,
+	'oauth-flow': OauthFlow,
+	'dsl-pipeline': DslPipeline,
+	'migration-path': MigrationPath,
+	'spark-pipeline': SparkPipeline,
+} as const;
+
+type DiagramId = keyof typeof diagrams;
+
+interface Props {
+	id: string;
+	caption?: string | undefined;
+}
+
+const { id, caption } = Astro.props;
+const Component = diagrams[id as DiagramId];
+---
+
+{
+	Component && (
+		<figure class="figure">
+			<Component />
+			{caption && <figcaption>{caption}</figcaption>}
+		</figure>
+	)
+}

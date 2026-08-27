@@ -1,0 +1,59 @@
+---
+// Ports & Adapters. The point of the picture: the domain core has no outward
+// arrows - every dependency points inward, which is why it tests without a
+// database or an HTTP server.
+---
+<svg class="diagram" viewBox="0 0 640 300" role="img" aria-labelledby="hex-t">
+	<title id="hex-t">Hexagonal architecture: adapters depend on ports, ports depend on the domain core</title>
+	<defs>
+		<marker id="hex-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow-accent" />
+		</marker>
+	</defs>
+
+	<text x="16" y="18" class="d-meta">Inbound adapters</text>
+	<rect x="16" y="30" width="118" height="34" rx="3" class="d-box-fill" />
+	<text x="30" y="51">REST controller</text>
+	<rect x="16" y="76" width="118" height="34" rx="3" class="d-box-fill" />
+	<text x="30" y="97">Scheduler</text>
+	<rect x="16" y="122" width="118" height="34" rx="3" class="d-box-fill" />
+	<text x="30" y="143">MQ consumer</text>
+
+	<text x="176" y="18" class="d-meta">Inbound ports</text>
+	<rect x="176" y="30" width="86" height="126" rx="3" class="d-box d-dashed" />
+	<text x="192" y="88" class="d-core-text">Use case</text>
+	<text x="192" y="104" class="d-core-text">interfaces</text>
+
+	<polygon points="330,26 400,26 435,93 400,160 330,160 295,93" class="d-core" />
+	<text x="334" y="86" class="d-title">Domain core</text>
+	<text x="334" y="104">entities</text>
+	<text x="334" y="120">aggregates</text>
+
+	<text x="470" y="18" class="d-meta">Outbound ports</text>
+	<rect x="470" y="30" width="86" height="126" rx="3" class="d-box d-dashed" />
+	<text x="484" y="88" class="d-core-text">Repository</text>
+	<text x="484" y="104" class="d-core-text">interfaces</text>
+
+	<text x="580" y="18" class="d-meta">Adapters</text>
+	<rect x="576" y="30" width="52" height="34" rx="3" class="d-box-fill" />
+	<text x="586" y="51">JPA</text>
+	<rect x="576" y="76" width="52" height="34" rx="3" class="d-box-fill" />
+	<text x="586" y="97">Kafka</text>
+	<rect x="576" y="122" width="52" height="34" rx="3" class="d-box-fill" />
+	<text x="586" y="143">HTTP</text>
+
+	<path d="M134 47 H176" class="d-line-accent" marker-end="url(#hex-a)" />
+	<path d="M134 93 H176" class="d-line-accent" marker-end="url(#hex-a)" />
+	<path d="M134 139 H176" class="d-line-accent" marker-end="url(#hex-a)" />
+	<path d="M262 93 H291" class="d-line-accent" marker-end="url(#hex-a)" />
+	<path d="M435 93 H466" class="d-line-accent" marker-end="url(#hex-a)" />
+	<path d="M576 47 H556" class="d-line-accent" marker-end="url(#hex-a)" />
+	<path d="M576 93 H556" class="d-line-accent" marker-end="url(#hex-a)" />
+	<path d="M576 139 H556" class="d-line-accent" marker-end="url(#hex-a)" />
+
+	<path d="M16 190 H628" class="d-line d-dashed" />
+	<text x="16" y="212" class="d-meta">Every arrow points inward</text>
+	<text x="16" y="234">The core imports nothing from the outer rings, so it runs in a unit test with</text>
+	<text x="16" y="250">no database, no broker and no HTTP server. Swapping JPA for another store</text>
+	<text x="16" y="266">changes one adapter and leaves the domain untouched.</text>
+</svg>

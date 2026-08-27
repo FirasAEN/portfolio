@@ -117,15 +117,79 @@ const isCurrentRoute = (item: LinkRoute) => {
 		}
 	}
 	customElements.define('menu-button', MenuButton);
+
+	// --- Sticky-state rule -------------------------------------------------
+	const nav = document.querySelector('nav')!;
+	const setScrolled = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+	setScrolled();
+	addEventListener('scroll', setScrolled, { passive: true });
+
+	// --- Scroll-spy --------------------------------------------------------
+	// Home links to #sections, so the mark should follow the reader rather than
+	// the route. One rAF-throttled calculation rather than an IntersectionObserver
+	// plus a scroll handler — two writers to the same state raced, and returning
+	// to the top could leave a lower section still marked.
+	const anchorLinks = [...document.querySelectorAll<HTMLAnchorElement>('.link')].filter(
+		(a) => a.hash.length > 1,
+	);
+
+	if (anchorLinks.length) {
+		const targets = anchorLinks
+			.map((a) => ({ link: a, section: document.querySelector<HTMLElement>(a.hash) }))
+			.filter((t): t is { link: HTMLAnchorElement; section: HTMLElement } => t.section != null);
+
+		const homeLink = document.querySelector<HTMLAnchorElement>('.link:not([href*="#"])');
+
+		const update = () => {
+			// The section whose top has most recently passed the reading line.
+			const line = window.scrollY + window.innerHeight * 0.3;
+			let current: HTMLElement | null = null;
+			for (const { section } of targets) {
+				if (section.offsetTop <= line) current = section;
+			}
+			// Near the top nothing has been reached yet, so Home is current.
+			if (window.scrollY < 120) current = null;
+
+			targets.forEach(({ link, section }) =>
+				link.classList.toggle('active', section === current),
+			);
+			homeLink?.classList.toggle('active', current === null);
+		};
+
+		let queued = false;
+		const onScroll = () => {
+			if (queued) return;
+			queued = true;
+			requestAnimationFrame(() => {
+				queued = false;
+				update();
+			});
+		};
+
+		update();
+		addEventListener('scroll', onScroll, { passive: true });
+		addEventListener('resize', onScroll, { passive: true });
+	}
 </script>
 
 <style>
 	nav {
 		z-index: 9999;
-		position: relative;
+		position: sticky;
+		top: 0;
 		font-family: var(--font-mono);
 		font-weight: 500;
 		margin-bottom: 2rem;
+		background-color: color-mix(in srgb, var(--gray-999) 82%, transparent);
+		backdrop-filter: blur(10px);
+		border-bottom: 1px solid transparent;
+		transition: border-color var(--theme-transition);
+	}
+
+	/* The rule only appears once the page has moved, so it does not draw a line
+	   under a hero that is already flush against it. */
+	nav.scrolled {
+		border-bottom-color: var(--rule-color);
 	}
 
 	.menu-header {

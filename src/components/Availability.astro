@@ -1,0 +1,66 @@
+---
+import { site } from '../config/site';
+const { open, label } = site.availability;
+---
+
+{
+	open && (
+		<p class="availability">
+			<span class="dot" aria-hidden="true" />
+			{label}
+		</p>
+	)
+}
+
+<style>
+	/*
+	 * A live availability signal, borrowed from the reference portfolio. On a CV
+	 * site this is the one piece of state a reader actually needs and cannot
+	 * infer: whether to bother getting in touch.
+	 */
+	.availability {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.35rem 0.75rem 0.35rem 0.65rem;
+		border: 1px solid var(--surface-border);
+		border-radius: 0.5rem;
+		background-color: var(--surface);
+		font-family: var(--font-mono);
+		font-size: var(--text-xs);
+		letter-spacing: 0.04em;
+		color: var(--fg-muted);
+	}
+
+	.dot {
+		position: relative;
+		width: 0.45rem;
+		height: 0.45rem;
+		flex: none;
+		border-radius: 50%;
+		background-color: #22c55e;
+	}
+
+	.dot::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: 50%;
+		background-color: #22c55e;
+		animation: availability-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+	}
+
+	@keyframes availability-ping {
+		70%,
+		100% {
+			transform: scale(2.8);
+			opacity: 0;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.dot::after {
+			animation: none;
+		}
+	}
+</style>

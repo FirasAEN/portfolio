@@ -146,6 +146,18 @@ body {
 	overflow-x: hidden;
 }
 
+/* The nav links to sections on this page, so jumps should glide rather than
+   teleport — and land clear of the sticky header. */
+@media (prefers-reduced-motion: no-preference) {
+	html {
+		scroll-behavior: smooth;
+	}
+}
+
+[id] {
+	scroll-margin-top: 5.5rem;
+}
+
 body {
 	background-color: var(--gray-999);
 	color: var(--fg-muted);

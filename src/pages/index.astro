@@ -9,6 +9,7 @@ import PortfolioPreview from '../components/PortfolioPreview.astro';
 import ContactCTA from '../components/ContactCTA.astro';
 import SkillsEvidenced from '../components/SkillsEvidenced.astro';
 import SectionNode from '../components/SectionNode.astro';
+import Availability from '../components/Availability.astro';
 import { computeUrl } from '../utils/computeUrl';
 import { getFeaturedWork, getExperience, getWorkForCompany } from '../utils/cv';
 import { site } from '../config/site';
@@ -49,6 +50,7 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 	<div class="spine">
 		<!-- 1 · Hook -->
 		<header class="wrapper hero" id="top">
+			<Availability />
 			<p class="meta">{site.role} · {site.location}</p>
 			<h1>{site.name}</h1>
 			<hr class="rule" />

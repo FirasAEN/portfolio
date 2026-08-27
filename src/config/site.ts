@@ -17,6 +17,24 @@ export const site = {
 	email: 'francois.aen@gmail.com',
 	description:
 		'Tech Lead and full-stack engineer in Grenoble. PhD in computational material science turned software engineer — Java/Spring, Angular, and DDD/Hexagonal architecture.',
+
+	/**
+	 * Availability signal. Set `open: false` to hide it entirely — a stale
+	 * "available" badge is worse than none.
+	 */
+	availability: {
+		open: true,
+		label: 'Open to Tech Lead & senior engineering roles',
+	},
+
+	/**
+	 * Downloadable CV. Set `href` to a file in `public/` to show the button.
+	 * Left empty until the published PDF is decided — see the note in README.
+	 */
+	cv: {
+		href: '',
+		label: 'Download CV',
+	},
 } as const;
 
 /** Page title in the browser tab: "Work | Firas François". */

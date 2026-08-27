@@ -1,0 +1,137 @@
+# Career history. Also the single source of truth for company identity:
+# `work` entries reference these ids via their `company` field, which is what
+# drives the work filters, card labels, and timeline groupings.
+- id: adobis
+  company: Adobis Group
+  short: Adobis
+  role: Tech Lead & Full-Stack Developer
+  location: Grenoble, France
+  start: 2021-08-01
+  end: null # current
+  accent: var(--accent-regular)
+  summary: >-
+    Leading a team of 5 developers building enterprise platforms with Angular
+    micro-frontends, Spring Boot back-ends, and DDD/Hexagonal architecture.
+  highlights:
+    - group: Leadership & architecture
+      items:
+        - "Lead a team of 5 developers: sprint planning, code review, mentoring, and onboarding"
+        - Made new-joiner ramp-up repeatable rather than ad-hoc — built and ran the onboarding programme, 4 engineers onboarded to date
+        - Made new back-end services testable independently of database and framework by rolling out DDD + Hexagonal Architecture
+        - Decoupled front-end logic from framework concerns with a Ports & Adapters architecture over reactive Angular components
+        - Enabled 5 applications to build and release independently from one codebase — Nx monorepo with micro-frontend delivery
+        - Removed the AngularJS dependency, end-of-life since 2021, by migrating 7 legacy modules to Angular over 18 months
+    - group: Delivery
+      items:
+        - Let formula authors write and check dataframe expressions in-editor before Spark executes them — a custom business DSL on a Lezer parser with CodeMirror
+        - Made automation processes reconfigurable without a code change — replaced hand-coded workflow definitions with a visual JointJS editor
+        - Gave every front-end module one source of UI truth — a Storybook-documented design system of 23 components (15 atomic, 8 integration)
+        - Centralised authentication for hundreds of users across 5 tenants behind one Keycloak OAuth2/OIDC flow, including a custom token mapper
+  stack:
+    - Java 11/17/21
+    - Spring Boot
+    - Hibernate
+    - Redis
+    - Scala
+    - Spark
+    - Angular
+    - TypeScript
+    - NgRx
+    - RxJS
+    - JointJS
+    - Nx
+    - Keycloak
+    - Docker
+    - Storybook
+
+- id: independent
+  company: Independent Engineering & Self-Hosting
+  short: Independent
+  role: Personal projects
+  location: Remote
+  start: 2024-01-01
+  end: null # current
+  accent: var(--accent-regular)
+  summary: >-
+    Building and self-hosting AI-assisted development tooling on Linux VPS
+    infrastructure, with a deliberately critical line on where AI belongs in an
+    engineering workflow.
+  highlights:
+    - group: Tooling & infrastructure
+      items:
+        - Remove repetitive scaffolding by shipping internal tooling — code generation, test scaffolding, and documentation generators
+        - Integrate AI-assisted development into daily engineering workflow (Claude Code, custom agents, MCP integrations, automated pipelines)
+        - "Hold a critical line on where AI belongs: high value for boilerplate, tests, and rapid exploration; human ownership retained for architecture, domain modelling, and production-critical decisions"
+        - Own the full production path on a Hostinger VPS — deployment, domains, DNS, SSL/TLS, and server configuration
+        - Keep releases repeatable and low-ceremony by automating deployment through scripting and CI/CD workflows
+  stack:
+    - Linux
+    - Docker
+    - CI/CD
+    - Bash
+    - Python
+    - Claude Code
+    - MCP
+
+- id: capgemini
+  company: Capgemini-Sogeti High Tech
+  short: Capgemini
+  role: Full-Stack Consultant
+  location: Grenoble, France
+  start: 2018-07-01
+  end: 2021-08-01
+  accent: '#0070ad'
+  summary: >-
+    Consulting for Schneider Electric (Wiser Energy — IoT, solar monitoring,
+    home automation) and EATON (IPM2 — data centre UPS monitoring).
+  highlights:
+    - group: EATON — Intelligent Power Manager (IPM2)
+      items:
+        - Built web interfaces for energy consumption monitoring across UPS-backed data centres and facilities, including Eaton's own Grenoble-Montbonnot site
+        - Kept monitoring views consistent under streaming updates with NgRx state management and RxJS reactive flows
+        - Coordinated work packages across back-end and firmware teams
+    - group: Schneider Electric — Wiser Energy
+      items:
+        - Built interfaces for energy monitoring and photovoltaic production tracking in residential installations, delivered across EMEA
+        - Delivered home automation for Bluetooth Low Energy actuators — light bulbs and shutters — through a web application deployed to Android and iOS
+        - "Shipped two product front-ends: WiserEnergy (AngularJS) and WiserOne (Angular)"
+  stack:
+    - Java 8
+    - Angular
+    - AngularJS
+    - TypeScript
+    - NgRx
+    - RxJS
+    - React
+    - NodeJS
+    - ThreeJS
+    - Ionic Cordova
+
+- id: viseo
+  company: VISEO Technologies
+  short: VISEO
+  role: Full-Stack Consultant
+  location: Grenoble, France
+  start: 2017-03-01
+  end: 2018-06-01
+  accent: '#e4002b'
+  summary: >-
+    Full-stack developer on SPARK with Politecnico di Milano — an EU research
+    project on Spatial Augmented Reality with real-time 3D projection.
+  highlights:
+    - group: Politecnico di Milano — SPARK
+      items:
+        - Full-stack developer on an EU research project projecting 3D designs onto 3D-printed physical models in real time
+        - Built back-end services on Spring MVC/Data with Apache Storm for stream processing
+        - Built the front-end rendering pipeline in AngularJS and ThreeJS
+        - Integrated heterogeneous components over message-oriented middleware (ActiveMQ), bridging Java and C# subsystems
+  stack:
+    - Spring MVC
+    - Spring Data
+    - Apache Storm
+    - JPA/Hibernate
+    - ElasticSearch
+    - AngularJS
+    - ThreeJS
+    - C#
+    - ActiveMQ

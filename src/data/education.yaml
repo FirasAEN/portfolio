@@ -1,0 +1,19 @@
+# Ordered most recent first by `end`.
+- id: bootcamp
+  title: Java Software Developer Bootcamp
+  institution: M2I
+  location: Grenoble, France
+  start: 2016-01-01
+  end: 2017-01-01
+- id: phd
+  title: PhD, Computational Material Science
+  institution: Université de Poitiers / Institut PPRIME
+  location: France
+  start: 2012-01-01
+  end: 2016-01-01
+- id: msc
+  title: MSc, Particle Physics
+  institution: Université Grenoble Alpes
+  location: France
+  start: 2009-01-01
+  end: 2012-01-01

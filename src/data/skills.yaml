@@ -1,0 +1,35 @@
+# Tiered honestly rather than as one flat list — the tier is the signal.
+- id: expert
+  label: Expert
+  rank: 1
+  groups:
+    - name: Back-end
+      items: [Java 11/17/21, Spring Boot, Spring MVC, Spring Security, Spring Data, Hibernate]
+    - name: Front-end
+      items: [Angular, TypeScript, RxJS, NgRx]
+    - name: Architecture
+      items: [Domain-Driven Design, Hexagonal Architecture, Ports & Adapters]
+- id: working
+  label: Working
+  rank: 2
+  groups:
+    - name: Data
+      items: [PostgreSQL, MySQL, Redis, ElasticSearch]
+    - name: Auth & security
+      items: [Keycloak, OAuth2, OIDC]
+    - name: Build & infra
+      items: [Nx, Docker, GitLab CI, Jenkins]
+    - name: Testing
+      items: [JUnit, Mockito, Jest, Karma, Jasmine, Mocha, Storybook]
+    - name: Other
+      items: [NodeJS, React, NextJS, NestJS, JointJS, ThreeJS, D3JS, Python, Bash]
+- id: familiar
+  label: Familiar
+  rank: 3
+  groups:
+    - name: Data & JVM
+      items: [Scala, Spark, MongoDB, Neo4J]
+    - name: Interop
+      items: [C#, ActiveMQ]
+    - name: Tooling
+      items: [Vite, Webpack, Rollup, Gradle]

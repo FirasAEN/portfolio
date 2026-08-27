@@ -1,0 +1,16 @@
+- id: french
+  name: French
+  level: Native
+  rank: 1
+- id: english
+  name: English
+  level: Fluent
+  rank: 2
+- id: arabic
+  name: Arabic
+  level: Fluent
+  rank: 3
+- id: german
+  name: German
+  level: Intermediate
+  rank: 4

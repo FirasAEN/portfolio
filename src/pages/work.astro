@@ -1,5 +1,6 @@
 ---
-import { getCollection } from 'astro:content';
+import { site, pageTitle } from '../config/site';
+import { getWork, getWorkFilters } from '../utils/cv';
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 
@@ -7,27 +8,20 @@ import ContactCTA from '../components/ContactCTA.astro';
 import PortfolioPreview from '../components/PortfolioPreview.astro';
 import Hero from '../components/Hero.astro';
 
-const projects = (await getCollection('work')).sort(
-	(a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
-);
-
-const companies = [
-	{ value: 'all', label: 'All' },
-	{ value: 'adobis', label: 'Adobis Group' },
-	{ value: 'capgemini', label: 'Capgemini' },
-	{ value: 'viseo', label: 'VISEO' },
-];
+const projects = await getWork();
+// Only companies that actually have entries, labelled from the experience data.
+const companies = await getWorkFilters();
 ---
 
 <BaseLayout
-	title="My Work | Francois ABED EL NABI"
-	description="Learn about Francois ABED EL NABI's most recent projects"
+	title={pageTitle("Work")}
+	description={site.description}
 >
 	<div class="stack gap-20">
 		<main class="wrapper stack gap-8">
 			<Hero
 				title="My Work"
-				tagline="See my most recent projects below to get an idea of my past experience."
+				tagline="Eleven projects, each written up as what I owned, what constrained it, what I traded away, and what changed."
 				align="start"
 			/>
 			<div class="filters" role="group" aria-label="Filter by company">
@@ -42,9 +36,9 @@ const companies = [
 			</div>
 			<ul class="work-grid">
 				{
-					projects.map((project) => (
+					projects.map((project, i) => (
 						<li data-company={project.data.company || ''}>
-							<PortfolioPreview project={project} />
+							<PortfolioPreview project={project} index={i + 1} />
 						</li>
 					))
 				}

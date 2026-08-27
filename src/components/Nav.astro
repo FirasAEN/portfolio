@@ -1,33 +1,31 @@
 ---
 import Icon from './Icon.astro';
 import ThemeToggle from './ThemeToggle.astro';
-import type { iconPaths } from './IconPaths';
 import {computeUrl} from "../utils/computeUrl";
+import { site, socials } from '../config/site';
 
 
 type LinkRoute = { label: string; root: boolean; href: string };
 /** Main menu items */
 const textLinks: LinkRoute[] = [
-	{ label: 'Home', root: true, href: computeUrl(`/`) },
-	{ label: 'Work', root: false, href: computeUrl('/work/') },
-	{ label: 'Timeline', root: false, href: computeUrl('/timeline/') },
-	{ label: 'About', root: false, href: computeUrl('/about/') },
+	{ label: 'Home', root: true, href: computeUrl('/') },
+	{ label: 'Work', root: false, href: computeUrl('/work') },
+	{ label: 'Career', root: false, href: `${computeUrl('/')}#timeline` },
+	{ label: 'Skills', root: false, href: `${computeUrl('/')}#skills` },
 ];
 
-/** Icon links to social media — edit these with links to your profiles! */
-const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[] = [
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/françois-aen-phd-86b565109', icon: 'linkedin-logo' },
-    { label: 'GitHub', href: 'https://github.com/FirasAEN', icon: 'github-logo' },
-	{ label: 'GitLab', href: 'https://gitlab.com/FirasAEN/nextjs-portfolio', icon: 'gitlab-logo' },
-];
+const iconLinks = socials;
+
+/** Strip trailing slashes so `/work` and `/work/` compare equal. */
+const normalise = (path: string) => path.replace(/\/+$/, '') || '/';
+
+const currentPath = normalise(Astro.url.pathname);
 
 const isCurrentRoute = (item: LinkRoute) => {
-    if (item.root) {
-        return Astro.url.pathname === item.href || Astro.url.pathname === import.meta.env.BASE_URL;
-    } else {
-        return Astro.url.pathname.includes(item.href);
-    }
-}
+	const href = normalise(item.href);
+	// Non-root links also match their detail pages, e.g. /work/nx-monorepo.
+	return item.root ? currentPath === href : currentPath === href || currentPath.startsWith(`${href}/`);
+};
 
 ---
 
@@ -35,7 +33,7 @@ const isCurrentRoute = (item: LinkRoute) => {
 	<div class="menu-header">
 		<a href={computeUrl('/')} class="site-title">
 			<Icon icon="terminal-window" color="var(--accent-regular)" size="1.6em" gradient />
-			Francois ABED EL NABI
+			{site.name}
 		</a>
 		<menu-button>
 			<template>
@@ -46,45 +44,7 @@ const isCurrentRoute = (item: LinkRoute) => {
 			</template>
 		</menu-button>
 	</div>
-	<noscript>
-		<ul class="nav-items">
-			{
-				textLinks.map(({ label, href }) => (
-					<li>
-						<a
-							aria-current={Astro.url.pathname === href}
-							class:list={[
-								'link',
-								{
-									active:
-										Astro.url.pathname === href ||
-										(href !== '/' && Astro.url.pathname.startsWith(href)),
-								},
-							]}
-							href={href}
-						>
-							{label}
-						</a>
-					</li>
-				))
-			}
-		</ul>
-	</noscript>
-	<noscript>
-		<div class="menu-footer">
-			<div class="socials">
-				{
-					iconLinks.map(({ href, icon, label }) => (
-						<a href={href} class="social">
-							<span class="sr-only">{label}</span>
-							<Icon icon={icon} />
-						</a>
-					))
-				}
-			</div>
-		</div>
-	</noscript>
-	<div id="menu-content" hidden>
+	<div id="menu-content">
 		<ul class="nav-items">
 			{
 				textLinks.map((tl) => (
@@ -163,7 +123,7 @@ const isCurrentRoute = (item: LinkRoute) => {
 	nav {
 		z-index: 9999;
 		position: relative;
-		font-family: var(--font-brand);
+		font-family: var(--font-mono);
 		font-weight: 500;
 		margin-bottom: 3.5rem;
 	}

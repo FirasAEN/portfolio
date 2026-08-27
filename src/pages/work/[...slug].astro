@@ -8,6 +8,7 @@ import Hero from '../../components/Hero.astro';
 import Icon from '../../components/Icon.astro';
 import Pill from '../../components/Pill.astro';
 import {computeUrl} from "../../utils/computeUrl";
+import Diagram from '../../components/diagrams/Diagram.astro';
 
 interface Props {
 	entry: CollectionEntry<'work'>;
@@ -47,7 +48,8 @@ const goBack = computeUrl('/work/');
 			</header>
 			<main class="wrapper">
 				<div class="stack gap-10 content">
-					{entry.data.img && <img src={entry.data.img} alt={entry.data.img_alt || ''} />}
+					{entry.data.diagram && <Diagram id={entry.data.diagram} caption={entry.data.img_alt} />}
+					{entry.data.img && <img src={computeUrl(entry.data.img)} alt={entry.data.img_alt || ''} />}
 					<div class="content">
 						<Content />
 					</div>

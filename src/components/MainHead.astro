@@ -1,29 +1,28 @@
 ---
 import '../styles/global.css';
+import { computeUrl } from '../utils/computeUrl';
+import { site, pageTitle } from '../config/site';
 
 interface Props {
 	title?: string | undefined;
 	description?: string | undefined;
 }
 
-const {
-	title = 'Francois ABED EL NABI: Personal Site',
-	description = 'The personal site of Francois ABED EL NABI',
-} = Astro.props;
+const { title = pageTitle(), description = site.description } = Astro.props;
 ---
 
 <meta charset="UTF-8" />
 <meta name="description" property="og:description" content={description} />
 <meta name="viewport" content="width=device-width" />
 <meta name="generator" content={Astro.generator} />
-<base href={import.meta.env.BASE_URL + "/"} />
 <title>{title}</title>
 
-<link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+<link rel="icon" type="image/svg+xml" href={computeUrl('/favicon.svg')} />
+<link rel="alternate icon" type="image/x-icon" href={computeUrl('/favicon.ico')} />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link
-	href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,700;1,400&family=Rubik:wght@500;600&display=swap"
+	href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
 	rel="stylesheet"
 />
 <script is:inline>

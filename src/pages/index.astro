@@ -1,241 +1,302 @@
 ---
 import { getCollection } from 'astro:content';
 
-// Layout import — provides basic page elements: <head>, <nav>, <footer> etc.
 import BaseLayout from '../layouts/BaseLayout.astro';
-
-// Component Imports
 import CallToAction from '../components/CallToAction.astro';
 import Grid from '../components/Grid.astro';
-import Hero from '../components/Hero.astro';
 import Icon from '../components/Icon.astro';
-import Pill from '../components/Pill.astro';
 import PortfolioPreview from '../components/PortfolioPreview.astro';
-
-// Page section components
 import ContactCTA from '../components/ContactCTA.astro';
-import Skills from '../components/Skills.astro';
-import {computeUrl} from "../utils/computeUrl";
+import SkillsEvidenced from '../components/SkillsEvidenced.astro';
+import { computeUrl } from '../utils/computeUrl';
+import { getFeaturedWork, getExperience, getWorkForCompany } from '../utils/cv';
+import { site } from '../config/site';
 
-// Content Fetching: Hand-picked representative projects across employers
-const allProjects = await getCollection('work');
-const featuredSlugs = ['nx-monorepo', 'ddd-architecture', 'wiser-energy', 'spark-ar'];
-const projects = featuredSlugs
-	.map((slug) => allProjects.find((p) => p.id === slug))
-	.filter((p): p is NonNullable<typeof p> => p != null);
+// Home carries the whole argument: hook, proof, arc, evidenced skills, contact.
+// Timeline and About used to be separate routes restating the same facts.
+const projects = await getFeaturedWork();
+const experience = await getExperience();
+const companyWork = new Map(
+	await Promise.all(experience.map(async (e) => [e.id, await getWorkForCompany(e.id)] as const)),
+);
+const education = (await getCollection('education')).sort(
+	(a, b) => b.data.end.valueOf() - a.data.end.valueOf(),
+);
+const languages = (await getCollection('languages')).sort((a, b) => a.data.rank - b.data.rank);
 
-// Full Astro Component Syntax:
-// https://docs.astro.build/basics/astro-components/
+const YEAR = { year: 'numeric' } as const;
+const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt(end) : 'Present'}`;
 ---
 
 <BaseLayout>
-	<div class="stack gap-20 lg:gap-48">
-		<div class="wrapper stack gap-8 lg:gap-20">
-			<header class="hero">
-				<Hero
-					title="Hello, my name is Francois ABED EL NABI"
-					tagline="Software Development Engineer based in Grenoble, France."
-					align="start"
-				>
-					<div class="roles">
-						<Pill><Icon icon="code" size="1.33em" /> Developer</Pill>
-						<Pill><Icon icon="trophy" size="1.33em" /> Tech Lead</Pill>
-						<Pill><Icon icon="strategy" size="1.33em" /> PhD</Pill>
-					</div>
-				</Hero>
-
-				<img
-					alt="Francois ABED EL NABI portrait"
-					width="480"
-					height="620"
-					src="assets/portrait.jpg"
-				/>
-			</header>
-
-			<Skills />
-		</div>
-
-		<main class="wrapper stack gap-20 lg:gap-48">
-			<section class="section with-background with-cta">
-				<header class="section-header stack gap-2 lg:gap-4">
-					<h3>Selected Work</h3>
-					<p>Take a look below at some of my featured work for clients from the past few years.</p>
-				</header>
-
-				<div class="gallery">
-					<Grid>
-						{
-							projects.map((project) => (
-								<li>
-									<PortfolioPreview project={project} />
-								</li>
-							))
-						}
-					</Grid>
-				</div>
-
-				<div class="cta">
-					<CallToAction href={computeUrl('/work/')}>
-						View All
+	<div class="spine">
+		<!-- 1 · Hook -->
+		<header class="wrapper hero" id="top">
+			<div class="hero-text">
+				<p class="meta">{site.role} · {site.location}</p>
+				<h1>{site.name}</h1>
+				<p class="lede">
+					I model business domains the way I used to model materials — decompose the messy thing
+					until the structure shows, then build something that survives contact with reality.
+				</p>
+				<p class="hero-detail">
+					PhD in computational material science, retrained as a Java developer, nine years building
+					enterprise software. Today I lead a team of five and own the architecture rather than only
+					implementing it.
+				</p>
+				<div class="hero-actions">
+					<CallToAction href={computeUrl('/work')}>
+						See the work
 						<Icon icon="arrow-right" size="1.2em" />
 					</CallToAction>
 				</div>
-			</section>
-		</main>
+			</div>
+			<img
+				class="portrait"
+				alt={`${site.fullName} portrait`}
+				width="480"
+				height="620"
+				src={computeUrl('assets/portrait.jpg')}
+			/>
+		</header>
+
+		<!-- 2 · Proof -->
+		<section class="wrapper section" id="work">
+			<div class="rule-header">
+				<p class="meta">Selected work</p>
+			</div>
+			<Grid>
+				{
+					projects.map((project, i) => (
+						<li>
+							<PortfolioPreview project={project} index={i + 1} />
+						</li>
+					))
+				}
+			</Grid>
+			<div class="section-action">
+				<CallToAction href={computeUrl('/work')}>
+					All {(await getCollection('work')).length} projects
+					<Icon icon="arrow-right" size="1.2em" />
+				</CallToAction>
+			</div>
+		</section>
+
+		<!-- 3 · Arc -->
+		<section class="wrapper section" id="timeline">
+			<div class="rule-header">
+				<p class="meta">Career</p>
+			</div>
+			<ol class="timeline">
+				{
+					experience.map((entry) => (
+						<li class="entry">
+							<div class="entry-when">
+								<span class="meta">{period(entry.data.start, entry.data.end)}</span>
+							</div>
+							<div class="entry-what">
+								<h3>{entry.data.company}</h3>
+								<p class="entry-role">{entry.data.role} — {entry.data.location}</p>
+								<p class="entry-summary">{entry.data.summary}</p>
+								{(companyWork.get(entry.id) ?? []).length > 0 && (
+									<div class="entry-links">
+										{(companyWork.get(entry.id) ?? []).map((work) => (
+											<a href={computeUrl(`/work/${work.id}`)} class="entry-pill">
+												{work.data.title}
+											</a>
+										))}
+									</div>
+								)}
+							</div>
+						</li>
+					))
+				}
+				<li class="entry">
+					<div class="entry-when">
+						<span class="meta">
+							{education.at(-1)!.data.start.toLocaleDateString('en-GB', YEAR)} – {
+								education[0]!.data.end.toLocaleDateString('en-GB', YEAR)
+							}
+						</span>
+					</div>
+					<div class="entry-what">
+						<h3>Education</h3>
+						{
+							education.map((edu) => (
+								<p class="entry-summary">
+									<strong>{edu.data.title}</strong> — {edu.data.institution},{' '}
+									{edu.data.start.toLocaleDateString('en-GB', YEAR)}–
+									{edu.data.end.toLocaleDateString('en-GB', YEAR)}
+								</p>
+							))
+						}
+					</div>
+				</li>
+			</ol>
+		</section>
+
+		<!-- 4 · Skills, evidenced by the projects that used them -->
+		<section class="wrapper section" id="skills">
+			<div class="rule-header">
+				<p class="meta">Skills</p>
+			</div>
+			<SkillsEvidenced />
+		</section>
+
+		<!-- 5 · Contact -->
+		<section class="wrapper section" id="about">
+			<div class="rule-header">
+				<p class="meta">Languages</p>
+			</div>
+			<p class="languages">
+				{languages.map((l) => <span><strong>{l.data.name}</strong> {l.data.level}</span>)}
+			</p>
+		</section>
 
 		<ContactCTA />
 	</div>
 </BaseLayout>
 
 <style>
+	.spine {
+		display: flex;
+		flex-direction: column;
+		gap: 5rem;
+	}
+
+	.section {
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+	}
+
+	/* --- Hook --- */
 	.hero {
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		gap: 2rem;
+		gap: 2.5rem;
+		padding-top: 2rem;
 	}
 
-	.roles {
-		display: none;
+	.hero-text {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
 	}
 
-	.hero img {
+	.hero h1 {
+		font-size: var(--text-5xl);
+	}
+
+	.hero-detail {
+		color: var(--gray-300);
+		max-width: 46ch;
+	}
+
+	.hero-actions {
+		display: flex;
+		gap: 1rem;
+		padding-top: 0.5rem;
+	}
+
+	.portrait {
 		aspect-ratio: 5 / 4;
 		object-fit: cover;
 		object-position: top;
-		border-radius: 1.5rem;
+		border-radius: 0.75rem;
 		box-shadow: var(--shadow-md);
 	}
 
-	.hero :global(.title) {
-		background: var(--gradient-accent-orange);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
+	.section-action {
+		display: flex;
+		justify-content: flex-start;
 	}
 
-	@media (min-width: 50em) {
-		.hero {
-			display: grid;
-			grid-template-columns: 6fr 4fr;
-			padding-inline: 2.5rem;
-			gap: 3.75rem;
-		}
-
-		.roles {
-			margin-top: 0.5rem;
-			display: flex;
-			gap: 0.5rem;
-		}
-
-		.hero img {
-			aspect-ratio: 3 / 4;
-			border-radius: 4.5rem;
-			object-fit: cover;
-		}
+	/* --- Arc --- */
+	.timeline {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
 	}
 
-	/* ====================================================== */
-
-	.section {
+	.entry {
 		display: grid;
-		gap: 2rem;
+		gap: 0.5rem;
+		padding: 1.75rem 0;
+		border-top: 1px solid var(--rule-color);
 	}
 
-	.with-background {
-		position: relative;
+	.entry:first-child {
+		border-top: none;
+		padding-top: 0.5rem;
 	}
 
-	.with-background::before {
-		--hero-bg: var(--bg-image-subtle-2);
-
-		content: '';
-		position: absolute;
-		pointer-events: none;
-		left: 50%;
-		width: 100vw;
-		aspect-ratio: calc(2.25 / var(--bg-scale));
-		top: 0;
-		transform: translateY(-75%) translateX(-50%);
-		background:
-			url('assets/backgrounds/noise.png') top center/220px repeat,
-			var(--hero-bg) center center / var(--bg-gradient-size) no-repeat,
-			var(--gray-999);
-		background-blend-mode: overlay, normal, normal, normal;
-		mix-blend-mode: var(--bg-blend-mode);
-		z-index: -1;
-		filter: hue-rotate(160deg) saturate(0.8);
-	}
-
-	.with-background.bg-variant::before {
-		--hero-bg: var(--bg-image-subtle-1);
-	}
-
-	.section-header {
-		justify-self: center;
-		text-align: center;
-		max-width: 50ch;
-		font-size: var(--text-md);
-		color: var(--gray-300);
-	}
-
-	.section-header h3 {
+	.entry-what h3 {
 		font-size: var(--text-2xl);
 	}
 
-	@media (min-width: 50em) {
-		.section {
-			grid-template-columns: repeat(4, 1fr);
-			grid-template-areas: 'header header header header' 'gallery gallery gallery gallery';
-			gap: 5rem;
-		}
-
-		.section.with-cta {
-			grid-template-areas: 'header header header cta' 'gallery gallery gallery gallery';
-		}
-
-		.section-header {
-			grid-area: header;
-			font-size: var(--text-lg);
-		}
-
-		.section-header h3 {
-			font-size: var(--text-4xl);
-		}
-
-		.with-cta .section-header {
-			justify-self: flex-start;
-			text-align: left;
-		}
-
-		.gallery {
-			grid-area: gallery;
-		}
-
-		.cta {
-			grid-area: cta;
-		}
+	.entry-role {
+		font-family: var(--font-mono);
+		font-size: var(--text-xs);
+		color: var(--gray-400);
+		margin: 0.35rem 0 0.75rem;
 	}
 
-	/* ====================================================== */
-
-	.mention-card {
-		display: flex;
-		height: 7rem;
-		justify-content: center;
-		align-items: center;
-		text-align: center;
-		border: 1px solid var(--gray-800);
-		border-radius: 1.5rem;
+	.entry-summary {
 		color: var(--gray-300);
-		background: var(--gradient-subtle);
-		box-shadow: var(--shadow-sm);
+		max-width: 62ch;
+	}
+
+	.entry-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-top: 1rem;
+	}
+
+	.entry-pill {
+		font-family: var(--font-mono);
+		font-size: var(--text-xs);
+		color: var(--gray-300);
+		text-decoration: none;
+		padding: 0.3rem 0.6rem;
+		border: 1px solid var(--rule-color);
+		border-radius: 999rem;
+		transition: border-color var(--transition-fast), color var(--transition-fast);
+	}
+
+	.entry-pill:hover,
+	.entry-pill:focus-visible {
+		border-color: var(--accent-regular);
+		color: var(--accent-regular);
+	}
+
+	.languages {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 2rem;
+		color: var(--gray-300);
 	}
 
 	@media (min-width: 50em) {
-		.mention-card {
-			border-radius: 1.5rem;
-			height: 9.5rem;
+		.spine {
+			gap: 7rem;
+		}
+
+		.hero {
+			display: grid;
+			grid-template-columns: 7fr 5fr;
+			align-items: center;
+			gap: 4rem;
+			padding-top: 3rem;
+		}
+
+		.entry {
+			grid-template-columns: 12rem 1fr;
+			gap: 2rem;
 		}
 	}
 </style>

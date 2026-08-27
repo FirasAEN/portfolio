@@ -1,0 +1,119 @@
+---
+import { getEvidencedSkills } from '../utils/cv';
+import { computeUrl } from '../utils/computeUrl';
+
+const tiers = await getEvidencedSkills();
+---
+
+<div class="tiers">
+	{
+		tiers.map((tier) => (
+			<section class="tier">
+				<div class="rule-header">
+					<p class="meta">{tier.label}</p>
+				</div>
+				<dl class="groups">
+					{tier.groups.map((group) => (
+						<div class="group">
+							<dt class="group-name">{group.name}</dt>
+							<dd class="group-items">
+								{group.skills.map((skill) =>
+									skill.projects.length > 0 ? (
+										<span class="skill evidenced">
+											{skill.name}
+											<span class="evidence">
+												{skill.projects.map((p) => (
+													<a href={computeUrl(`/work/${p.id}`)} title={p.title}>
+														<span class="sr-only">{p.title}</span>
+													</a>
+												))}
+											</span>
+										</span>
+									) : (
+										<span class="skill">{skill.name}</span>
+									),
+								)}
+							</dd>
+						</div>
+					))}
+				</dl>
+			</section>
+		))
+	}
+	<p class="legend meta">
+		Marks indicate projects on this site that used the technology — follow one to the entry.
+	</p>
+</div>
+
+<style>
+	.tiers {
+		display: flex;
+		flex-direction: column;
+		gap: 3rem;
+	}
+
+	.groups {
+		display: grid;
+		gap: 1.25rem;
+		margin: 1.25rem 0 0;
+	}
+
+	.group-name {
+		font-family: var(--font-mono);
+		font-size: var(--text-xs);
+		text-transform: uppercase;
+		letter-spacing: var(--tracking-meta);
+		color: var(--gray-400);
+		margin-bottom: 0.4rem;
+	}
+
+	.group-items {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1rem;
+		margin: 0;
+	}
+
+	.skill {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.3rem;
+		color: var(--gray-200);
+		font-size: var(--text-sm);
+	}
+
+	.skill.evidenced {
+		color: var(--gray-100);
+	}
+
+	.evidence {
+		display: inline-flex;
+		gap: 0.15rem;
+	}
+
+	/* One small mark per project that used this technology. */
+	.evidence a {
+		width: 0.3rem;
+		height: 0.3rem;
+		border-radius: 50%;
+		background: var(--accent-regular);
+		transition: transform var(--transition-fast);
+	}
+
+	.evidence a:hover,
+	.evidence a:focus-visible {
+		transform: scale(1.6);
+	}
+
+	.legend {
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--rule-color);
+	}
+
+	@media (min-width: 50em) {
+		.groups {
+			grid-template-columns: repeat(2, 1fr);
+			gap: 1.5rem 3rem;
+		}
+	}
+</style>

@@ -1,8 +1,60 @@
 ---
+import { pageTitle } from '../config/site';
 import Hero from '../components/Hero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import CallToAction from '../components/CallToAction.astro';
+import Icon from '../components/Icon.astro';
+import { computeUrl } from '../utils/computeUrl';
+
+const routes = [
+	{ label: 'Work', href: computeUrl('/work') },
+	{ label: 'Timeline', href: computeUrl('/timeline') },
+	{ label: 'About', href: computeUrl('/about') },
+];
 ---
 
-<BaseLayout title="Not Found" description="404 Error — this page was not found">
-	<Hero title="Page Not Found" tagline="Not found" />
+<BaseLayout title={pageTitle("Not found")} description="404 — this page was not found">
+	<div class="wrapper stack gap-8">
+		<Hero
+			title="Page not found"
+			tagline="That URL doesn't lead anywhere. It may have moved, or never existed."
+		/>
+		<div class="actions">
+			<CallToAction href={computeUrl('/')}>
+				Back home
+				<Icon icon="arrow-right" size="1.2em" />
+			</CallToAction>
+		</div>
+		<nav class="elsewhere" aria-label="Other pages">
+			<p class="meta">Or try</p>
+			<ul>
+				{routes.map((route) => <li><a href={route.href}>{route.label}</a></li>)}
+			</ul>
+		</nav>
+	</div>
 </BaseLayout>
+
+<style>
+	.actions {
+		display: flex;
+		justify-content: center;
+	}
+
+	.elsewhere {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.75rem;
+		padding-top: 2rem;
+		border-top: 1px solid var(--rule-color);
+	}
+
+	.elsewhere ul {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 1.5rem;
+		list-style: none;
+		padding: 0;
+	}
+</style>

@@ -8,9 +8,9 @@ import type { iconPaths } from '../components/IconPaths';
  * company lists had. Socials were duplicated between Nav and Footer.
  */
 export const site = {
-	/** Display name used in the nav, footer and titles. */
-	name: 'Firas François',
-	/** Full legal name, for the copyright line and structured metadata. */
+	/** Full name, used everywhere — nav, hero, titles, footer. */
+	name: 'Firas François Abed El Nabi',
+	/** Kept as an alias so callers reading `fullName` still work. */
 	fullName: 'Firas François Abed El Nabi',
 	role: 'Tech Lead & Full-Stack Engineer',
 	location: 'Grenoble, France',

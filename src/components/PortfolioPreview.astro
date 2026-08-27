@@ -52,15 +52,16 @@ const accentColor = companies.get(company)?.accent || 'var(--accent-regular)';
 
 <style>
 	.card {
+		position: relative;
 		display: flex;
 		flex-direction: column;
-		border: 1px solid var(--gray-800);
-		border-radius: 0.75rem;
-		background: var(--gradient-subtle);
-		box-shadow: var(--shadow-sm);
+		height: 100%;
 		text-decoration: none;
-		transition: box-shadow var(--theme-transition), transform var(--theme-transition);
+		border: 1px solid var(--surface-border);
+		border-radius: var(--radius-lg);
+		background-color: var(--surface);
 		overflow: hidden;
+		transition: border-color var(--transition-medium), transform var(--transition-medium);
 	}
 
 	.card:hover {

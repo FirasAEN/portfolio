@@ -1,0 +1,94 @@
+---
+interface Props {
+	/** Two-digit index shown inside the node, e.g. "02". */
+	index: string;
+	label: string;
+	/** Omit the connector above on the first node of a page. */
+	first?: boolean | undefined;
+}
+
+const { index, label, first = false } = Astro.props;
+---
+
+<div class:list={['node', { first }]}>
+	<span class="marker" aria-hidden="true">
+		<svg viewBox="0 0 24 24" class="hex">
+			<path
+				d="M12 1.5 21 6.75 21 17.25 12 22.5 3 17.25 3 6.75 Z"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.5"
+				stroke-linejoin="round"></path>
+		</svg>
+		<span class="index">{index}</span>
+	</span>
+	<p class="label meta">{label}</p>
+	<span class="rule" aria-hidden="true"></span>
+</div>
+
+<style>
+	/*
+	 * Section headings are nodes on a vertical spine — the same node-and-edge
+	 * language as the architecture diagrams, and a nod to the lineage graphs the
+	 * work is actually about. The connector is drawn upward from each node, so
+	 * the spine is continuous without needing a wrapper element.
+	 */
+	.node {
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 0.875rem;
+		margin-bottom: 2rem;
+	}
+
+	.node::before {
+		content: '';
+		position: absolute;
+		left: calc(var(--node-size) / 2 - 0.5px);
+		bottom: calc(100% + 0.35rem);
+		width: 1px;
+		height: 5rem;
+		background: linear-gradient(to bottom, transparent, var(--rule-color));
+	}
+
+	.node.first::before {
+		display: none;
+	}
+
+	.marker {
+		--node-size: 2rem;
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: var(--node-size);
+		height: var(--node-size);
+		flex: none;
+		color: var(--accent-regular);
+	}
+
+	.hex {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	.index {
+		font-family: var(--font-mono);
+		font-size: 0.625rem;
+		font-weight: 500;
+		color: var(--accent-regular);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.label {
+		flex: none;
+		color: var(--fg);
+	}
+
+	.rule {
+		flex: 1;
+		height: 1px;
+		background: var(--rule-color);
+	}
+</style>

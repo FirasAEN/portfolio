@@ -1,8 +1,4 @@
 ---
-// Learn about using Astro layouts:
-// https://docs.astro.build/en/core-concepts/layouts/
-
-// Component Imports
 import MainHead from '../components/MainHead.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -19,58 +15,67 @@ const { title, description } = Astro.props;
 <html lang="en">
 	<head>
 		<MainHead title={title} description={description} />
-		{/* Owns every --bg-* custom property. Inline so the Vite-resolved URLs are
-		    never re-resolved against an extracted stylesheet's location. */}
 		<style is:inline set:html={backgroundVarsCss}></style>
 	</head>
 	<body>
-		<div class="stack backgrounds">
+		<div class="stack sheet">
 			<Nav />
 			<slot />
 			<Footer />
 		</div>
 
 		<script>
-			// Add "loaded" class once the document has completely loaded.
 			addEventListener('load', () => document.documentElement.classList.add('loaded'));
 		</script>
 
 		<style>
-			.backgrounds {
+			/*
+			 * The page is a drafting sheet: a fine grid, a heavier rule every
+			 * fifth cell, and a soft vignette so the grid fades at the edges
+			 * rather than stopping abruptly.
+			 */
+			.sheet {
 				position: relative;
 				min-height: 100%;
 				isolation: isolate;
 			}
-			.backgrounds::before {
+
+			.sheet::before {
 				content: '';
-				position: absolute;
+				position: fixed;
 				inset: 0;
 				z-index: -1;
-				filter: hue-rotate(160deg) saturate(0.8);
-				background:
-					/*noise*/
-					var(--bg-image-noise) top center/220px repeat,
-					/*footer*/ var(--bg-image-footer) bottom center/var(--bg-gradient-size) no-repeat,
-					/*header1*/ var(--bg-image-main-curves) top center/var(--bg-gradient-size) no-repeat,
-					/*header2*/ var(--bg-image-main) top center/var(--bg-gradient-size) no-repeat,
-					/*base*/ var(--gray-999);
-				background-blend-mode: /*noise*/
-					overlay,
-					/*footer*/ var(--bg-blend-mode),
-					/*header1*/ var(--bg-svg-blend-mode),
-					/*header2*/ normal,
-					/*base*/ normal;
+				background-color: var(--gray-999);
+				background-image:
+					/* major lines */
+					linear-gradient(to right, var(--grid-line-major) 1px, transparent 1px),
+					linear-gradient(to bottom, var(--grid-line-major) 1px, transparent 1px),
+					/* minor lines */
+					linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+					linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+				background-size:
+					calc(var(--grid-size) * 5) calc(var(--grid-size) * 5),
+					calc(var(--grid-size) * 5) calc(var(--grid-size) * 5),
+					var(--grid-size) var(--grid-size),
+					var(--grid-size) var(--grid-size);
+				mask-image: linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%);
 			}
-			:global(.theme-dark) .backgrounds::before {
-				filter: hue-rotate(160deg) saturate(0.8);
+
+			/* Paper grain, so the sheet reads as material rather than as CSS. */
+			.sheet::after {
+				content: '';
+				position: fixed;
+				inset: 0;
+				z-index: -1;
+				background: var(--bg-image-noise) top center/200px repeat;
+				opacity: 0.02;
+				pointer-events: none;
 			}
+
 			@media (forced-colors: active) {
-				/* Deactivate custom backgrounds for high contrast users. */
-				.backgrounds::before {
+				.sheet::before,
+				.sheet::after {
 					background: none;
-					background-blend-mode: none;
-					--bg-gradient-size: none;
-					filter: none;
 				}
 			}
 		</style>

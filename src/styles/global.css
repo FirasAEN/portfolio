@@ -358,6 +358,39 @@ h5 {
 	pointer-events: none;
 }
 
+/**
+ * Corner ticks: the crop marks of a technical drawing. Applied to panels and
+ * cards so a surface reads as a plate on the sheet rather than a rounded box.
+ */
+.ticked {
+	position: relative;
+}
+
+.ticked::before,
+.ticked::after {
+	content: '';
+	position: absolute;
+	width: 7px;
+	height: 7px;
+	border-color: color-mix(in srgb, var(--accent-regular) 60%, transparent);
+	pointer-events: none;
+	transition: border-color var(--transition-medium);
+}
+
+.ticked::before {
+	top: -1px;
+	left: -1px;
+	border-top: 1px solid;
+	border-left: 1px solid;
+}
+
+.ticked::after {
+	bottom: -1px;
+	right: -1px;
+	border-bottom: 1px solid;
+	border-right: 1px solid;
+}
+
 /** Outlined chip — used for skills and tags. */
 .chip {
 	display: inline-flex;

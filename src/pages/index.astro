@@ -8,6 +8,7 @@ import Icon from '../components/Icon.astro';
 import PortfolioPreview from '../components/PortfolioPreview.astro';
 import ContactCTA from '../components/ContactCTA.astro';
 import SkillsEvidenced from '../components/SkillsEvidenced.astro';
+import SectionNode from '../components/SectionNode.astro';
 import { computeUrl } from '../utils/computeUrl';
 import { getFeaturedWork, getExperience, getWorkForCompany } from '../utils/cv';
 import { site } from '../config/site';
@@ -78,9 +79,7 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 
 		<!-- 2 · Proof -->
 		<section class="wrapper section" id="work">
-			<div class="rule-header">
-				<p class="meta">Selected work</p>
-			</div>
+			<SectionNode index="01" label="Selected work" />
 			<Grid>
 				{
 					projects.map((project, i) => (
@@ -100,9 +99,7 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 
 		<!-- 3 · Arc -->
 		<section class="wrapper section" id="timeline">
-			<div class="rule-header">
-				<p class="meta">Career</p>
-			</div>
+			<SectionNode index="02" label="Career" />
 			<ol class="timeline">
 				{
 					experience.map((entry) => (
@@ -153,17 +150,13 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 
 		<!-- 4 · Skills, evidenced by the projects that used them -->
 		<section class="wrapper section" id="skills">
-			<div class="rule-header">
-				<p class="meta">Skills</p>
-			</div>
+			<SectionNode index="03" label="Skills" />
 			<SkillsEvidenced />
 		</section>
 
 		<!-- 5 · Contact -->
 		<section class="wrapper section" id="about">
-			<div class="rule-header">
-				<p class="meta">Languages</p>
-			</div>
+			<SectionNode index="04" label="Languages" />
 			<p class="languages">
 				{languages.map((l) => <span><strong>{l.data.name}</strong> {l.data.level}</span>)}
 			</p>
@@ -225,11 +218,16 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 
 	.fact-value {
 		font-family: var(--font-mono);
-		font-size: var(--text-3xl);
+		font-size: var(--text-2xl);
 		font-weight: 500;
 		line-height: 1;
 		color: var(--accent-regular);
 		font-variant-numeric: tabular-nums;
+	}
+
+	.fact {
+		padding-left: 0.875rem;
+		border-left: 1px solid var(--rule-color);
 	}
 
 	.fact-label {
@@ -250,22 +248,45 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 	/* --- Arc --- */
 	.timeline {
 		list-style: none;
-		padding: 0;
+		padding: 0 0 0 1.5rem;
 		margin: 0;
 		display: flex;
 		flex-direction: column;
 	}
 
+	/* Roles are nodes on an edge running down the column: the career as a
+	   lineage graph, matching the schematics the work is made of. */
 	.entry {
+		position: relative;
 		display: grid;
 		gap: 0.5rem;
-		padding: 1.75rem 0;
-		border-top: 1px solid var(--rule-color);
+		padding: 0 0 2.25rem 0;
 	}
 
-	.entry:first-child {
-		border-top: none;
-		padding-top: 0.5rem;
+	.entry::before {
+		content: '';
+		position: absolute;
+		left: -1.5rem;
+		top: 0.5rem;
+		width: 7px;
+		height: 7px;
+		border: 1px solid var(--accent-regular);
+		background: var(--gray-999);
+		clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+	}
+
+	.entry::after {
+		content: '';
+		position: absolute;
+		left: calc(-1.5rem + 3px);
+		top: 1.05rem;
+		bottom: 0;
+		width: 1px;
+		background: var(--rule-color);
+	}
+
+	.entry:last-child::after {
+		display: none;
 	}
 
 	.entry-what h3 {
@@ -330,7 +351,7 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 		}
 
 		.entry {
-			grid-template-columns: 12rem 1fr;
+			grid-template-columns: 10rem 1fr;
 			gap: 2rem;
 		}
 	}

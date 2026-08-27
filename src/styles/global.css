@@ -495,16 +495,17 @@ h5 {
 	fill: var(--accent-regular);
 }
 
-/* Figure wrapper with a mono caption. */
+/*
+ * Figure wrapper. Layout only — the surface comes from .panel, which this is
+ * always combined with. Redeclaring background here previously overrode the
+ * opaque surface and let the sheet grid show through the diagram.
+ */
 .figure {
 	display: flex;
 	flex-direction: column;
 	gap: 0.75rem;
 	margin: 2rem 0;
 	padding: 1.5rem;
-	border: 1px solid var(--rule-color);
-	border-radius: 0.5rem;
-	background: var(--gray-999_40);
 }
 
 .figure figcaption {

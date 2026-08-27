@@ -53,16 +53,18 @@
 		0px 16px 16px rgba(9, 11, 17, 0.1), 0px 4px 9px rgba(9, 11, 17, 0.12);
 
 	/* Text Sizes */
-	--text-xs: 0.6875rem;
-	--text-sm: 0.8125rem;
-	--text-base: 0.9375rem;
-	--text-md: 1rem;
-	--text-lg: 1.0625rem;
-	--text-xl: 1.25rem;
-	--text-2xl: 1.5rem;
-	--text-3xl: clamp(1.5rem, 1.2rem + 1.2vw, 1.875rem);
-	--text-4xl: clamp(1.75rem, 1.35rem + 1.7vw, 2.25rem);
-	--text-5xl: clamp(2rem, 1.4rem + 2.6vw, 2.875rem);
+	/* Nudged back up about 6%: the previous pass overcorrected. Base returns to
+	   16px; display stays restrained so headings do not start shouting again. */
+	--text-xs: 0.75rem;
+	--text-sm: 0.875rem;
+	--text-base: 1rem;
+	--text-md: 1.0625rem;
+	--text-lg: 1.125rem;
+	--text-xl: 1.3125rem;
+	--text-2xl: 1.5625rem;
+	--text-3xl: clamp(1.625rem, 1.3rem + 1.3vw, 2rem);
+	--text-4xl: clamp(1.875rem, 1.45rem + 1.8vw, 2.375rem);
+	--text-5xl: clamp(2.125rem, 1.5rem + 2.7vw, 3rem);
 
 	/* Editorial rhythm */
 	--tracking-tight: -0.015em;

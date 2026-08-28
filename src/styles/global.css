@@ -78,6 +78,12 @@
 	   4.16:1 on the light ground — below the 4.5 threshold, and that was true
 	   before the ambient background existed. 70% measures 4.87:1 on the light
 	   ground and 4.66:1 at the most saturated point of an ambient shape. */
+	/* One gutter for every node marker. The section marker starts at the content
+	   edge and the timeline reserves the same width as padding, so both centres
+	   resolve to content-edge + half this value — and keep agreeing if it
+	   changes. They previously disagreed by 8px: 40 against 48. */
+	--marker-size: 2.5rem;
+
 	--fg: var(--gray-100);
 	--fg-muted: color-mix(in srgb, var(--gray-100) 70%, transparent);
 	--fg-subtle: color-mix(in srgb, var(--gray-100) 44%, transparent);

@@ -1,4 +1,6 @@
 ---
+import HexMarker from './HexMarker.astro';
+
 interface Props {
 	/** Two-digit index shown inside the node, e.g. "02". */
 	index: string;
@@ -12,14 +14,7 @@ const { index, label, first = false } = Astro.props;
 
 <div class:list={['node', { first }]}>
 	<span class="marker" aria-hidden="true">
-		<svg viewBox="0 0 24 24" class="hex">
-			<path
-				d="M12 1.5 21 6.75 21 17.25 12 22.5 3 17.25 3 6.75 Z"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="1.5"
-				stroke-linejoin="round"></path>
-		</svg>
+		<span class="hex"><HexMarker size="100%" /></span>
 		<span class="index">{index}</span>
 	</span>
 	<p class="label meta">{label}</p>
@@ -41,10 +36,16 @@ const { index, label, first = false } = Astro.props;
 		margin-bottom: 2rem;
 	}
 
+	/*
+	 * left reads --marker-size, the shared token. It previously read --node-size,
+	 * which was declared on the child .marker — a parent cannot read a child's
+	 * custom property, so the calc() was invalid and left fell back to 0. That
+	 * was the whole 16px offset between this connector and the hexagon.
+	 */
 	.node::before {
 		content: '';
 		position: absolute;
-		left: calc(var(--node-size) / 2 - 0.5px);
+		left: calc(var(--marker-size) / 2 - 0.5px);
 		bottom: calc(100% + 0.35rem);
 		width: 1px;
 		height: 5rem;
@@ -56,16 +57,21 @@ const { index, label, first = false } = Astro.props;
 	}
 
 	.marker {
-		--node-size: 2rem;
 		position: relative;
 		display: grid;
 		place-items: center;
-		width: var(--node-size);
-		height: var(--node-size);
+		width: var(--marker-size);
+		height: var(--marker-size);
 		flex: none;
 		color: var(--accent-regular);
 	}
 
+	/*
+	 * HexMarker is wrapped rather than given this class directly: Astro scopes a
+	 * style to the component that declares it, so a class passed to a child lands
+	 * on an element carrying the child's scope id and the parent's rule never
+	 * matches. The wrapper is owned here, so it does.
+	 */
 	.hex {
 		position: absolute;
 		inset: 0;
@@ -75,8 +81,9 @@ const { index, label, first = false } = Astro.props;
 
 	.index {
 		font-family: var(--font-mono);
-		font-size: 0.625rem;
+		font-size: 0.8125rem;
 		font-weight: 500;
+		line-height: 1;
 		color: var(--accent-regular);
 		font-variant-numeric: tabular-nums;
 	}

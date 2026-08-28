@@ -9,6 +9,7 @@ import PortfolioPreview from '../components/PortfolioPreview.astro';
 import ContactCTA from '../components/ContactCTA.astro';
 import SkillsEvidenced from '../components/SkillsEvidenced.astro';
 import SectionNode from '../components/SectionNode.astro';
+import HexMarker from '../components/HexMarker.astro';
 import Availability from '../components/Availability.astro';
 import { computeUrl } from '../utils/computeUrl';
 import { getFeaturedWork, getExperience, getWorkForCompany } from '../utils/cv';
@@ -116,6 +117,7 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 				{
 					experience.map((entry) => (
 						<li class="entry">
+							<span class="entry-marker"><HexMarker size="12px" /></span>
 							<div class="entry-when">
 								<span class="meta">{period(entry.data.start, entry.data.end)}</span>
 							</div>
@@ -137,6 +139,7 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 					))
 				}
 				<li class="entry">
+							<span class="entry-marker"><HexMarker size="12px" /></span>
 					<div class="entry-when">
 						<span class="meta">
 							{education[0]!.data.start.toLocaleDateString('en-GB', YEAR)} – {
@@ -260,7 +263,7 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 	/* --- Arc --- */
 	.timeline {
 		list-style: none;
-		padding: 0 0 0 1.5rem;
+		padding: 0 0 0 var(--marker-size);
 		margin: 0;
 		display: flex;
 		flex-direction: column;
@@ -275,26 +278,31 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 		padding: 0 0 2.25rem 0;
 	}
 
-	/* A rotated square rather than a clip-path hexagon: clip-path slices the
-	   border, which at this size renders as broken fragments. Rotation keeps
-	   the border intact and the edges crisp. */
-	.entry::before {
-		content: '';
+	/*
+	 * Marker and spine both derive from --marker-size, so the spine is centred on
+	 * the marker by construction. Writing the two offsets independently — which
+	 * is what this was — is how they ended up 1.5px apart.
+	 *
+	 * The shape is HexMarker, the same hexagon used beside section headings. It
+	 * was a rotated square here because an earlier clip-path hexagon sliced its
+	 * own border into fragments; an SVG path has no border to slice.
+	 */
+	/* Wrapped rather than classed directly: Astro scopes styles to the declaring
+	   component, so a class passed to HexMarker lands on an element carrying
+	   HexMarker's scope id and this rule would never match it. */
+	.entry-marker {
+		display: block;
 		position: absolute;
-		left: calc(-1.5rem + 1px);
-		top: 0.55rem;
-		width: 6px;
-		height: 6px;
-		border: 1px solid var(--accent-regular);
-		background: var(--gray-999);
-		transform: rotate(45deg);
+		left: calc(-1 * var(--marker-size) / 2 - 6px);
+		top: 0.35rem;
+		color: var(--accent-regular);
 	}
 
 	.entry::after {
 		content: '';
 		position: absolute;
-		left: calc(-1.5rem + 3px);
-		top: 1.05rem;
+		left: calc(-1 * var(--marker-size) / 2 - 0.5px);
+		top: 1.35rem;
 		bottom: 0;
 		width: 1px;
 		background: var(--rule-color);

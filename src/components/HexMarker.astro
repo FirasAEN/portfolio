@@ -1,0 +1,50 @@
+---
+// The one hexagon on this site. It was previously defined twice — an SVG beside
+// section headings and a rotated square on the timeline — which is how their
+// sizes, shapes and centres drifted apart.
+//
+// The timeline used a rotated square because an earlier clip-path hexagon
+// sliced its own border into fragments (c89fcbc): clip-path cuts the border
+// along with the box. An SVG path has no border to slice, so one shape can now
+// serve both.
+interface Props {
+	/** Rendered size, e.g. "2.5rem" or "12px". */
+	size: string;
+	class?: string | undefined;
+}
+
+const { size, class: className } = Astro.props;
+---
+
+<svg
+	class:list={['hex-marker', className]}
+	style={`--hex-size: ${size}`}
+	viewBox="0 0 24 24"
+	aria-hidden="true"
+>
+	<path
+		d="M12 1.5 21 6.75 21 17.25 12 22.5 3 17.25 3 6.75 Z"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="1.5"
+		stroke-linejoin="round"
+		pathLength="1"></path>
+</svg>
+
+<style>
+	/*
+	 * fill stays none. Filling with the ground colour would punch an opaque patch
+	 * through the ambient background behind it, which reads as a hole once the
+	 * shapes drift underneath.
+	 *
+	 * pathLength="1" lets a stroke-draw animation use dash values of 1 and 0
+	 * instead of the real perimeter (~62.7), which would break silently if the
+	 * geometry were ever edited.
+	 */
+	.hex-marker {
+		display: block;
+		width: var(--hex-size);
+		height: var(--hex-size);
+		flex: none;
+	}
+</style>

@@ -168,7 +168,7 @@ In `src/pages/index.astro`, insert this immediately before the closing `</BaseLa
 							root.dataset.revealState = 'done';
 						}
 					},
-					{ threshold: 0.15, rootMargin: '0px 0px -10% 0px' },
+					{ threshold: 0, rootMargin: '0px 0px -10% 0px' },
 				);
 
 				els.forEach((el) => observer.observe(el));
@@ -186,26 +186,33 @@ npm run build
 
 Expected: `0 errors, 0 warnings`. Reload `http://localhost:4343/portfolio/` and evaluate:
 
+The page is roughly 5.6 viewports tall. `IntersectionObserver` is geometric: a single
+`scrollTo(bottom)` never renders a frame in which the middle sections intersect the viewport,
+so it correctly never fires for them. Scroll in viewport-sized steps, the way a reader does.
+
 ```js
 (async () => {
-  const settle = () => new Promise(r => setTimeout(r, 400));
+  const settle = () => new Promise(r => setTimeout(r, 300));
+  const revealed = () => document.querySelectorAll('[data-reveal].is-revealed').length;
   await settle();
   const initial = {
     marked: document.querySelectorAll('[data-reveal]').length,
     state: document.documentElement.dataset.revealState,
-    revealedAtTop: document.querySelectorAll('[data-reveal].is-revealed').length,
+    revealedAtTop: revealed(),
   };
-  window.scrollTo({top: document.body.scrollHeight, behavior: 'instant'});
-  await settle();
+  for (let y = 0; y <= document.body.scrollHeight; y += Math.round(innerHeight * 0.75)) {
+    window.scrollTo({top: y, behavior: 'instant'});
+    await settle();
+  }
   return JSON.stringify({
     ...initial,
-    revealedAtBottom: document.querySelectorAll('[data-reveal].is-revealed').length,
+    revealedAfterScroll: revealed(),
     finalState: document.documentElement.dataset.revealState,
   });
 })()
 ```
 
-Expected: `marked: 4`, `state: "armed"`, `revealedAtTop` less than 4, `revealedAtBottom: 4`,
+Expected: `marked: 4`, `state: "armed"`, `revealedAtTop` less than 4, `revealedAfterScroll: 4`,
 `finalState: "done"`. `finalState` being `"done"` is the proof the observer disconnected.
 
 - [ ] **Step 7: Commit**
@@ -313,12 +320,12 @@ Append to `src/styles/global.css`:
 		transition: stroke-dashoffset 0.6s ease-out 0.15s;
 	}
 
-	.reveal-armed [data-reveal] .rule {
+	.reveal-armed [data-reveal] .node .rule {
 		transform: scaleX(0);
 		transform-origin: left;
 	}
 
-	.reveal-armed [data-reveal].is-revealed .rule {
+	.reveal-armed [data-reveal].is-revealed .node .rule {
 		transform: scaleX(1);
 		transition: transform 0.6s ease-out 0.2s;
 	}
@@ -355,9 +362,13 @@ Expected: `0 errors, 0 warnings`. Reload and evaluate:
 })()
 ```
 
-Expected: `before.revealed` is `false` with `dashoffset` of `"1"` and a `ruleTransform` matrix
-whose horizontal scale is `0` (`matrix(0, 0, 0, 1, 0, 0)`). `after.revealed` is `true`,
-`dashoffset` is `"0"`, and `ruleTransform` is `"none"` or an identity matrix.
+Expected: `before.revealed` is `false` with `dashoffset` of `"1px"` and a `ruleTransform`
+matrix whose horizontal scale is `0` (`matrix(0, 0, 0, 1, 0, 0)`). `after.revealed` is `true`,
+`dashoffset` is `"0px"`, and `ruleTransform` is `"none"` or an identity matrix.
+
+`getComputedStyle` serialises `stroke-dashoffset` with a unit even though `pathLength="1"`
+makes the value unitless in the source — `"1px"` here means one normalised path length, not
+one CSS pixel.
 
 - [ ] **Step 6: Commit**
 
@@ -467,7 +478,7 @@ Create `src/components/ScrollTop.astro`:
 		top: 0;
 		left: 0;
 		width: 1px;
-		height: 100vh;
+		height: 100svh;
 		pointer-events: none;
 	}
 
@@ -629,9 +640,14 @@ no observer was created.
 
 - [ ] **Step 2: Scripting off — content still visible**
 
-In Playwright, disable JavaScript, load `http://localhost:4343/portfolio/`, and confirm the
-section headings are present in the rendered text (`Selected work`, `Career`, `Skills`,
-`Languages`). Nothing may be hidden, because `.reveal-armed` is never added.
+In Playwright, create a context with `javaScriptEnabled: false`, load
+`http://localhost:4343/portfolio/`, and confirm the section headings are present:
+`Selected work`, `Career`, `Skills`, `Languages`. Nothing may be hidden, because
+`.reveal-armed` is never added.
+
+Compare against `textContent`, not `innerText`. These headings are uppercased by CSS
+`text-transform`, which `innerText` reflects and `textContent` does not — a case-sensitive
+`innerText` match reports present headings as missing.
 
 - [ ] **Step 3: Nav scroll-spy regression**
 
@@ -669,7 +685,36 @@ Load `http://localhost:4343/portfolio/work/practice-saas/` and evaluate:
 Expected: `marked: 0`, `armed: false`, `button: true`. Reveals are homepage-only; the button
 is site-wide.
 
-- [ ] **Step 5: Full build**
+- [ ] **Step 5: Sections skipped by a jump still reveal on the way back**
+
+A reader can jump past sections — a `#skills` deep link, or End. Those sections stay hidden
+at that moment, which is correct, but they must reveal when scrolled back into view rather
+than staying invisible. Load `http://localhost:4343/portfolio/` and evaluate:
+
+```js
+(async () => {
+  const settle = () => new Promise(r => setTimeout(r, 300));
+  const revealed = () => document.querySelectorAll('[data-reveal].is-revealed').length;
+  window.scrollTo({top: document.body.scrollHeight, behavior: 'instant'});
+  await settle();
+  const afterJump = revealed();
+  for (let y = document.body.scrollHeight; y >= 0; y -= Math.round(innerHeight * 0.75)) {
+    window.scrollTo({top: y, behavior: 'instant'});
+    await settle();
+  }
+  return JSON.stringify({
+    afterJump,
+    afterScrollingBackUp: revealed(),
+    state: document.documentElement.dataset.revealState,
+  });
+})()
+```
+
+Expected: `afterJump` less than 4 (the skipped sections legitimately did not fire), and
+`afterScrollingBackUp: 4` with `state: "done"`. If a section stays hidden after being
+scrolled back into view, that is a real defect — the observer stopped watching too early.
+
+- [ ] **Step 6: Full build**
 
 ```bash
 npm run build
@@ -677,7 +722,7 @@ npm run build
 
 Expected: `0 errors, 0 warnings` and `19 page(s) built`.
 
-- [ ] **Step 6: Commit any fixes**
+- [ ] **Step 7: Commit any fixes**
 
 Only if a step above required a change:
 
@@ -685,3 +730,30 @@ Only if a step above required a change:
 git add -A
 git commit -m "fix: address scroll motion verification findings"
 ```
+
+---
+
+## Post-review fixes
+
+The final whole-branch review found five defects. All are fixed in commit `4b91e72`, and the
+code blocks above have been updated to match what shipped.
+
+| Fix | Why |
+| --- | --- |
+| `threshold: 0.15` → `0` | For a section taller than the viewport the maximum achievable ratio is `0.9 x innerHeight / sectionHeight`. `#timeline` at 360x640 measured 0.217 against a 0.15 threshold; past roughly 3840px tall it could never reach it and would become permanently invisible on small phones, with no error anywhere. `threshold: 0` removes the coupling to section height; the negative `rootMargin` still does the "properly on screen" work. |
+| `h1` focus target gains a `document.body` fallback | If no `h1` existed, focus stayed on the button and the sentinel observer then set `visibility: hidden` on the focused element, dropping focus entirely. |
+| Sentinel `100vh` → `100svh` | `100vh` is the large viewport height, so a collapsing mobile URL bar delayed the button past one visible screen. |
+| `.rule` selectors narrowed to `.node .rule` | `.rule` is a general-purpose hairline divider, also used as `<hr class="rule">`. Any future `.rule` placed inside one of the four revealing sections would have silently got `scaleX(0)` and never come back. |
+| `--node-size` moved from `.marker` to `.node` | `.node::before` consumed `var(--node-size)` in a `calc()`, but the property was declared on the child `.marker`. A parent cannot read a child's custom property, so the `calc()` was invalid and `left` fell back — the connector sat 16px left of the marker centre. Pre-existing, but the new draw-in animates exactly this element. |
+
+## Known issue, deliberately not fixed here
+
+`overflow-x: hidden` on `body` (`src/styles/global.css:146`) makes body a scroll container —
+its computed `overflow-y` resolves to `auto` — so `nav { position: sticky; top: 0 }` resolves
+against a scrollport that never scrolls. **The sticky nav does not stick.** Measured at
+scrollY 1500 the nav's `getBoundingClientRect().top` is `-1500`; forcing
+`overflow-x: visible` restores `0`.
+
+Consequences: the `nav.scrolled` border rule is dead code, and `[id] { scroll-margin-top:
+5.5rem }` compensates for a header that is not there. Pre-existing and unrelated to this
+branch; fixing it changes global layout, so it belongs in its own change.

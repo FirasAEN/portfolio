@@ -55,7 +55,7 @@ An inline script adds `reveal-armed` to `<html>` before anything is hidden. The 
 initial state is authored as `.reveal-armed [data-reveal]`, so with JavaScript disabled
 no element is ever hidden.
 
-A single observer (`threshold: 0.15`, `rootMargin: '0px 0px -10% 0px'`) watches all
+A single observer (`threshold: 0`, `rootMargin: '0px 0px -10% 0px'`) watches all
 `[data-reveal]` elements. On intersection it adds `.is-revealed`, calls `unobserve` for
 that element, and decrements a counter. At zero it calls `disconnect()` and stamps
 `data-reveal-state="done"` on `<html>`.

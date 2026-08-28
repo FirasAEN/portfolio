@@ -4,9 +4,9 @@
   rank: 1
   groups:
     - name: Back-end
-      items: [Java 11/17/21, Spring Boot, Spring MVC, Spring Security, Spring Data, Hibernate]
+      items: [Java 11/17/21, Spring Boot, Spring MVC, Spring Security, Spring Data, Hibernate, NodeJS]
     - name: Front-end
-      items: [Angular, TypeScript, RxJS, NgRx]
+      items: [Angular, TypeScript, RxJS, NgRx, JointJS]
     - name: Architecture
       items:
         [
@@ -20,6 +20,8 @@
       items: [PostgreSQL]
     - name: Auth & security
       items: [Keycloak, OAuth2, OIDC]
+    - name: Testing
+      items: [Jest, Vitest, Storybook]
 - id: working
   label: Working
   rank: 2
@@ -29,9 +31,9 @@
     - name: Build & infra
       items: [Nx, Docker, GitLab CI, Jenkins]
     - name: Testing
-      items: [JUnit, Mockito, Jest, Karma, Jasmine, Mocha, Storybook]
+      items: [JUnit, Mockito, Karma, Jasmine, Mocha]
     - name: Other
-      items: [NodeJS, React, NextJS, NestJS, JointJS, ThreeJS, D3JS, Python, Bash]
+      items: [React, NextJS, NestJS, ThreeJS, D3JS, Python, Bash]
 - id: familiar
   label: Familiar
   rank: 3

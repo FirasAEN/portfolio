@@ -15,6 +15,7 @@ tech:
   - ThreeJS
   - C#
   - ActiveMQ
+  - N-tier Architecture
 tags:
   - Dev
   - Full-Stack

@@ -13,6 +13,7 @@ tech:
   - ThreeJS
   - Ionic Cordova
   - Java
+  - N-tier Architecture
 tags:
   - Dev
   - Frontend

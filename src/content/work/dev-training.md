@@ -1,5 +1,5 @@
 ---
-title: Onboarding by Pairing
+title: A Training Programme for New Joiners
 publishDate: 2022-04-01 00:00:00
 diagram: onboarding-path
 description: |

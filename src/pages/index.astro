@@ -90,7 +90,7 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 		</header>
 
 		<!-- 2 · Proof -->
-		<section class="wrapper section" id="work">
+		<section class="wrapper section" id="work" data-reveal>
 			<SectionNode index="01" label="Selected work" />
 			<Grid>
 				{
@@ -110,7 +110,7 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 		</section>
 
 		<!-- 3 · Arc -->
-		<section class="wrapper section" id="timeline">
+		<section class="wrapper section" id="timeline" data-reveal>
 			<SectionNode index="02" label="Career" />
 			<ol class="timeline">
 				{
@@ -161,13 +161,13 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 		</section>
 
 		<!-- 4 · Skills, evidenced by the projects that used them -->
-		<section class="wrapper section" id="skills">
+		<section class="wrapper section" id="skills" data-reveal>
 			<SectionNode index="03" label="Skills" />
 			<SkillsEvidenced />
 		</section>
 
 		<!-- 5 · Contact -->
-		<section class="wrapper section" id="about">
+		<section class="wrapper section" id="about" data-reveal>
 			<SectionNode index="04" label="Languages" />
 			<p class="languages">
 				{languages.map((l) => <span><strong>{l.data.name}</strong> {l.data.level}</span>)}
@@ -176,6 +176,51 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 
 		<ContactCTA />
 	</div>
+
+	<script>
+		// Reveal-on-scroll. `data-reveal-state` is both the init guard and the hook
+		// the verification asserts on: "armed" while watching, "done" once every
+		// element has revealed and the observer has been dropped.
+		const root = document.documentElement;
+
+		if (!root.dataset.revealState) {
+			if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+				// No hiding and no observer at all — the content is already visible.
+				root.dataset.revealState = 'done';
+			} else {
+				root.classList.add('reveal-armed');
+
+				const els = [...document.querySelectorAll<HTMLElement>('[data-reveal]')];
+				let remaining = els.length;
+
+				if (remaining === 0) {
+					root.dataset.revealState = 'done';
+				} else {
+					root.dataset.revealState = 'armed';
+
+					const observer = new IntersectionObserver(
+						(entries) => {
+							for (const entry of entries) {
+								if (!entry.isIntersecting) continue;
+								entry.target.classList.add('is-revealed');
+								// Released as each element lands, not all at the end.
+								observer.unobserve(entry.target);
+								remaining -= 1;
+							}
+							if (remaining === 0) {
+								// Nothing left to watch: no live observer remains.
+								observer.disconnect();
+								root.dataset.revealState = 'done';
+							}
+						},
+						{ threshold: 0.15, rootMargin: '0px 0px -10% 0px' },
+					);
+
+					els.forEach((el) => observer.observe(el));
+				}
+			}
+		}
+	</script>
 </BaseLayout>
 
 <style>

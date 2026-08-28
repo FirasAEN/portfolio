@@ -7,44 +7,54 @@ const { open, label } = site.availability;
 
 {
 	open && (
-		<p class="availability">
-			<span class="marker" aria-hidden="true"><HexMarker size="0.7rem" /></span>
-			{label}
-		</p>
+		<div class="availability">
+			<p class="availability-label meta">Availability</p>
+			<p class="availability-status">
+				<span class="marker" aria-hidden="true"><HexMarker size="0.7rem" /></span>
+				{label}
+			</p>
+		</div>
 	)
 }
 
 <style>
 	/*
-	 * A live availability signal: on a CV site this is the one piece of state a
-	 * reader actually needs and cannot infer — whether to bother getting in touch.
+	 * A drawing's title block, not a badge. The previous version was a pill with a
+	 * border, a fill and a live dot — which is the "Open to work" component, and
+	 * recolouring it did not stop it reading as one. Border, background and pill
+	 * shape are gone; a rule and a label carry it instead.
 	 *
-	 * It used to be a hardcoded #22c55e circle with Tailwind's animate-ping
-	 * written out by hand, borrowed wholesale from another portfolio. Green is a
-	 * stronger universal cue than the accent, but the label says "open to ..." in
-	 * words, and the accent is already this site's live colour — links, nodes,
-	 * index numerals. Borrowed vocabulary was the worse trade.
+	 * On a CV site this is the one piece of state a reader cannot infer: whether
+	 * to bother getting in touch.
 	 */
 	.availability {
-		display: inline-flex;
-		align-items: center;
+		border-top: 1px solid var(--rule-color);
+		padding-top: 0.75rem;
+		max-width: 20rem;
+	}
+
+	.availability-label {
+		margin: 0 0 0.4rem;
+	}
+
+	.availability-status {
+		display: flex;
+		align-items: baseline;
 		gap: 0.55rem;
-		padding: 0.35rem 0.75rem 0.35rem 0.65rem;
-		border: 1px solid var(--surface-border);
-		border-radius: 0.5rem;
-		background-color: var(--surface);
-		font-family: var(--font-mono);
-		font-size: var(--text-xs);
-		letter-spacing: 0.04em;
+		margin: 0;
+		font-size: var(--text-sm);
 		color: var(--fg-muted);
 	}
 
 	/* Wrapped rather than classed directly: Astro scopes a style to the component
-	   that declares it, so a class handed to HexMarker lands on an element
+	   that declares it, so a class handed to HexMarker would land on an element
 	   carrying HexMarker's scope id and this rule would never match. */
 	.marker {
 		display: flex;
 		flex: none;
+		/* baseline alignment puts the hexagon on the text's baseline, which sits it
+		   slightly low against a cap-height-dominant line; nudge it back up. */
+		transform: translateY(0.1rem);
 		color: var(--accent-regular);
 	}
 

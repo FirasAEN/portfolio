@@ -58,8 +58,12 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 	<div class="spine">
 		<!-- 1 · Hook -->
 		<header class="wrapper hero" id="top">
-			<Availability />
-			<p class="meta">{site.role} · {site.location}</p>
+			<div class="hero-head">
+				<div class="hero-intro">
+					<p class="meta">{site.role} · {site.location}</p>
+				</div>
+				<Availability />
+			</div>
 			<h1>{site.heroName}</h1>
 			<hr class="rule" />
 			<p class="lede">
@@ -300,6 +304,16 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 		padding-top: 1rem;
 	}
 
+	/* Two columns above the breakpoint: the narrative keeps the left, the title
+	   block takes the right, which measured 415-694px of unused width per row. */
+	.hero-head {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 1.25rem;
+		width: 100%;
+	}
+
 	.hero h1 {
 		font-size: var(--text-5xl);
 		line-height: 0.95;
@@ -495,6 +509,13 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 		.hero {
 			padding-top: 2rem;
 			gap: 1.75rem;
+		}
+
+		.hero-head {
+			flex-direction: row;
+			align-items: flex-start;
+			justify-content: space-between;
+			gap: 3rem;
 		}
 
 		.hero .lede {

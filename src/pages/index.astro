@@ -29,6 +29,12 @@ const education = (await getCollection('education')).sort(
 );
 const languages = (await getCollection('languages')).sort((a, b) => a.data.rank - b.data.rank);
 
+// The hero mentions the doctorate in prose and links straight to the thesis
+// itself. The Career entry keeps the split: its title points at the theses.fr
+// record, "read the thesis" at the same full text used here. Both URLs come from
+// the one education entry, so neither is written twice.
+const phd = education.find((entry) => entry.id === 'phd');
+
 // Facts strip: derived, not asserted. Years come from the earliest role start.
 const allWork = await getCollection('work');
 const earliestStart = experience.reduce(
@@ -60,9 +66,19 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 				until the structure shows, then build something that survives contact with reality.
 			</p>
 			<p class="hero-detail">
-				PhD in computational material science, retrained as a Java developer, {years} years building
-				enterprise software. Today I lead a team of five and own the architecture rather than only
-				implementing it.
+				{
+					phd?.data.fullText ? (
+						<a
+							class="edu-link"
+							href={phd.data.fullText.url}
+							target="_blank"
+							rel="noopener noreferrer"
+						>PhD in computational material science</a>
+					) : (
+						'PhD in computational material science'
+					)
+				}, retrained as a Java developer, {years} years building enterprise software. Today I lead
+				a team of five and own the architecture rather than only implementing it.
 			</p>
 			<dl class="facts">
 				{
@@ -153,7 +169,12 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 							education.map((edu) => (
 								<p class="entry-summary">
 									{edu.data.url ? (
-										<a class="edu-link" href={edu.data.url}>
+										<a
+											class="edu-link"
+											href={edu.data.url}
+											target="_blank"
+											rel="noopener noreferrer"
+										>
 											<strong>{edu.data.title}</strong>
 										</a>
 									) : (
@@ -164,7 +185,12 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 									{edu.data.fullText && (
 										<>
 											{' · '}
-											<a class="edu-link" href={edu.data.fullText.url}>
+											<a
+												class="edu-link"
+												href={edu.data.fullText.url}
+												target="_blank"
+												rel="noopener noreferrer"
+											>
 												{edu.data.fullText.label}
 											</a>
 											{edu.data.fullText.bytes && (
@@ -423,8 +449,16 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 		color: var(--accent-regular);
 	}
 
-	/* The size is stated because the full text is a 17 MB PDF: a reader on a phone
-	   should know before they tap, not after. */
+	/*
+	 * Both education links leave the site, so they open in a new tab: a reader
+	 * dipping into a 192-page thesis has not finished with this page. rel carries
+	 * noopener (the new tab must not get a handle on this window) and noreferrer.
+	 *
+	 * The size is stated because the full text is 17.5 MB. The server sends
+	 * Content-Disposition: inline, so it opens in the browser's PDF viewer rather
+	 * than saving — but the transfer happens either way, which is what matters on
+	 * a phone.
+	 */
 	.edu-link {
 		color: inherit;
 		text-decoration-color: var(--rule-color);

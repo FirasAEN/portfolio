@@ -29,7 +29,7 @@
     - name: Data
       items: [MySQL, Redis, ElasticSearch]
     - name: Build & infra
-      items: [Nx, Docker, GitLab CI, Jenkins]
+      items: [Nx, Docker, GitLab CI, Jenkins, n8n]
     - name: Testing
       items: [JUnit, Mockito, Karma, Jasmine, Mocha]
     - name: Other

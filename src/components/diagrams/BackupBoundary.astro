@@ -1,0 +1,94 @@
+---
+// Backup trust boundary. The point: the automation names WHAT to back up, the
+// host decides HOW. A request carries an identifier and nothing else, so a
+// compromised n8n has nothing to inject into a command root will run.
+interface Props {
+	variant?: 'full' | 'thumb' | undefined;
+}
+const { variant = 'full' } = Astro.props;
+const viewBox = variant === 'thumb' ? '0 0 640 200' : '0 0 640 330';
+---
+
+<svg
+	class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]}
+	viewBox={viewBox}
+	role="img"
+	aria-labelledby="bb-t"
+>
+	<title id="bb-t">
+		n8n writes an identifier; the host validates it against an unmounted catalog and runs the command
+		as root
+	</title>
+	<defs>
+		<marker id="bb-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow-accent" />
+		</marker>
+	</defs>
+
+	<text x="16" y="18" class="d-meta">Container zone · mounted at /data/shared</text>
+
+	<rect x="16" y="28" width="180" height="38" rx="3" class="d-box-fill" />
+	<text x="28" y="45" class="d-title">Requester</text>
+	<text x="28" y="59">scheduled, per enabled app</text>
+
+	<rect x="228" y="28" width="180" height="38" rx="3" class="d-box-fill" />
+	<text x="240" y="45" class="d-title">requests/</text>
+	<text x="240" y="59">&lt;id&gt;.tmp → &lt;id&gt;.req</text>
+
+	<rect x="440" y="28" width="184" height="38" rx="3" class="d-box-fill" />
+	<text x="452" y="45" class="d-title">upload/ → Drive</text>
+	<text x="452" y="59">retention per app</text>
+
+	<path d="M196 47 H224" class="d-line-accent" marker-end="url(#bb-a)" />
+
+	<path d="M16 84 H624" class="d-line d-dashed" />
+	<text x="16" y="100" class="d-meta">Mount boundary — nothing below is visible to the container</text>
+
+	<rect x="16" y="112" width="180" height="38" rx="3" class="d-box-fill" />
+	<text x="28" y="129" class="d-title">poller · root</text>
+	<text x="28" y="143">claims oldest by mv</text>
+
+	<rect x="228" y="112" width="180" height="38" rx="3" class="d-core" />
+	<text x="240" y="129" class="d-core-text">catalog.d/&lt;id&gt;.conf</text>
+	<text x="240" y="143" class="d-core-text">host-owned allowlist</text>
+
+	<rect x="440" y="112" width="184" height="38" rx="3" class="d-box-fill" />
+	<text x="452" y="129" class="d-title">engine</text>
+	<text x="452" y="143">pg_dumpall · tar.gz</text>
+
+	<path d="M196 131 H224" class="d-line-accent" marker-end="url(#bb-a)" />
+	<path d="M408 131 H436" class="d-line-accent" marker-end="url(#bb-a)" />
+
+	{/* The return path. Results and the staged artifact DO cross back over the
+	    boundary — through the shared mount, which is the one direction that is
+	    allowed. Without this the upload box floats and the story stops at the
+	    engine. */}
+	<path d="M532 112 V72" class="d-line-accent" marker-end="url(#bb-a)" />
+
+	{
+		variant !== 'thumb' && (
+			<>
+				<path d="M16 176 H624" class="d-line d-dashed" />
+				<text x="16" y="198" class="d-meta">Why the boundary is where it is</text>
+				<text x="16" y="218">
+					The poller runs catalog commands as root, because dumping a database means
+				</text>
+				<text x="16" y="234">
+					docker exec and reading root-owned directories. That makes catalog.d the one file
+				</text>
+				<text x="16" y="250">
+					that must never be writable by the thing issuing requests — a compromised n8n could
+				</text>
+				<text x="16" y="266">
+					otherwise define the command root executes. So it is host-owned and unmounted, and a
+				</text>
+				<text x="16" y="282">
+					request carries only an identifier: "myapp; rm -rf /" fails validation rather than
+				</text>
+				<text x="16" y="298">
+					running. The automation names what to back up; the host alone decides how.
+				</text>
+			</>
+		)
+	}
+</svg>

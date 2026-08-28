@@ -19,6 +19,14 @@ export const site = {
 	 * unpunctuated form the CV prints.
 	 */
 	heroName: 'Firas, François Abed El Nabi',
+	/**
+	 * When the software career starts, for the derived "years building" figure.
+	 * 2016 is leaving the doctorate and retraining — deliberately not the first
+	 * professional role in `experience.yaml`, which would read 9 and understate
+	 * it, and not the PhD's start, which would read 14 and overstate what the
+	 * hero calls enterprise software.
+	 */
+	careerStart: '2016-01-01',
 	role: 'Tech Lead & Full-Stack Engineer, PhD',
 	location: 'Grenoble, France',
 	email: 'francois.aen@gmail.com',

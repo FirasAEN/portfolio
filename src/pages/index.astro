@@ -37,11 +37,12 @@ const phd = education.find((entry) => entry.id === 'phd');
 
 // Facts strip: derived, not asserted. Years come from the earliest role start.
 const allWork = await getCollection('work');
-const earliestStart = experience.reduce(
-	(min, e) => (e.data.start < min ? e.data.start : min),
-	experience[0]!.data.start,
+// Derived from site.careerStart rather than the earliest entry in experience.yaml:
+// that entry is the first *professional* role, which leaves out the retraining
+// year and reads one lower than the career actually is.
+const years = Math.floor(
+	(Date.now() - new Date(site.careerStart).valueOf()) / (365.25 * 24 * 3600 * 1000),
 );
-const years = Math.floor((Date.now() - earliestStart.valueOf()) / (365.25 * 24 * 3600 * 1000));
 const facts = [
 	{ value: String(years), label: 'years building' },
 	{ value: '5', label: 'engineers led' },
@@ -77,8 +78,9 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 					) : (
 						'PhD in computational material science'
 					)
-				}, retrained as a Java developer, {years} years building enterprise software. Today I lead
-				a team of five and own the architecture rather than only implementing it.
+				}, retrained as a Java developer, {years} years building software and most of that
+				in the enterprise. Today I lead a team of five and own the architecture rather than
+				only implementing it.
 			</p>
 			<dl class="facts">
 				{

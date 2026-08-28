@@ -22,7 +22,7 @@ tags:
   - 3D
 company: viseo
 featured: true
-order: 7
+order: 8
 ---
 
 ## Spatial Augmented Reality for an EU research project

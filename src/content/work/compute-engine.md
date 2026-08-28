@@ -20,6 +20,8 @@ description: |
   application and streamed back over SSE under one trace id — with the domain-specific
   surface narrowed to four extension points.
 company: independent
+featured: true
+order: 6
 ---
 
 ## A platform where the business logic is the plugin

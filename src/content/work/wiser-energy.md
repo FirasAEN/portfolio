@@ -20,7 +20,7 @@ tags:
   - IoT
 company: capgemini
 featured: true
-order: 6
+order: 7
 ---
 
 ## Energy monitoring and BLE home automation for Schneider Electric

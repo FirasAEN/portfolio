@@ -84,6 +84,12 @@
 	   changes. They previously disagreed by 8px: 40 against 48. */
 	--marker-size: 2.5rem;
 
+	/* Authoritative header height. nav takes it as a min-height and anchor
+	   clearance is derived from it, so the two cannot drift: scroll-margin-top
+	   was 88px against an 87px header — one pixel of intended clearance, which
+	   read as overlap. */
+	--header-height: 5.5rem;
+
 	--fg: var(--gray-100);
 	--fg-muted: color-mix(in srgb, var(--gray-100) 70%, transparent);
 	--fg-subtle: color-mix(in srgb, var(--gray-100) 44%, transparent);
@@ -173,8 +179,10 @@ body {
 	}
 }
 
+/* Header height plus real breathing room, not a hand-copied figure that happened
+   to match it. */
 [id] {
-	scroll-margin-top: 5.5rem;
+	scroll-margin-top: calc(var(--header-height) + 1.5rem);
 }
 
 body {

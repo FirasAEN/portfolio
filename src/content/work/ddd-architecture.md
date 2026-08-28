@@ -1,5 +1,5 @@
 ---
-title: Untangling an Inherited Java Monolith
+title: A Hexagonal Reference Architecture for New Services
 publishDate: 2022-08-15 00:00:00
 diagram: hexagonal
 description: |
@@ -23,7 +23,7 @@ featured: true
 order: 2
 ---
 
-## Untangling an inherited Java monolith
+## The boundary every new service is written against
 
 The back end I inherited was a monolithic Java application with the business
 logic tangled into it. Over four years I have moved new services out of it onto

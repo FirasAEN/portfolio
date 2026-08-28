@@ -1,5 +1,5 @@
 ---
-title: Serving a Knowledge Vault as a Website
+title: A Read-Only Reader for Notes and Code
 publishDate: 2026-08-22 00:00:00
 tech:
   - TypeScript

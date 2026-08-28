@@ -63,8 +63,13 @@ that element, and decrements a counter. At zero it calls `disconnect()` and stam
 Elements already on screen at load reveal immediately — `IntersectionObserver` fires on
 first observation — so the hero needs no special case.
 
-`[data-reveal]` is applied to the section wrappers, the project grid, and the timeline
-entries. Not to individual words, icons, or chips.
+`[data-reveal]` is applied to the four `<section>` wrappers only — not to the project grid,
+the timeline entries, or individual words, icons, and chips.
+
+Marking nested elements was considered and rejected. `IntersectionObserver` is geometric and
+ignores `opacity`, so a marked child inside a still-hidden marked parent fires on its own
+schedule and the two reveals race. It would also produce a per-card stagger, which is the
+option explicitly not chosen.
 
 The hero is **not** marked. It is above the fold, so the observer would fire on first
 observation and turn a scroll reveal into a page-load animation — a different effect, and

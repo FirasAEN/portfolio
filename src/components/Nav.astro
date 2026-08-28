@@ -55,6 +55,7 @@ const isCurrentRoute = (item: LinkRoute) => {
 								'link',
 								{active: isCurrentRoute(tl),},
 							]}
+							data-root={tl.root ? '' : undefined}
 							href={tl.href}
 						>
 							{tl.label}
@@ -129,16 +130,19 @@ const isCurrentRoute = (item: LinkRoute) => {
 	// the route. One rAF-throttled calculation rather than an IntersectionObserver
 	// plus a scroll handler — two writers to the same state raced, and returning
 	// to the top could leave a lower section still marked.
-	const anchorLinks = [...document.querySelectorAll<HTMLAnchorElement>('.link')].filter(
-		(a) => a.hash.length > 1,
-	);
+	// Gate on sections that exist on THIS page. Gating on the nav's hash links
+	// instead was always true — they are hardcoded — so on /work/* the spy ran
+	// with nothing to track, concluded "no section reached", and marked Home
+	// active beside the server-rendered Work.
+	const targets = [...document.querySelectorAll<HTMLAnchorElement>('.link')]
+		.filter((a) => a.hash.length > 1)
+		.map((a) => ({ link: a, section: document.querySelector<HTMLElement>(a.hash) }))
+		.filter((t): t is { link: HTMLAnchorElement; section: HTMLElement } => t.section != null);
 
-	if (anchorLinks.length) {
-		const targets = anchorLinks
-			.map((a) => ({ link: a, section: document.querySelector<HTMLElement>(a.hash) }))
-			.filter((t): t is { link: HTMLAnchorElement; section: HTMLElement } => t.section != null);
-
-		const homeLink = document.querySelector<HTMLAnchorElement>('.link:not([href*="#"])');
+	if (targets.length) {
+		// Flagged in the markup, not located by position: `:not([href*="#"])`
+		// matches Home and Work both, and only picked Home because it is first.
+		const homeLink = document.querySelector<HTMLAnchorElement>('.link[data-root]');
 
 		const update = () => {
 			// The section whose top has most recently passed the reading line.

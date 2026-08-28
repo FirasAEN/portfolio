@@ -13,11 +13,12 @@ export const site = {
 	/** Duplicate of `name`, kept so callers reading `fullName` still resolve. */
 	fullName: 'Firas François Abed El Nabi',
 	/**
-	 * The short form used on the CV, the email address and the LinkedIn handle.
-	 * Stated on the page so a reader matching this site against either one is not
-	 * met by two unconnected names.
+	 * The hero heading only. Deliberately punctuated differently from `name`:
+	 * everywhere a reader might match this site against something else — the
+	 * browser tab, the header, the footer, the downloadable CV — keeps the
+	 * unpunctuated form the CV prints.
 	 */
-	alias: 'François AEN',
+	heroName: 'Firas, François Abed El Nabi',
 	role: 'Tech Lead & Full-Stack Engineer',
 	location: 'Grenoble, France',
 	email: 'francois.aen@gmail.com',

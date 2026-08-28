@@ -22,10 +22,17 @@ services:
     container_name: portfolio
     restart: unless-stopped
     # Without this the container is "up" the moment nginx starts, even if it is
-    # serving nothing — and Traefik would happily route to it. wget is in the
-    # nginx alpine image already, so this needs no extra layer.
+    # serving nothing. wget is in the nginx alpine image already, so this needs
+    # no extra layer.
+    #
+    # 127.0.0.1, NOT localhost. nginx listens on 0.0.0.0:80 — IPv4 only — while
+    # localhost resolves to ::1 first, so the check was refused every time. That
+    # marks the container unhealthy, and Traefik's Docker provider will not route
+    # to an unhealthy container: the site returned Traefik's own 404 while nginx
+    # was serving perfectly well behind it. A healthcheck that lies is worse than
+    # none, because it takes the site down on its own.
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost/"]
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/"]
       interval: 30s
       timeout: 3s
       retries: 3

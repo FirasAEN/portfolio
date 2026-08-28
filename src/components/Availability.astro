@@ -10,8 +10,8 @@ const { open, label } = site.availability;
 		<div class="availability">
 			<p class="availability-label meta">Availability</p>
 			<p class="availability-status">
-				<span class="marker" aria-hidden="true"><HexMarker size="0.7rem" /></span>
-				{label}
+				<span class="marker" aria-hidden="true"><HexMarker size="0.95rem" /></span>
+				<span class="availability-text">{label}</span>
 			</p>
 		</div>
 	)
@@ -54,26 +54,95 @@ const { open, label } = site.availability;
 		flex: none;
 		/* baseline alignment puts the hexagon on the text's baseline, which sits it
 		   slightly low against a cap-height-dominant line; nudge it back up. */
-		transform: translateY(0.1rem);
+		transform: translateY(0.15rem);
 		color: var(--accent-regular);
 	}
 
-	/* One opacity breath on the stroke. No expanding halo — that was the ping. */
+	.availability-text {
+		color: var(--fg-muted);
+	}
+
 	@media (prefers-reduced-motion: no-preference) {
+		/* Pulse, not the old opacity breath: the hexagon is now 0.95rem, big
+		   enough that a scale change reads. Floor is 0.6 — this is a functional
+		   status indicator, and the stroke stops registering much below that.
+		   The translate is repeated in every keyframe because it is baseline
+		   correction, not motion; omitting it would snap the marker down. */
 		.marker {
-			animation: availability-breath 3.2s ease-in-out infinite alternate;
+			animation: availability-pulse 2.6s ease-in-out infinite;
+		}
+
+		/*
+		 * Silver sweep. Two layers: a moving highlight band over a flat base, both
+		 * clipped to the glyphs. The base layer is what makes this safe — with a
+		 * single no-repeat gradient, every part of the text the image does not
+		 * cover would clip to nothing and the words would disappear mid-sweep.
+		 *
+		 * The highlight is --gray-0, the strongest value in whichever theme is
+		 * active: near-white on the dark ground, near-black on the light one. So
+		 * the sweep is a bright glint in dark mode and a deeper ink glint in
+		 * light mode, and contrast against the ground never drops below the
+		 * --fg-muted baseline in either. A literally silver band would have been
+		 * a mid-grey streak on the light theme — a contrast hole in the one
+		 * sentence a reader needs.
+		 */
+		.availability-text {
+			background-image: linear-gradient(
+					100deg,
+					transparent 42%,
+					var(--gray-0) 50%,
+					transparent 58%
+				),
+				linear-gradient(var(--fg-muted), var(--fg-muted));
+			background-size:
+				200% 100%,
+				100% 100%;
+			background-repeat: no-repeat;
+			background-position:
+				-100% 0,
+				0 0;
+			background-clip: text;
+			-webkit-background-clip: text;
+			color: transparent;
+			animation: availability-sheen 6s ease-in-out infinite;
 		}
 	}
 
-	@keyframes availability-breath {
-		/* Floor is 0.55, not lower: this is a functional status indicator, not
-		   ambient decoration, and at this size the stroke is sub-pixel — below
-		   about half opacity it stops reading at all. */
-		from {
-			opacity: 0.55;
+	/* Forced colours: background-clip: text over a transparent colour leaves the
+	   sentence invisible, because the UA does not repaint gradient layers. */
+	@media (forced-colors: active) {
+		.availability-text {
+			background-image: none;
+			color: CanvasText;
+			animation: none;
 		}
-		to {
+	}
+
+	@keyframes availability-pulse {
+		0%,
+		100% {
+			transform: translateY(0.15rem) scale(1);
+			opacity: 0.6;
+		}
+		50% {
+			transform: translateY(0.15rem) scale(1.18);
 			opacity: 1;
+		}
+	}
+
+	/* The band crosses in the first 55% and the rest of the cycle is flat, so it
+	   reads as an occasional glint rather than a loading shimmer. */
+	@keyframes availability-sheen {
+		0% {
+			background-position:
+				-100% 0,
+				0 0;
+		}
+		55%,
+		100% {
+			background-position:
+				200% 0,
+				0 0;
 		}
 	}
 </style>

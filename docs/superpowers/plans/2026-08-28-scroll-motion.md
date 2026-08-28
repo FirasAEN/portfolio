@@ -168,7 +168,7 @@ In `src/pages/index.astro`, insert this immediately before the closing `</BaseLa
 							root.dataset.revealState = 'done';
 						}
 					},
-					{ threshold: 0.15, rootMargin: '0px 0px -10% 0px' },
+					{ threshold: 0, rootMargin: '0px 0px -10% 0px' },
 				);
 
 				els.forEach((el) => observer.observe(el));
@@ -320,12 +320,12 @@ Append to `src/styles/global.css`:
 		transition: stroke-dashoffset 0.6s ease-out 0.15s;
 	}
 
-	.reveal-armed [data-reveal] .rule {
+	.reveal-armed [data-reveal] .node .rule {
 		transform: scaleX(0);
 		transform-origin: left;
 	}
 
-	.reveal-armed [data-reveal].is-revealed .rule {
+	.reveal-armed [data-reveal].is-revealed .node .rule {
 		transform: scaleX(1);
 		transition: transform 0.6s ease-out 0.2s;
 	}
@@ -478,7 +478,7 @@ Create `src/components/ScrollTop.astro`:
 		top: 0;
 		left: 0;
 		width: 1px;
-		height: 100vh;
+		height: 100svh;
 		pointer-events: none;
 	}
 
@@ -730,3 +730,30 @@ Only if a step above required a change:
 git add -A
 git commit -m "fix: address scroll motion verification findings"
 ```
+
+---
+
+## Post-review fixes
+
+The final whole-branch review found five defects. All are fixed in commit `4b91e72`, and the
+code blocks above have been updated to match what shipped.
+
+| Fix | Why |
+| --- | --- |
+| `threshold: 0.15` → `0` | For a section taller than the viewport the maximum achievable ratio is `0.9 x innerHeight / sectionHeight`. `#timeline` at 360x640 measured 0.217 against a 0.15 threshold; past roughly 3840px tall it could never reach it and would become permanently invisible on small phones, with no error anywhere. `threshold: 0` removes the coupling to section height; the negative `rootMargin` still does the "properly on screen" work. |
+| `h1` focus target gains a `document.body` fallback | If no `h1` existed, focus stayed on the button and the sentinel observer then set `visibility: hidden` on the focused element, dropping focus entirely. |
+| Sentinel `100vh` → `100svh` | `100vh` is the large viewport height, so a collapsing mobile URL bar delayed the button past one visible screen. |
+| `.rule` selectors narrowed to `.node .rule` | `.rule` is a general-purpose hairline divider, also used as `<hr class="rule">`. Any future `.rule` placed inside one of the four revealing sections would have silently got `scaleX(0)` and never come back. |
+| `--node-size` moved from `.marker` to `.node` | `.node::before` consumed `var(--node-size)` in a `calc()`, but the property was declared on the child `.marker`. A parent cannot read a child's custom property, so the `calc()` was invalid and `left` fell back — the connector sat 16px left of the marker centre. Pre-existing, but the new draw-in animates exactly this element. |
+
+## Known issue, deliberately not fixed here
+
+`overflow-x: hidden` on `body` (`src/styles/global.css:146`) makes body a scroll container —
+its computed `overflow-y` resolves to `auto` — so `nav { position: sticky; top: 0 }` resolves
+against a scrollport that never scrolls. **The sticky nav does not stick.** Measured at
+scrollY 1500 the nav's `getBoundingClientRect().top` is `-1500`; forcing
+`overflow-x: visible` restores `0`.
+
+Consequences: the `nav.scrolled` border rule is dead code, and `[id] { scroll-margin-top:
+5.5rem }` compensates for a header that is not there. Pre-existing and unrelated to this
+branch; fixing it changes global layout, so it belongs in its own change.

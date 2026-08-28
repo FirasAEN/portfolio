@@ -23,37 +23,24 @@ featured: true
 order: 7
 ---
 
-## Energy monitoring and BLE home automation for Schneider Electric
-
-As a consultant at Capgemini-Sogeti High Tech, I built interfaces for Schneider
+As a consultant at Capgemini-Sogeti High Tech I built interfaces for Schneider
 Electric's Wiser Energy platform: energy consumption monitoring and photovoltaic
-production tracking for residential installations, delivered as both internal
-and end-user applications across EMEA.
+production tracking for residential installations, shipped as both internal and
+end-user applications across EMEA.
 
-### Two products, two framework generations
+It went out as two products on two framework generations, WiserEnergy on
+AngularJS and WiserOne on Angular. Working across both meant holding the shared
+concepts consistent while the codebases had different idioms, different build
+setups and different people's habits in them. The audiences differed too:
+internal tools for people who use them daily and know the domain, end-user
+applications for residents who did not choose the software and will never read
+documentation. Same data, different assumptions about what the reader already
+knows.
 
-The platform shipped as **WiserEnergy** on AngularJS and **WiserOne** on Angular.
-Working across both meant keeping shared concepts consistent while the codebases
-had genuinely different idioms — and it is where the case for migrating rather
-than maintaining two generations stops being theoretical.
-
-Two audiences, too: internal tools for people who use them daily and know the
-domain, and end-user applications for residents who did not choose the software
-and will never read documentation. The same data, presented with different
-assumptions about what the reader already knows.
-
-### Home automation over Bluetooth Low Energy
-
-I delivered control of BLE actuators — light bulbs and shutters — through a web
-application deployed to Android and iOS via Ionic Cordova.
-
-BLE is the interesting constraint. It is not a request/response transport:
-devices drift out of range, pairing fails intermittently, and an operation that
-succeeded a moment ago may not now. The interface has to represent a device as
-*probably* in a state rather than pretending it knows, and it has to recover
-without making someone restart the app.
-
-### Technical environment
-
-Java 8 behind React, Angular, AngularJS and TypeScript on the front end, NodeJS,
-ThreeJS for visualisation, and Ionic Cordova for the mobile build.
+I also delivered control of BLE actuators — light bulbs and shutters — through a
+web application deployed to Android and iOS with Ionic Cordova. BLE is not a
+request/response transport. Devices drift out of range, pairing fails
+intermittently, and an operation that succeeded a moment ago may not now. The
+interface has to represent a device as *probably* in a state instead of
+pretending it knows, and it has to recover without making someone restart the
+app.

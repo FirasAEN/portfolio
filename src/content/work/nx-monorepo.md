@@ -20,45 +20,30 @@ featured: true
 order: 4
 ---
 
-## Restructuring the front end so five apps release independently
-
 I restructured the front end into an Nx monorepo of five applications — DC Viz,
-DC MarketPlace, DC Code, DC Tag IA and the access console — so the
-micro-frontends build and release independently, on Ports and Adapters.
+DC MarketPlace, DC Code, DC Tag IA and the access console — so they build and
+release independently.
 
-### The constraint
+They share a lot by nature. All five render the same platform concepts, so they
+share a design system, a data-access layer and a set of domain types. Splitting
+into five repositories would have bought release independence by duplicating all
+of that and letting the copies drift. Shipping them together meant every release
+was a coordination exercise where five things had to be ready before any of them
+could go.
 
-The five applications share a great deal by nature. They all render the same
-platform concepts, so they share a design system, a data-access layer and a set
-of domain types. Splitting into five repositories would have bought release
-independence by duplicating all of that, and by letting the copies drift.
+So: one repository, with the dependency graph made explicit and enforced.
+Applications at the top, feature libraries below, shared UI and data-access below
+that. Dependencies only point downward and the build fails if you break it.
+Ports and Adapters applies here as well — an application depends on an interface,
+not on another application's internals — and without that the graph rules would
+have nothing to check against. Module Federation then lets each application load
+its own bundle at runtime.
 
-But shipping them together meant every release was a coordination exercise: five
-things had to be ready before any of them could go.
-
-### The decision
-
-One repository, with the dependency graph made explicit and enforced.
-Applications at the top, feature libraries below, shared UI and data-access
-below that. Dependencies only point downward and the build fails if that is
-violated — the constraint is checked by tooling rather than written down and
-hoped for.
-
-Ports and Adapters applies here too: an application depends on an interface, not
-on another application's internals, which is what makes the graph rules
-enforceable rather than aspirational.
-
-Module Federation then lets each application load its own bundle at runtime.
-
-### The trade-off
-
-A monorepo concentrates risk: a bad change to a shared library can reach all
+The risk this concentrates is that a bad change to a shared library reaches all
 five applications at once, where separate repositories would have contained it.
 That is the price of not duplicating the shared code, and it is why the graph
-rules are enforced and why CI rebuilds only what a change actually affects.
+rules are enforced by the build and why CI rebuilds only what a change actually
+affects.
 
-### Outcome
-
-Five applications build and release on their own cadence from one codebase. The
-same structure carried the AngularJS-to-Angular migration of seven modules,
+The same structure carried the AngularJS-to-Angular migration of seven modules,
 because modules could move one at a time behind the federation boundary.

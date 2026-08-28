@@ -3,8 +3,8 @@ title: AngularJS to Angular Migration
 publishDate: 2021-09-01 00:00:00
 diagram: migration-path
 description: |
-  Seven modules off end-of-life AngularJS over 18 months, both frameworks live behind a
-  bridge so feature delivery never paused.
+  Seven DataChain modules off end-of-life AngularJS over 18 months, both frameworks
+  running in the same page behind a bridge so feature delivery never stopped.
 tech:
   - Angular
   - AngularJS
@@ -17,37 +17,23 @@ tags:
 company: adobis
 ---
 
-## Retiring an end-of-life framework without pausing delivery
-
-AngularJS reached end of life in 2021 while seven DataChain modules still
-depended on it. I planned and carried out the migration to Angular over 18
+AngularJS reached end of life in 2021 and seven DataChain modules still depended
+on it. I planned the migration to Angular and carried it out over eighteen
 months, with the product shipping features throughout.
 
-### The constraint
+DataChain sells into pharmaceutical and public-sector customers. An unsupported
+framework there is not only technical debt; it is a line in a procurement
+questionnaire that someone eventually asks about.
 
-A framework past end of life is an accumulating security and hiring liability —
-and for a platform sold into pharmaceutical and public-sector customers, an
-unsupported dependency is a question you get asked in procurement. It had to go.
+A big-bang rewrite would have frozen delivery for the whole eighteen months, so
+I went module by module, with both frameworks running in the same page behind a
+bridge layer. Each module could be moved, released and verified on its own. The
+property that mattered more than I expected was that the work could be paused
+whenever feature delivery needed the capacity, and it was, more than once.
 
-But a big-bang rewrite would have frozen feature delivery for the whole period,
-which is not an acceptable trade for a product with paying customers.
+The cost was a heavier bundle for a year and a half plus the bridge itself,
+which was code someone had to maintain and nobody wanted to own. I deleted it
+the week the last module moved.
 
-### The decision
-
-Migrate incrementally, one module at a time, with both frameworks running in the
-same page behind a bridge layer. Each module could be moved, released and
-verified on its own, and the work could be paused whenever feature delivery
-needed the capacity — which it did, more than once.
-
-### The trade-off
-
-Running two frameworks side by side means a heavier bundle and a bridge layer
-that is itself code to maintain, for a year and a half. That was the deliberate
-price of never stopping delivery. The bridge was deleted once the last module
-moved.
-
-### Outcome
-
-All seven modules run on Angular and the AngularJS dependency is gone. The
-migration rode on the Nx monorepo structure, which is what made module-by-module
-movement practical rather than theoretical.
+The migration rode on the Nx monorepo structure. Without the module boundaries
+already being real, moving one at a time would have been a much longer argument.

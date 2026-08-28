@@ -23,17 +23,41 @@ Node 22+ (`.nvmrc`, and `engines` in `package.json`).
 
 ## Deployment
 
-Pushing to **`dev`** triggers `.github/workflows/deploy.yml`, which builds and
-publishes to GitHub Pages at **https://firasaen.github.io/portfolio**.
+The same source builds for two hosts, selected by the `DEPLOY_TARGET` env var
+(see `TARGETS` in `astro.config.mjs`):
 
-Note `main` is not the deploy branch.
+| target | host | base |
+| --- | --- | --- |
+| `vps` (default) | https://firas-aen.portfolio.cyberonix.dev | `/` |
+| `pages` | https://firasaen.github.io/portfolio | `/portfolio` |
+
+**VPS — the primary host.** Docker: node builds, nginx serves, Traefik routes.
+The full runbook, including DNS and troubleshooting, is in
+[`deploy/README.md`](deploy/README.md). Deploys are:
+
+```bash
+cd /opt/apps/portfolio && sudo deploy/deploy.sh
+```
+
+**GitHub Pages — a mirror.** Pushing to **`dev`** triggers
+`.github/workflows/deploy.yml`, which sets `DEPLOY_TARGET=pages`. Without that
+env var CI would build the VPS variant and every asset path would 404 under
+`/portfolio`. Note `main` is not the deploy branch.
+
+Both builds emit the **VPS** URL as canonical, so the mirror consolidates into
+the primary host rather than competing with it in search. `canonicalOrigin` in
+`src/config/deploy.ts` is the single place that decides this.
+
+An unrecognised `DEPLOY_TARGET` throws rather than falling back — a typo would
+otherwise bake the wrong host into every canonical, sitemap entry and share card
+on the site.
 
 ### The base path
 
-The site is served from the `/portfolio` sub-path, so **every internal URL must
-go through `computeUrl()`** (`src/utils/computeUrl.ts`). There is no `<base>` tag —
-it was removed because it silently rewrites every relative URL and cannot affect
-external stylesheets.
+The Pages target serves from a `/portfolio` sub-path, so **every internal URL
+must go through `computeUrl()`** (`src/utils/computeUrl.ts`) even though the VPS
+target serves from the root. There is no `<base>` tag — it was removed because it
+silently rewrites every relative URL and cannot affect external stylesheets.
 
 Background images live in `src/assets/` rather than `public/` for the same reason:
 CSS `url()` resolves relative to the *stylesheet*, so an extracted stylesheet at

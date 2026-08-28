@@ -6,16 +6,71 @@ import { site, pageTitle } from '../config/site';
 interface Props {
 	title?: string | undefined;
 	description?: string | undefined;
+	/**
+	 * Open Graph type. `profile` describes a PERSON, so it belongs on the home
+	 * page alone — every other route was claiming to be the person too. `article`
+	 * for the work write-ups, `website` for the rest.
+	 */
+	ogType?: 'website' | 'profile' | 'article' | undefined;
 }
 
-const { title = pageTitle(), description = site.description } = Astro.props;
+const {
+	title = pageTitle(),
+	description = site.description,
+	ogType = 'website',
+} = Astro.props;
+
+/*
+ * Absolute URLs, because Open Graph and canonical both require them — a
+ * base-relative path is silently ignored by every crawler and every unfurler.
+ * Astro.site is the origin from astro.config.mjs; computeUrl adds the /portfolio
+ * base, so the two together are the only correct form here.
+ */
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL(computeUrl('/og-image.png'), Astro.site).href;
 ---
 
 <meta charset="UTF-8" />
-<meta name="description" property="og:description" content={description} />
 <meta name="viewport" content="width=device-width" />
 <meta name="generator" content={Astro.generator} />
 <title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+
+<!--
+	Sharing this link anywhere — Slack, LinkedIn, a DM — produced a blank card,
+	which for a CV site is the one place the link actually gets seen. og:image
+	must be absolute and should be 1200x630; the card is generated to that size
+	and committed rather than rendered at build time, which would mean a
+	rendering dependency for one static asset.
+
+	description previously carried `property="og:description"` on the same tag as
+	`name="description"`. It works in most parsers by accident, but the two are
+	different vocabularies and belong in separate tags.
+-->
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:locale" content="en_GB" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={`${site.name} — ${site.role}`} />
+{
+	ogType === 'profile' && (
+		<>
+			<meta property="profile:first_name" content="Firas" />
+			<meta property="profile:last_name" content="Abed El Nabi" />
+		</>
+	)
+}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
 
 <link rel="icon" type="image/svg+xml" href={computeUrl('/favicon.svg')} />
 <link rel="alternate icon" type="image/x-icon" href={computeUrl('/favicon.ico')} />

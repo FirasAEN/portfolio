@@ -1,0 +1,61 @@
+---
+import { getCollection } from 'astro:content';
+import { computeUrl } from '../utils/computeUrl';
+import { site, socials } from '../config/site';
+
+/*
+ * schema.org Person, for the home page only.
+ *
+ * Deliberately one entity on one page rather than the same block repeated on
+ * every route: duplicating it makes each page claim to *be* the person, which
+ * is the ambiguity `mainEntityOfPage` exists to resolve.
+ *
+ * Every field is read from the same source the page renders from — site config,
+ * the education collection, the socials list. Nothing here is restated by hand,
+ * because structured data that disagrees with the visible page is worse than no
+ * structured data at all: it is the one thing search engines penalise.
+ */
+const education = await getCollection('education');
+const phd = education.find((entry) => entry.id === 'phd');
+
+const home = new URL(computeUrl('/'), Astro.site).href;
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Person',
+	name: site.name,
+	givenName: 'Firas',
+	familyName: 'Abed El Nabi',
+	jobTitle: site.role,
+	description: site.description,
+	url: home,
+	mainEntityOfPage: home,
+	image: new URL(computeUrl('/og-image.png'), Astro.site).href,
+	address: {
+		'@type': 'PostalAddress',
+		addressLocality: 'Grenoble',
+		addressCountry: 'FR',
+	},
+	// Institutions come from the education collection, so a change there cannot
+	// leave this claiming a degree the page no longer shows.
+	alumniOf: education.map((entry) => ({
+		'@type': 'CollegeOrUniversity',
+		name: entry.data.institution,
+	})),
+	...(phd?.data.url
+		? {
+				hasCredential: {
+					'@type': 'EducationalOccupationalCredential',
+					credentialCategory: 'degree',
+					educationalLevel: 'PhD',
+					name: phd.data.title,
+					url: phd.data.url,
+				},
+			}
+		: {}),
+	sameAs: socials.map((social) => social.href),
+	knowsLanguage: ['fr', 'en', 'ar', 'de'],
+};
+---
+
+<script type="application/ld+json" is:inline set:html={JSON.stringify(schema)} />

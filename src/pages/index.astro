@@ -9,6 +9,7 @@ import PortfolioPreview from '../components/PortfolioPreview.astro';
 import ContactCTA from '../components/ContactCTA.astro';
 import SkillsEvidenced from '../components/SkillsEvidenced.astro';
 import SectionNode from '../components/SectionNode.astro';
+import PersonSchema from '../components/PersonSchema.astro';
 import HexMarker from '../components/HexMarker.astro';
 import Availability from '../components/Availability.astro';
 import { computeUrl } from '../utils/computeUrl';
@@ -54,7 +55,8 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { month: 'short', year: '
 const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt(end) : 'Present'}`;
 ---
 
-<BaseLayout>
+<BaseLayout ogType="profile">
+	<PersonSchema />
 	<div class="spine">
 		<div class="spine-rail wrapper" aria-hidden="true"><span class="spine-beam"><span class="spine-line"></span><span class="spine-flare"></span></span></div>
 		<!-- 1 · Hook -->

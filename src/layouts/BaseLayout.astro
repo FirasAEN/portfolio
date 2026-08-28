@@ -8,14 +8,15 @@ import { backgroundVarsCss } from '../styles/backgrounds';
 interface Props {
 	title?: string | undefined;
 	description?: string | undefined;
+	ogType?: 'website' | 'profile' | 'article' | undefined;
 }
 
-const { title, description } = Astro.props;
+const { title, description, ogType } = Astro.props;
 ---
 
 <html lang="en">
 	<head>
-		<MainHead title={title} description={description} />
+		<MainHead title={title} description={description} ogType={ogType} />
 		<style is:inline set:html={backgroundVarsCss}></style>
 	</head>
 	<body>

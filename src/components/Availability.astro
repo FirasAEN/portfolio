@@ -1,12 +1,14 @@
 ---
+import HexMarker from './HexMarker.astro';
 import { site } from '../config/site';
+
 const { open, label } = site.availability;
 ---
 
 {
 	open && (
 		<p class="availability">
-			<span class="dot" aria-hidden="true" />
+			<span class="marker" aria-hidden="true"><HexMarker size="0.7rem" /></span>
 			{label}
 		</p>
 	)
@@ -14,9 +16,14 @@ const { open, label } = site.availability;
 
 <style>
 	/*
-	 * A live availability signal, borrowed from the reference portfolio. On a CV
-	 * site this is the one piece of state a reader actually needs and cannot
-	 * infer: whether to bother getting in touch.
+	 * A live availability signal: on a CV site this is the one piece of state a
+	 * reader actually needs and cannot infer — whether to bother getting in touch.
+	 *
+	 * It used to be a hardcoded #22c55e circle with Tailwind's animate-ping
+	 * written out by hand, borrowed wholesale from another portfolio. Green is a
+	 * stronger universal cue than the accent, but the label says "open to ..." in
+	 * words, and the accent is already this site's live colour — links, nodes,
+	 * index numerals. Borrowed vocabulary was the worse trade.
 	 */
 	.availability {
 		display: inline-flex;
@@ -32,35 +39,31 @@ const { open, label } = site.availability;
 		color: var(--fg-muted);
 	}
 
-	.dot {
-		position: relative;
-		width: 0.45rem;
-		height: 0.45rem;
+	/* Wrapped rather than classed directly: Astro scopes a style to the component
+	   that declares it, so a class handed to HexMarker lands on an element
+	   carrying HexMarker's scope id and this rule would never match. */
+	.marker {
+		display: flex;
 		flex: none;
-		border-radius: 50%;
-		background-color: #22c55e;
+		color: var(--accent-regular);
 	}
 
-	.dot::after {
-		content: '';
-		position: absolute;
-		inset: 0;
-		border-radius: 50%;
-		background-color: #22c55e;
-		animation: availability-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
-	}
-
-	@keyframes availability-ping {
-		70%,
-		100% {
-			transform: scale(2.8);
-			opacity: 0;
+	/* One opacity breath on the stroke. No expanding halo — that was the ping. */
+	@media (prefers-reduced-motion: no-preference) {
+		.marker {
+			animation: availability-breath 3.2s ease-in-out infinite alternate;
 		}
 	}
 
-	@media (prefers-reduced-motion: reduce) {
-		.dot::after {
-			animation: none;
+	@keyframes availability-breath {
+		/* Floor is 0.55, not lower: this is a functional status indicator, not
+		   ambient decoration, and at this size the stroke is sub-pixel — below
+		   about half opacity it stops reading at all. */
+		from {
+			opacity: 0.55;
+		}
+		to {
+			opacity: 1;
 		}
 	}
 </style>

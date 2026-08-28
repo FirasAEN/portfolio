@@ -10,8 +10,14 @@ import type { iconPaths } from '../components/IconPaths';
 export const site = {
 	/** Full name, used everywhere — nav, hero, titles, footer. */
 	name: 'Firas François Abed El Nabi',
-	/** Kept as an alias so callers reading `fullName` still work. */
+	/** Duplicate of `name`, kept so callers reading `fullName` still resolve. */
 	fullName: 'Firas François Abed El Nabi',
+	/**
+	 * The short form used on the CV, the email address and the LinkedIn handle.
+	 * Stated on the page so a reader matching this site against either one is not
+	 * met by two unconnected names.
+	 */
+	alias: 'François AEN',
 	role: 'Tech Lead & Full-Stack Engineer',
 	location: 'Grenoble, France',
 	email: 'francois.aen@gmail.com',

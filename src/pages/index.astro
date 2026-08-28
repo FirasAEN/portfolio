@@ -54,6 +54,7 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 			<Availability />
 			<p class="meta">{site.role} · {site.location}</p>
 			<h1>{site.name}</h1>
+			<p class="alias meta">also {site.alias}</p>
 			<hr class="rule" />
 			<p class="lede">
 				I model business domains the way I used to model materials — decompose the messy thing
@@ -256,6 +257,13 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 	.hero h1 {
 		font-size: var(--text-5xl);
 		line-height: 0.95;
+	}
+
+	/* The h1 stays the one canonical string, so anyone matching this page against
+	   the CV or LinkedIn has something stable to match. The alias is stated, not
+	   animated between. */
+	.alias {
+		margin: -0.5rem 0 0;
 	}
 
 	.hero .rule {

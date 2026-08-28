@@ -1,0 +1,131 @@
+---
+// Back-to-top. Visibility comes from an IntersectionObserver on a sentinel that
+// spans the first viewport, so no scroll listener is added and nothing competes
+// with the rAF handler in Nav.astro.
+---
+
+<span class="scroll-top-sentinel" aria-hidden="true"></span>
+
+<button type="button" class="scroll-top" aria-label="Back to top">
+	<svg viewBox="0 0 24 24" class="hex" aria-hidden="true">
+		<path
+			d="M12 1.5 21 6.75 21 17.25 12 22.5 3 17.25 3 6.75 Z"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="1.5"
+			stroke-linejoin="round"></path>
+	</svg>
+	<svg viewBox="0 0 24 24" class="arrow" aria-hidden="true">
+		<path
+			d="M12 16.25 12 8.25 M8.5 11.75 12 8.25 15.5 11.75"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="1.5"
+			stroke-linecap="round"
+			stroke-linejoin="round"></path>
+	</svg>
+</button>
+
+<script>
+	const btn = document.querySelector<HTMLButtonElement>('.scroll-top');
+	const sentinel = document.querySelector<HTMLElement>('.scroll-top-sentinel');
+
+	if (btn && sentinel && !btn.dataset.bound) {
+		btn.dataset.bound = 'true';
+
+		// Deliberately long-lived: this is a continuous state signal — is the
+		// reader past the first screen? — not a one-shot reveal. It must NOT be
+		// disconnected after the first entry, unlike the reveal observer.
+		const observer = new IntersectionObserver(
+			(entries) => {
+				const entry = entries[0];
+				if (entry) btn.classList.toggle('is-visible', !entry.isIntersecting);
+			},
+			{ threshold: 0 },
+		);
+		observer.observe(sentinel);
+
+		btn.addEventListener('click', () => {
+			// scrollTo's `behavior` overrides the CSS scroll-behavior rule, so the
+			// preference has to be read here rather than relied on.
+			const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+			scrollTo({ top: 0, behavior: reduce ? 'instant' : 'smooth' });
+
+			// Move focus with the viewport. Leaving it on a button at the bottom
+			// means the reader's next Tab returns them to where they just left.
+			const target = document.querySelector<HTMLElement>('h1');
+			if (target) {
+				target.setAttribute('tabindex', '-1');
+				target.focus({ preventScroll: true });
+			}
+		});
+	}
+</script>
+
+<style>
+	/* Spans the first viewport. Absolute, so it is out of flow and cannot affect
+	   layout; .sheet is position: relative, so top: 0 is the top of the page. */
+	.scroll-top-sentinel {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 1px;
+		height: 100vh;
+		pointer-events: none;
+	}
+
+	.scroll-top {
+		position: fixed;
+		right: max(1.25rem, env(safe-area-inset-right));
+		bottom: max(1.25rem, env(safe-area-inset-bottom));
+		/* Below the nav's 9999, above page content. */
+		z-index: 40;
+		display: grid;
+		place-items: center;
+		width: 2.75rem;
+		height: 2.75rem;
+		padding: 0;
+		border: 0;
+		background: color-mix(in srgb, var(--gray-999) 82%, transparent);
+		backdrop-filter: blur(10px);
+		color: var(--accent-regular);
+		cursor: pointer;
+
+		/* visibility rather than the [hidden] attribute: it removes the control
+		   from the tab order AND still participates in transitions, so the fade
+		   needs no JS timing to coordinate. */
+		visibility: hidden;
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.scroll-top.is-visible {
+		visibility: visible;
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.scroll-top:hover,
+	.scroll-top:focus-visible {
+		color: var(--gray-100);
+	}
+
+	.scroll-top:focus-visible {
+		outline: 1px solid var(--accent-regular);
+		outline-offset: 3px;
+	}
+
+	.hex,
+	.arrow {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.scroll-top {
+			transition: opacity 0.25s ease-out, visibility 0.25s, color var(--transition-fast);
+		}
+	}
+</style>

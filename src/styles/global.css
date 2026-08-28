@@ -68,7 +68,11 @@
 
 	/* Editorial rhythm */
 	--tracking-tight: -0.015em;
-	--tracking-meta: 0.12em;
+	/* 0.14em, up from 0.12em. The lightness step between body text and a mono
+	   label had to shrink to clear AA — 2.1x down to ~1.5x — so the label carries
+	   more of its distinction through tracking and weight instead. Neither
+	   affects measured contrast: WCAG scores colour, not letterform. */
+	--tracking-meta: 0.14em;
 	--rule-color: color-mix(in srgb, var(--gray-100) 12%, transparent);
 
 	/* Text hierarchy by opacity rather than by picking a different grey.
@@ -93,9 +97,26 @@
 	   read as overlap. */
 	--header-height: 5.5rem;
 
+	/*
+	 * Text alphas are per theme, because the two grounds are not symmetric — the
+	 * same value that is comfortable on near-black is barely legible on
+	 * near-white. --ambient-opacity is split for the same reason.
+	 *
+	 * These are the LIGHT values. Measured against --gray-999 with the ambient
+	 * layer at its most saturated point, which is the worst case a reader
+	 * actually sees:
+	 *
+	 *   --fg-muted   85%  ->  7.17:1
+	 *   --fg-subtle  72%  ->  ~4.8:1
+	 *
+	 * --fg-muted was 70%, which measured 4.52 — body text sitting on the AA
+	 * floor with nothing beneath it, so every label lighter than body text
+	 * failed by construction. Raising it is what buys --fg-subtle somewhere to
+	 * live; --fg-subtle at 44% measured 2.25.
+	 */
 	--fg: var(--gray-100);
-	--fg-muted: color-mix(in srgb, var(--gray-100) 70%, transparent);
-	--fg-subtle: color-mix(in srgb, var(--gray-100) 44%, transparent);
+	--fg-muted: color-mix(in srgb, var(--gray-100) 85%, transparent);
+	--fg-subtle: color-mix(in srgb, var(--gray-100) 72%, transparent);
 
 	/* Surfaces */
 	--surface: color-mix(in srgb, var(--gray-100) 4%, var(--gray-999));
@@ -125,7 +146,16 @@
 	}
 }
 
+/*
+ * Dark already had the headroom light did not: 70% measures 7.07 here against
+ * 4.52 there. So --fg-muted does not move, and --fg-subtle only needs 55% to
+ * clear AA (4.66, from 3.32). Different numbers, matched step — body-to-label
+ * is 1.52x here and 1.49x on light.
+ */
 :root.theme-dark {
+	--fg-muted: color-mix(in srgb, var(--gray-100) 70%, transparent);
+	--fg-subtle: color-mix(in srgb, var(--gray-100) 55%, transparent);
+
 	--gray-0: #ffffff;
 	--gray-50: #f3f4f7;
 	--gray-100: #e3e6ee;
@@ -419,7 +449,7 @@ main:focus {
 .meta {
 	font-family: var(--font-mono);
 	font-size: var(--text-xs);
-	font-weight: 500;
+	font-weight: 400;
 	text-transform: uppercase;
 	letter-spacing: var(--tracking-meta);
 	color: var(--fg-subtle);
@@ -454,7 +484,7 @@ main:focus {
 	font-family: var(--font-mono);
 	font-size: var(--text-xs);
 	font-weight: 500;
-	color: var(--gray-400);
+	color: var(--fg-subtle);
 	font-variant-numeric: tabular-nums;
 }
 
@@ -571,7 +601,9 @@ main:focus {
 }
 
 .diagram .d-meta {
-	fill: var(--gray-400);
+	/* See the note in the contrast plan: this clears AA now, but 9px is the
+	   smallest text on the site and the size is its own problem. */
+	fill: var(--fg-subtle);
 	font-size: 9px;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
@@ -639,7 +671,7 @@ main:focus {
 .figure figcaption {
 	font-family: var(--font-mono);
 	font-size: var(--text-xs);
-	color: var(--gray-400);
+	color: var(--fg-subtle);
 	line-height: 1.5;
 }
 

@@ -1,5 +1,5 @@
 ---
-title: One Hierarchy for a Solo Dentist and a Hospital Group
+title: A Multi-Tenant Practice SaaS for Solo Practitioners and Medical Teams
 publishDate: 2026-08-27 00:00:00
 tech:
   - PostgreSQL
@@ -15,9 +15,9 @@ tags:
   - Product
 diagram: rls-tenancy
 description: |
-  A practice-management SaaS where every customer is a tenant — designing one organisational
-  model that fits a one-person practice and a medical group, without making the small
-  customer pay for the large one's structure.
+  A practice-management SaaS I build, deploy and run myself on a VPS. Every customer is a
+  tenant, and one organisational model has to fit both a one-person practice and a medical
+  group — without making the small customer pay for the large one's structure.
 company: independent
 ---
 

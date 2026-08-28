@@ -32,7 +32,7 @@ export const site = {
 	 * Left empty until the published PDF is decided — see the note in README.
 	 */
 	cv: {
-		href: '',
+		href: '/cv/firas-abed-el-nabi-cv.pdf',
 		label: 'Download CV',
 	},
 } as const;

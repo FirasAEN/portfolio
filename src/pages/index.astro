@@ -554,6 +554,13 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 				idle = window.setTimeout(() => restart(drawn), 180);
 			}
 
+			function remeasure() {
+				measure();
+				drawn = -1;
+				grow();
+				settle();
+			}
+
 			function init() {
 				measure();
 				// Reduced motion gets the whole spine at once and no flare: the line is
@@ -568,6 +575,21 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 
 			init();
 
+			/*
+			 * Re-measure once webfonts have settled.
+			 *
+			 * Fonts load after first paint, and swapping from fallback metrics to
+			 * the real ones changes every line height on the page — which moves
+			 * every marker below the first one, by enough that the mask ends up
+			 * aligned to positions nothing occupies any more. Caught by a test that
+			 * failed one run in four: eight of nine markers uncovered, the first
+			 * (nearest the top, so barely moved) still fine.
+			 *
+			 * A resize hid this during manual checking, because resizing forces the
+			 * same re-measure.
+			 */
+			document.fonts?.ready.then(remeasure);
+
 			window.addEventListener(
 				'scroll',
 				() => {
@@ -576,12 +598,7 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 				{ passive: true },
 			);
 
-			window.addEventListener('resize', () => {
-				measure();
-				drawn = -1;
-				grow();
-				settle();
-			});
+			window.addEventListener('resize', remeasure);
 
 			/*
 			 * No re-measure on reveal any more. Offsets come from offsetTop, which

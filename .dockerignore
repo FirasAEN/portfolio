@@ -14,3 +14,12 @@ Dockerfile
 
 # Deployment scripts are not needed inside the image.
 deploy
+
+# The test suite is not part of a deploy build, and leaving it in makes
+# `astro check` type-check specs whose devDependencies are no longer installed.
+tests
+playwright.config.ts
+playwright-report
+test-results
+scripts
+LOG.md

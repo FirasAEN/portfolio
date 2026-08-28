@@ -13,7 +13,12 @@ WORKDIR /app
 # package files first, so `npm ci` is only re-run when dependencies change and
 # not on every source edit.
 COPY package.json package-lock.json ./
-RUN npm ci
+# --omit=dev deliberately. The test toolchain (Playwright and its browsers) is a
+# devDependency and has no business in a deploy build: it is a large download and
+# a large install on a box where memory is already the tightest constraint.
+# `astro check` still runs, because @astrojs/check and typescript are runtime
+# dependencies rather than dev ones.
+RUN npm ci --omit=dev
 
 COPY . .
 

@@ -3,6 +3,7 @@ title: One Hierarchy for a Solo Dentist and a Hospital Group
 publishDate: 2026-08-27 00:00:00
 tech:
   - PostgreSQL
+  - Multi-Tenancy
   - NestJS
   - Prisma
   - TypeScript

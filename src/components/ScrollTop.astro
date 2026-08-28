@@ -84,8 +84,11 @@
 		height: 2.75rem;
 		padding: 0;
 		border: 0;
-		background: color-mix(in srgb, var(--gray-999) 82%, transparent);
-		backdrop-filter: blur(10px);
+		/* No plate: the hexagon sits directly on the page. The box stays 2.75rem
+		   because that is the hit area — it is the fill that goes, not the target.
+		   The backdrop-filter goes with it; blurring behind a transparent control
+		   costs a compositing layer to show nothing. */
+		background: transparent;
 		color: var(--accent-regular);
 		cursor: pointer;
 

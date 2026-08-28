@@ -27,9 +27,17 @@ export const backgroundVarsCss = `
 		 * contrast over the shapes, not by eye.
 		 */
 		--ambient-opacity: 0.07;
+
+		/* Native UI follows the theme: without this the browser paints a light
+		   scrollbar over the dark ground, which is the tell that a site only
+		   *looks* dark. */
+		color-scheme: light;
+		--scrollbar-thumb: color-mix(in srgb, var(--gray-100) 24%, transparent);
 	}
 
 	:root.theme-dark {
 		--ambient-opacity: 0.12;
+		color-scheme: dark;
+		--scrollbar-thumb: color-mix(in srgb, var(--gray-100) 22%, transparent);
 	}
 `;

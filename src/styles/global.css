@@ -171,6 +171,43 @@ body {
 	min-height: 100%;
 }
 
+/*
+ * Scrollbar, themed rather than left to the browser. The track is transparent so
+ * the ambient background runs behind it; the thumb picks up the ink colour at low
+ * alpha and takes the accent on hover.
+ *
+ * The standard properties come first. Chrome 121+ and Firefox honour them, and
+ * where scrollbar-color is supported it wins over the -webkit- pseudo-elements
+ * below, which remain only for older WebKit.
+ */
+html {
+	scrollbar-width: thin;
+	scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+/* The transparent border plus background-clip insets the thumb, so it reads as a
+   floating bar rather than filling the gutter edge to edge. */
+::-webkit-scrollbar-thumb {
+	background-color: var(--scrollbar-thumb);
+	border: 2px solid transparent;
+	background-clip: content-box;
+	border-radius: 999rem;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background-color: var(--accent-regular);
+	background-clip: content-box;
+}
+
 /* The nav links to sections on this page, so jumps should glide rather than
    teleport — and land clear of the sticky header. */
 @media (prefers-reduced-motion: no-preference) {

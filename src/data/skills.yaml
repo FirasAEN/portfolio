@@ -8,15 +8,24 @@
     - name: Front-end
       items: [Angular, TypeScript, RxJS, NgRx]
     - name: Architecture
-      items: [Domain-Driven Design, Hexagonal Architecture, Ports & Adapters]
+      items:
+        [
+          Domain-Driven Design,
+          Hexagonal Architecture,
+          Ports & Adapters,
+          N-tier Architecture,
+          Multi-Tenancy,
+        ]
+    - name: Data
+      items: [PostgreSQL]
+    - name: Auth & security
+      items: [Keycloak, OAuth2, OIDC]
 - id: working
   label: Working
   rank: 2
   groups:
     - name: Data
-      items: [PostgreSQL, MySQL, Redis, ElasticSearch]
-    - name: Auth & security
-      items: [Keycloak, OAuth2, OIDC]
+      items: [MySQL, Redis, ElasticSearch]
     - name: Build & infra
       items: [Nx, Docker, GitLab CI, Jenkins]
     - name: Testing

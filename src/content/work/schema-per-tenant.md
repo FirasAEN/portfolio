@@ -8,6 +8,7 @@ tech:
   - PostgreSQL
   - Flyway
   - Spring Modulith
+  - Multi-Tenancy
 tags:
   - Backend
   - Architecture

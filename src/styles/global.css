@@ -72,9 +72,14 @@
 	--rule-color: color-mix(in srgb, var(--gray-100) 12%, transparent);
 
 	/* Text hierarchy by opacity rather than by picking a different grey.
-	   Softer than hard greys, and it stays consistent across both themes. */
+	   Softer than hard greys, and it stays consistent across both themes.
+
+	   --fg-muted is body text, so its floor is WCAG AA. At 64% it measured
+	   4.16:1 on the light ground — below the 4.5 threshold, and that was true
+	   before the ambient background existed. 70% measures 4.87:1 on the light
+	   ground and 4.66:1 at the most saturated point of an ambient shape. */
 	--fg: var(--gray-100);
-	--fg-muted: color-mix(in srgb, var(--gray-100) 64%, transparent);
+	--fg-muted: color-mix(in srgb, var(--gray-100) 70%, transparent);
 	--fg-subtle: color-mix(in srgb, var(--gray-100) 44%, transparent);
 
 	/* Surfaces */

@@ -19,6 +19,9 @@ const { title, description } = Astro.props;
 	</head>
 	<body>
 		<div class="stack sheet">
+			<div class="ambient" aria-hidden="true">
+				<span></span><span></span><span></span>
+			</div>
 			<Nav />
 			<slot />
 			<Footer />
@@ -46,11 +49,89 @@ const { title, description } = Astro.props;
 				inset: 0;
 				z-index: -1;
 				background-color: var(--gray-999);
-				background-image:
-					linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
-					linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
-				background-size: var(--grid-size) var(--grid-size);
-				mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 92%);
+			}
+
+			/*
+			 * Ambient drift. Opacity sits on the container so the three shapes
+			 * share one tunable value and the theme difference is a single token.
+			 * All of ::before, .ambient and ::after are z-index -1, so paint order
+			 * is tree order: ground, shapes, then grain over the top.
+			 */
+			.ambient {
+				position: fixed;
+				inset: 0;
+				z-index: -1;
+				overflow: hidden;
+				pointer-events: none;
+				opacity: var(--ambient-opacity);
+			}
+
+			/* Softness is a colour stop, not filter: blur(). Blur forces an
+			   offscreen buffer that is re-blurred on every animated frame; a
+			   gradient stop gives the same edge for nothing. */
+			.ambient span {
+				position: absolute;
+				display: block;
+				width: 50vmax;
+				height: 50vmax;
+				border-radius: 50%;
+				background: radial-gradient(
+					circle at center,
+					var(--accent-regular) 0%,
+					color-mix(in srgb, var(--accent-regular) 55%, transparent) 35%,
+					transparent 70%
+				);
+			}
+
+			.ambient span:nth-child(1) {
+				top: -18vmax;
+				left: -12vmax;
+			}
+
+			.ambient span:nth-child(2) {
+				top: 30vmax;
+				left: 55vmax;
+			}
+
+			.ambient span:nth-child(3) {
+				top: 62vmax;
+				left: 8vmax;
+			}
+
+			/* Three different periods, so the composite never visibly loops —
+			   equal durations would resynchronise every cycle and read as a
+			   repeat. Transform only, so frames stay on the compositor. */
+			@media (prefers-reduced-motion: no-preference) {
+				.ambient span {
+					will-change: transform;
+				}
+
+				.ambient span:nth-child(1) {
+					animation: ambient-a 40s ease-in-out infinite alternate;
+				}
+
+				.ambient span:nth-child(2) {
+					animation: ambient-b 55s ease-in-out infinite alternate;
+				}
+
+				.ambient span:nth-child(3) {
+					animation: ambient-c 70s ease-in-out infinite alternate;
+				}
+			}
+
+			@keyframes ambient-a {
+				from { transform: translate3d(0, 0, 0) scale(1); }
+				to { transform: translate3d(12vmax, 8vmax, 0) scale(1.15); }
+			}
+
+			@keyframes ambient-b {
+				from { transform: translate3d(0, 0, 0) scale(1.1); }
+				to { transform: translate3d(-14vmax, 6vmax, 0) scale(0.95); }
+			}
+
+			@keyframes ambient-c {
+				from { transform: translate3d(0, 0, 0) scale(0.95); }
+				to { transform: translate3d(9vmax, -11vmax, 0) scale(1.2); }
 			}
 
 			/* Paper grain, so the sheet reads as material rather than as CSS. */
@@ -68,6 +149,10 @@ const { title, description } = Astro.props;
 				.sheet::before,
 				.sheet::after {
 					background: none;
+				}
+
+				.ambient {
+					display: none;
 				}
 			}
 		</style>

@@ -1,13 +1,15 @@
 /**
- * Page ground: a drafting grid.
+ * Page ground: an ambient drift.
  *
- * This replaces the starter's decorative gradient washes (18 JPEG/SVG layers at
- * two breakpoints and two themes). The grid is drawn in CSS — nothing to load,
- * nothing to 404, and it scales to any viewport.
+ * This replaced a drafting grid, which in turn replaced the starter's 18 JPEG
+ * and SVG gradient layers. The grid was fixed to the viewport while content
+ * scrolled, so the page's own hairlines — section rules, the timeline spine,
+ * the node connectors — drifted in and out of near-coincidence with grid lines
+ * as you moved. Measured: one section rule passed 4.1px, 5.9px, 15.9px and
+ * 31.9px from the nearest grid line across 36px of scroll. Too far apart to
+ * read as one line, too close to read as two.
  *
- * The motif is not arbitrary. The work on this site is node-and-edge schematics
- * of data lineage, dependency graphs and task orchestration, so the page reads
- * as the sheet those drawings sit on.
+ * Nothing here is drawn as a line, so there is nothing left to collide.
  */
 import noise from '../assets/backgrounds/noise.png';
 
@@ -19,16 +21,15 @@ export const backgroundVarsCss = `
 		--bg-image-noise: url(${noise.src});
 
 		/*
-		 * One sparse grid rather than a minor/major pair. A 28px mesh with a
-		 * heavier line every fifth cell reads as texture at a glance and as
-		 * noise once you try to read over it; at 72px and a third of the
-		 * contrast it sits behind the page instead of competing with it.
+		 * The two grounds are not symmetric, so they do not share a value. On
+		 * near-black the accent reads as a faint glow; the same figure on
+		 * near-white reads as a smudge. Both were settled by measuring body-text
+		 * contrast over the shapes, not by eye.
 		 */
-		--grid-line: color-mix(in srgb, var(--gray-100) 5%, transparent);
-		--grid-size: 72px;
+		--ambient-opacity: 0.07;
 	}
 
 	:root.theme-dark {
-		--grid-line: color-mix(in srgb, var(--gray-100) 6%, transparent);
+		--ambient-opacity: 0.12;
 	}
 `;

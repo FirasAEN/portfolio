@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import { computeUrl } from '../utils/computeUrl';
 import { site, socials } from '../config/site';
+import { canonicalUrl } from '../config/deploy';
 
 /*
  * schema.org Person, for the home page only.
@@ -18,7 +19,9 @@ import { site, socials } from '../config/site';
 const education = await getCollection('education');
 const phd = education.find((entry) => entry.id === 'phd');
 
-const home = new URL(computeUrl('/'), Astro.site).href;
+// The canonical home, not this build's host — the Pages mirror must not claim
+// to be a second Person entity at a second URL.
+const home = canonicalUrl(computeUrl('/'));
 
 const schema = {
 	'@context': 'https://schema.org',

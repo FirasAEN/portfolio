@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import { computeUrl } from '../utils/computeUrl';
 import { site, pageTitle } from '../config/site';
+import { canonicalUrl } from '../config/deploy';
 
 interface Props {
 	title?: string | undefined;
@@ -26,7 +27,7 @@ const {
  * Astro.site is the origin from astro.config.mjs; computeUrl adds the /portfolio
  * base, so the two together are the only correct form here.
  */
-const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const canonical = canonicalUrl(Astro.url.pathname);
 const ogImage = new URL(computeUrl('/og-image.png'), Astro.site).href;
 ---
 

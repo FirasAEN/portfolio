@@ -479,15 +479,6 @@ main:focus {
 	flex: 1;
 }
 
-/** Indexed entries: 001, 002, ... rendered in the mono face. */
-.index-num {
-	font-family: var(--font-mono);
-	font-size: var(--text-xs);
-	font-weight: 500;
-	color: var(--fg-subtle);
-	font-variant-numeric: tabular-nums;
-}
-
 /** Display lede - serif intro paragraph, only modestly larger than body. */
 .lede {
 	font-family: var(--font-brand);

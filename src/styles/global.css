@@ -574,12 +574,12 @@ h5 {
 		transition: stroke-dashoffset 0.6s ease-out 0.15s;
 	}
 
-	.reveal-armed [data-reveal] .rule {
+	.reveal-armed [data-reveal] .node .rule {
 		transform: scaleX(0);
 		transform-origin: left;
 	}
 
-	.reveal-armed [data-reveal].is-revealed .rule {
+	.reveal-armed [data-reveal].is-revealed .node .rule {
 		transform: scaleX(1);
 		transition: transform 0.6s ease-out 0.2s;
 	}

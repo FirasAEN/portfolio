@@ -53,11 +53,9 @@
 
 			// Move focus with the viewport. Leaving it on a button at the bottom
 			// means the reader's next Tab returns them to where they just left.
-			const target = document.querySelector<HTMLElement>('h1');
-			if (target) {
-				target.setAttribute('tabindex', '-1');
-				target.focus({ preventScroll: true });
-			}
+			const target = document.querySelector<HTMLElement>('h1') ?? document.body;
+			target.setAttribute('tabindex', '-1');
+			target.focus({ preventScroll: true });
 		});
 	}
 </script>
@@ -70,7 +68,7 @@
 		top: 0;
 		left: 0;
 		width: 1px;
-		height: 100vh;
+		height: 100svh;
 		pointer-events: none;
 	}
 

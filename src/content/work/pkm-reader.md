@@ -11,6 +11,10 @@ tags:
   - Tooling
   - Full-Stack
 diagram: vault-reader
+links:
+  - url: https://pkm.cyberonix.dev/login
+    label: live instance
+    note: sign-in required
 description: |
   A read-only reader for a notes vault or a code repository — wikilinks, backlinks,
   search, and a faithful reimplementation of git's layered ignore semantics, pruning

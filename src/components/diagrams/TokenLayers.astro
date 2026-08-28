@@ -1,0 +1,67 @@
+---
+// The independent UI kit. Two layerings, and the point is that they are the same
+// idea applied twice: tokens layer primitive -> semantic -> component, and the
+// catalogue layers primitives -> composites -> integrations. Neither tier is
+// allowed to reach past its neighbour.
+interface Props {
+	variant?: 'full' | 'thumb' | undefined;
+}
+const { variant = 'full' } = Astro.props;
+const viewBox = variant === 'thumb' ? '0 0 640 200' : '0 0 640 320';
+---
+<svg class:list={['diagram', { 'diagram-thumb': variant === 'thumb' }]} viewBox={viewBox} role="img" aria-labelledby="tl-t">
+	<title id="tl-t">Tokens layer primitive to semantic to component; components layer primitives to composites to integrations</title>
+	<defs>
+		<marker id="tl-a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow-accent" />
+		</marker>
+		<marker id="tl-b" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+			<path d="M0 0 L7 3.5 L0 7 z" class="d-arrow" />
+		</marker>
+	</defs>
+
+	<text x="16" y="18" class="d-meta">Tokens · three tiers</text>
+
+	<rect x="16" y="30" width="180" height="44" rx="3" class="d-box-fill" />
+	<text x="28" y="48" class="d-title">Primitive</text>
+	<text x="28" y="64">raw values</text>
+
+	<rect x="230" y="30" width="180" height="44" rx="3" class="d-core" />
+	<text x="242" y="48" class="d-core-text">Semantic</text>
+	<text x="242" y="64">what it means</text>
+
+	<rect x="444" y="30" width="176" height="44" rx="3" class="d-box-fill" />
+	<text x="456" y="48" class="d-title">Component</text>
+	<text x="456" y="64">one component's own</text>
+
+	<path d="M196 52 H226" class="d-line-accent" marker-end="url(#tl-a)" />
+	<path d="M410 52 H440" class="d-line-accent" marker-end="url(#tl-a)" />
+
+	<rect x="230" y="88" width="180" height="30" rx="3" class="d-box d-dashed" />
+	<text x="242" y="107">components read here</text>
+	<path d="M320 88 V78" class="d-line d-dashed" marker-end="url(#tl-b)" />
+
+	<path d="M16 140 H624" class="d-line d-dashed" />
+
+	<text x="16" y="166" class="d-meta">Catalogue · the same layering</text>
+
+	<rect x="16" y="178" width="180" height="48" rx="3" class="d-box-fill" />
+	<text x="28" y="196" class="d-title">Primitives</text>
+	<text x="28" y="212">Button, Chip, Input</text>
+
+	<rect x="230" y="178" width="180" height="48" rx="3" class="d-box-fill" />
+	<text x="242" y="196" class="d-title">Composites</text>
+	<text x="242" y="212">Card, Stat Badge</text>
+
+	<rect x="444" y="178" width="176" height="48" rx="3" class="d-core" />
+	<text x="456" y="196" class="d-core-text">Integrations</text>
+	<text x="456" y="212">wizard, form, stepper</text>
+
+	<path d="M196 202 H226" class="d-line-accent" marker-end="url(#tl-a)" />
+	<path d="M410 202 H440" class="d-line-accent" marker-end="url(#tl-a)" />
+
+	<path d="M16 248 H624" class="d-line d-dashed" />
+	<text x="16" y="270" class="d-meta">Why the third tier exists</text>
+	<text x="16" y="290">A kit that only ships primitives passes the burden of composition to every</text>
+	<text x="16" y="306">consumer. The integration stories are where a library actually breaks.</text>
+</svg>

@@ -42,6 +42,16 @@ const goBack = computeUrl('/work/');
 								{entry.data.tags.map((t) => <Pill>{t}</Pill>)}
 							</div>
 							<p class="description">{entry.data.description}</p>
+							{entry.data.links && (
+								<p class="links">
+									{entry.data.links.map((link) => (
+										<a class="live-link" href={link.url} target="_blank" rel="noopener noreferrer">
+											{link.label}
+											{link.note && <span class="link-note"> ({link.note})</span>}
+										</a>
+									))}
+								</p>
+							)}
 						</div>
 					</Hero>
 				</div>
@@ -151,5 +161,33 @@ const goBack = computeUrl('/work/');
 		.content :global(blockquote) {
 			font-size: var(--text-2xl);
 		}
+	}
+
+	/* Outbound, so they open alongside rather than replacing the page. The note
+	   carries things a reader should know before clicking — a sign-in wall, for
+	   instance, which unlabelled reads as a broken link. */
+	.links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1.25rem;
+		margin: 0;
+	}
+
+	.live-link {
+		font-family: var(--font-mono);
+		font-size: var(--text-sm);
+		color: var(--accent-regular);
+		text-decoration-color: var(--rule-color);
+		text-underline-offset: 0.2em;
+		transition: text-decoration-color var(--transition-fast);
+	}
+
+	.live-link:hover,
+	.live-link:focus-visible {
+		text-decoration-color: currentColor;
+	}
+
+	.link-note {
+		color: var(--fg-subtle);
 	}
 </style>

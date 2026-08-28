@@ -15,6 +15,7 @@ import RlsTenancy from './RlsTenancy.astro';
 import SchemaTenancy from './SchemaTenancy.astro';
 import JobPipeline from './JobPipeline.astro';
 import VaultReader from './VaultReader.astro';
+import TokenLayers from './TokenLayers.astro';
 
 /**
  * Renders a hand-authored architecture diagram by id.
@@ -40,6 +41,7 @@ const diagrams = {
 	'schema-tenancy': SchemaTenancy,
 	'job-pipeline': JobPipeline,
 	'vault-reader': VaultReader,
+	'token-layers': TokenLayers,
 } as const;
 
 type DiagramId = keyof typeof diagrams;

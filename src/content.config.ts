@@ -24,6 +24,14 @@ export const collections = {
 			img_alt: z.string().optional(),
 			/** Id of a hand-authored SVG diagram in src/components/diagrams. */
 			diagram: z.string().optional(),
+			/**
+			 * Somewhere the reader can see the thing running. `note` exists so a link
+			 * behind a sign-in says so — an unlabelled login wall reads as a broken
+			 * link rather than a private app.
+			 */
+			links: z
+				.array(z.object({ url: z.url(), label: z.string(), note: z.string().optional() }))
+				.optional(),
 			/** Matches an `experience` entry id — drives filters, labels, grouping. */
 			company: z.string().optional(),
 			/** Surfaced on the homepage. */

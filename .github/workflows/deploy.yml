@@ -27,6 +27,10 @@ concurrency:
 env:
   BUILD_PATH: "." # default value when not using subfolders
   # BUILD_PATH: subfolder
+  # Pages serves from /portfolio; the VPS serves from the root. This picks the
+  # base and site URL for THIS target — see TARGETS in astro.config.mjs. Without
+  # it the workflow would build the VPS variant and every asset path would 404.
+  DEPLOY_TARGET: pages
 
 jobs:
   build:

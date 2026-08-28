@@ -37,6 +37,18 @@ const base = isDev ? '/' : targetBase;
 export default defineConfig({
 	site,
 	base,
+	/*
+	 * Astro 7 changed this default to 'jsx', which strips whitespace between
+	 * inline elements. Measured on this site: the nav's social links render 8px
+	 * narrower and shift left, and the document is 15px shorter — their spacing
+	 * came from those whitespace text nodes, not from a flex gap (the parent is
+	 * display:block, gap:normal).
+	 *
+	 * `true` is the v6 behaviour. Kept deliberately rather than re-spacing the
+	 * nav, because the compression only saves ~15px of markup here and the
+	 * failure mode is silent.
+	 */
+	compressHTML: true,
 	trailingSlash: 'ignore', // Use to always append '/' at end of url
 	// 404 is a real route but not a page anyone should be sent to from search.
 	integrations: [sitemap({ filter: (page) => !page.includes('/404') })],

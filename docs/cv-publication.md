@@ -1,50 +1,65 @@
 # Published CV
 
-`firas-abed-el-nabi-cv.pdf` is the web-publication variant, served from the hero
-button via `cv.href` in `src/config/site.ts`.
+`public/cv/firas-abed-el-nabi-cv.pdf` is the web-publication variant, served from
+the hero button via `cv.href` in `src/config/site.ts`.
 
-## What makes it the *web* variant
+It is the real CV document — `CV__Firas-AEN.docx` — with two things removed, not a
+re-typesetting of the content in some other template. Fonts, spacing, small caps,
+rules and right-aligned dates are the original's.
 
-It omits two things the CV sent to employers carries:
+## What is removed, and why
 
-- **the phone number** — the email and LinkedIn are already public on this site;
-  the phone is not, and anything published here is indexable and scrapeable,
-  which is a one-way door
-- **the citizenship / work-authorisation line** — relevant to a recruiter
-  assessing a specific role, not to a public page
+- **the phone number**, from the contact row. Email and LinkedIn are already public
+  on this site; the phone is not, and anything published here is indexable and
+  scrapeable, which is a one-way door
+- **the citizenship / work-authorisation line**. Relevant to a recruiter assessing a
+  specific role, not to a public page
 
-Everything else is the master CV unchanged. The per-role "Technical environment"
-lines are dropped as well, purely to hold the document to two pages; the same
-ground is covered by the Skills section.
+Nothing else is touched. The footers are additionally blanked, for a mechanical
+reason given below.
 
-## Regenerating it
+## Source of truth
 
-From the `career-ops` checkout — that repo owns the CV, this one only publishes it:
+`career-ops/CV__Firas-AEN__Web.docx` — the edited Word document. It sits beside
+`CV__Firas-AEN.docx` and `CV__Firas-AEN__Gulf.docx` so all three variants live
+together. Edit it in Word like any other, then re-render.
 
-    node build-cv-html.mjs /tmp/cv-firas-abed-el-nabi-portfolio.json \
-      output/cv-firas-abed-el-nabi-portfolio.html templates/cv-template.html
-    node verify-cv-facts.mjs output/cv-firas-abed-el-nabi-portfolio.html
-    node generate-pdf.mjs output/cv-firas-abed-el-nabi-portfolio.html \
-      output/cv-firas-abed-el-nabi-portfolio-<date>.pdf \
-      --format=a4 --max-pages=2 --allow-reorder
+**Do not blank `phone` in `career-ops/config/profile.yml`.** An earlier version of
+this note said to; that was wrong. `profile.yml` feeds every career-ops mode, so
+blanking it strips the number from the CVs sent to employers too.
 
-then copy the PDF here as `firas-abed-el-nabi-cv.pdf`.
+## Rendering it
 
-**Do not blank `phone` in `career-ops/config/profile.yml`** — an earlier version
-of this file said to, which was wrong. That file feeds every mode, so blanking it
-strips the number from the CVs you send to employers too. The phone is omitted by
-leaving `candidate.phone` out of the *render payload* instead; `build-cv-html.mjs`
-gates on `if (c.phone)` and drops the contact-row separator cleanly with it.
+There is no LibreOffice, Word, or `pandoc` on this machine, so the docx is rendered
+in a browser by `docx-preview` and printed by Playwright.
 
-`--allow-reorder` is needed because the template emits Education before Skills
-while `cv.md` has them the other way round. It downgrades that parity check to a
-warning for the run. Setting `cv.sections` in `profile.yml` would fix the order
-permanently, but that changes every CV the pipeline produces, so it is left alone.
+    npm install docx-preview            # pulls jszip with it
+    # build an HTML page that base64-embeds the .docx and calls
+    # docx.renderAsync(buf, el, null, { breakPages: true, experimental: true })
+    # then: page.pdf({ format: 'A4', margin: 0, printBackground: true })
+
+Two things that are load-bearing:
+
+- **`experimental: true`, plus a settle delay before `page.pdf()`.** Tab stops are
+  resolved in JavaScript after `renderAsync` resolves. Print immediately and every
+  right-aligned date collapses inline next to the company name.
+- **Footers are blanked in the docx.** They contain Word `PAGE`/`NUMPAGES` field
+  codes, which only Word evaluates — `docx-preview` renders the literal surrounding
+  text, so the page foot reads `Page  of` with two holes in it. The original PDF
+  shows no footer text at all, so blanking loses nothing.
+
+## Known limitation
+
+The small-caps tagline extracts from the text layer as `Tech L ead & Full-S tack
+E ngineer` — the renderer's letter-spacing inserts breaks that the original export
+does not have. It looks correct on screen and in print; only copy-paste and ATS text
+extraction see it. It affects that one line. The body text extracts cleanly, and the
+overall count of extraction-fragmented lines is 12 against the original's 11.
 
 ## Before replacing this file
 
-Check the text layer, don't trust the source:
+Check the artifact, not the source:
 
-    pdftotext firas-abed-el-nabi-cv.pdf - | grep -inE '\+33|phone|citizen|visa'
+    pdftotext firas-abed-el-nabi-cv.pdf - | grep -inE '\+33|phone|citizen|visa|Page'
 
-Silence is the pass condition.
+Silence is the pass condition — `Page` is in there to catch the footer regression.

@@ -20,12 +20,29 @@ const { title, description, ogType } = Astro.props;
 		<style is:inline set:html={backgroundVarsCss}></style>
 	</head>
 	<body>
+		<!--
+			First focusable thing on the page, and outside .stack so that showing it
+			cannot push the layout down — .stack is a flex column and an in-flow
+			skip link would become one of its items.
+		-->
+		<a class="skip-link" href="#main">Skip to content</a>
 		<div class="stack sheet">
 			<div class="ambient" aria-hidden="true">
 				<span></span><span></span><span></span>
 			</div>
 			<Nav />
-			<slot />
+			<!--
+				There was no main landmark on the home page at all, and the pages that
+				did have one declared it several levels down. One per page, here, so
+				every route agrees and "skip to content" has something to skip to.
+
+				tabindex="-1" is what makes the skip link actually move focus rather
+				than only scrolling: without it the target is not focusable, and the
+				next Tab would resume from the top of the document.
+			-->
+			<main id="main" tabindex="-1">
+				<slot />
+			</main>
 			<Footer />
 			<ScrollTop />
 		</div>

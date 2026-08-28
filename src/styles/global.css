@@ -303,6 +303,42 @@ h5 {
 	border-width: 0;
 }
 
+/*
+ * Skip link. Hidden by being moved off the top of the viewport rather than by
+ * display:none or visibility:hidden — both of those take it out of the tab
+ * order, which is the one thing it exists to be in.
+ *
+ * z-index has to clear the sticky header, or the first thing a keyboard user
+ * sees is the link appearing behind it.
+ */
+.skip-link {
+	position: fixed;
+	top: 0;
+	left: 1rem;
+	z-index: 100;
+	transform: translateY(-150%);
+	padding: 0.7rem 1.1rem;
+	border: 1px solid var(--accent-regular);
+	border-radius: 0.4rem;
+	background: var(--gray-999);
+	color: var(--fg);
+	font-size: var(--text-sm);
+	text-decoration: none;
+}
+
+/* :focus, not :focus-visible. The link is only reachable by keyboard in the
+   first place, and :focus-visible depends on modality heuristics that do not
+   fire for programmatic focus — which left it invisible when shown. */
+.skip-link:focus {
+	transform: translateY(0.75rem);
+}
+
+/* The landmark is a focus target, not an interactive control — it should take
+   focus from the skip link without drawing a ring around the whole page. */
+main:focus {
+	outline: none;
+}
+
 /* Tokenised because .section has to add the marker gutter ON TOP of this, and
    writing 1.5rem there again is how the two silently drift apart. */
 :root {

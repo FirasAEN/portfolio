@@ -60,7 +60,12 @@ export function pageTitle(section?: string): string {
 export const socials: { label: string; href: string; icon: keyof typeof iconPaths }[] = [
 	{
 		label: 'LinkedIn',
-		href: 'https://www.linkedin.com/in/françois-aen-phd-86b565109',
+		/*
+		 * Percent-encoded rather than written with the literal ç. Identical URL,
+		 * but this one is now published in the Person schema's sameAs, where
+		 * crawlers are stricter than browsers about non-ASCII in a href.
+		 */
+		href: 'https://www.linkedin.com/in/fran%C3%A7ois-aen-phd-86b565109',
 		icon: 'linkedin-logo',
 	},
 	{ label: 'GitHub', href: 'https://github.com/FirasAEN', icon: 'github-logo' },

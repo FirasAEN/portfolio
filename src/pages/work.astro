@@ -18,7 +18,7 @@ const companies = await getWorkFilters();
 	description={site.description}
 >
 	<div class="stack gap-20">
-		<main class="wrapper stack gap-8">
+		<div class="wrapper stack gap-8">
 			<Hero
 				title="My Work"
 				tagline={`${projects.length} projects, each written up as what I owned, what constrained it, what I traded away, and what changed.`}
@@ -43,7 +43,7 @@ const companies = await getWorkFilters();
 					))
 				}
 			</ul>
-		</main>
+		</div>
 		<ContactCTA />
 	</div>
 </BaseLayout>

@@ -33,7 +33,7 @@ const isCurrentRoute = (item: LinkRoute) => {
 	<div class="menu-header">
 		<a href={computeUrl('/')} class="site-title">
 			<Icon icon="terminal-window" color="var(--accent-regular)" size="1.6em" gradient />
-			{site.name}
+			<span class="site-name">{site.name}</span>
 		</a>
 		<menu-button>
 			<template>
@@ -177,6 +177,12 @@ const isCurrentRoute = (item: LinkRoute) => {
 </script>
 
 <style>
+	/*
+	 * Transparent at rest so the hero reads through it, glass once stuck. The
+	 * height never changes: a sticky element still occupies its space in normal
+	 * flow, so shrinking it on stick would pull everything below it upward and
+	 * jump the page at the threshold. The shape change is carried by the surface.
+	 */
 	nav {
 		z-index: 9999;
 		position: sticky;
@@ -184,17 +190,51 @@ const isCurrentRoute = (item: LinkRoute) => {
 		font-family: var(--font-mono);
 		font-weight: 500;
 		margin-bottom: 2rem;
-		background-color: color-mix(in srgb, var(--gray-999) 82%, transparent);
-		backdrop-filter: blur(10px);
+		background-color: transparent;
 		border-bottom: 1px solid transparent;
-		transition: border-color var(--theme-transition);
 	}
 
-	/* The rule only appears once the page has moved, so it does not draw a line
-	   under a hero that is already flush against it. */
+	/* backdrop-filter is declared only here, not on nav. A permanent one forces a
+	   compositing layer and re-filters the backdrop every frame, including while
+	   the effect is invisible. */
 	nav.scrolled {
+		background-color: color-mix(in srgb, var(--gray-999) 82%, transparent);
+		backdrop-filter: blur(12px);
 		border-bottom-color: var(--rule-color);
+		box-shadow: 0 12px 28px -24px color-mix(in srgb, var(--gray-100) 55%, transparent);
 	}
+
+	/*
+	 * Hidden by opacity rather than display or visibility: the element keeps its
+	 * space so the left grid column does not change width and nothing shifts when
+	 * it appears, and the text stays in the accessibility tree so the site-title
+	 * link keeps its accessible name at every scroll position.
+	 */
+	.site-name {
+		opacity: 0;
+	}
+
+	nav.scrolled .site-name {
+		opacity: 1;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		nav {
+			transition: background-color var(--theme-transition),
+				border-color var(--theme-transition), box-shadow var(--theme-transition);
+		}
+
+		.site-name {
+			transform: translateY(-2px);
+			transition: opacity var(--theme-transition), transform var(--theme-transition);
+		}
+
+		nav.scrolled .site-name {
+			transform: none;
+		}
+	}
+
+
 
 	.menu-header {
 		display: flex;

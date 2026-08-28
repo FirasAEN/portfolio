@@ -151,10 +151,18 @@
 		0px 16px 16px rgba(255, 255, 255, 0.1), 0px 4px 9px rgba(255, 255, 255, 0.12);
 }
 
-html,
+html {
+	min-height: 100%;
+	/* The guard against a horizontal scrollbar lives here and only here.
+	   Declaring it on body too forces body's computed overflow-y to auto, which
+	   makes body a scroll container — and position: sticky then resolves against
+	   body's scrollport, which never scrolls. That is why the header did not
+	   stick: measured -1500px at scrollY 1500. */
+	overflow-x: hidden;
+}
+
 body {
 	min-height: 100%;
-	overflow-x: hidden;
 }
 
 /* The nav links to sections on this page, so jumps should glide rather than

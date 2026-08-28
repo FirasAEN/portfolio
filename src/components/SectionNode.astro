@@ -25,8 +25,11 @@ const { index, label, first = false } = Astro.props;
 	/*
 	 * Section headings are nodes on a vertical spine — the same node-and-edge
 	 * language as the architecture diagrams, and a nod to the lineage graphs the
-	 * work is actually about. The connector is drawn upward from each node, so
-	 * the spine is continuous without needing a wrapper element.
+	 * work is actually about.
+	 *
+	 * The node draws no line of its own. The spine is one element on the page
+	 * (.spine-line in index.astro), masked open at each marker, so there is
+	 * nothing here to keep in step with it.
 	 */
 	.node {
 		position: relative;
@@ -36,25 +39,7 @@ const { index, label, first = false } = Astro.props;
 		margin-bottom: 2rem;
 	}
 
-	/*
-	 * left reads --marker-size, the shared token. It previously read --node-size,
-	 * which was declared on the child .marker — a parent cannot read a child's
-	 * custom property, so the calc() was invalid and left fell back to 0. That
-	 * was the whole 16px offset between this connector and the hexagon.
-	 */
-	.node::before {
-		content: '';
-		position: absolute;
-		left: calc(var(--marker-size) / 2 - 0.5px);
-		bottom: calc(100% + 0.35rem);
-		width: 1px;
-		height: 5rem;
-		background: linear-gradient(to bottom, transparent, var(--rule-color));
-	}
 
-	.node.first::before {
-		display: none;
-	}
 
 	.marker {
 		position: relative;

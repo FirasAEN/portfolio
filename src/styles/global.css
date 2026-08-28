@@ -84,6 +84,9 @@
 	   changes. They previously disagreed by 8px: 40 against 48. */
 	--marker-size: 2.5rem;
 
+	/* Distance between sections. */
+	--spine-gap: 5rem;
+
 	/* Authoritative header height. nav takes it as a min-height and anchor
 	   clearance is derived from it, so the two cannot drift: scroll-margin-top
 	   was 88px against an 87px header — one pixel of intended clearance, which
@@ -113,6 +116,13 @@
 	--theme-transition: 0.2s ease-in-out;
 	--transition-fast: 0.15s ease-in-out;
 	--transition-medium: 0.3s ease-in-out;
+}
+
+/* The spine opens up on wider screens. */
+@media (min-width: 50em) {
+	:root {
+		--spine-gap: 7rem;
+	}
 }
 
 :root.theme-dark {
@@ -293,11 +303,17 @@ h5 {
 	border-width: 0;
 }
 
+/* Tokenised because .section has to add the marker gutter ON TOP of this, and
+   writing 1.5rem there again is how the two silently drift apart. */
+:root {
+	--wrapper-pad: 1.5rem;
+}
+
 .wrapper {
 	width: 100%;
 	max-width: 64rem;
 	margin-inline: auto;
-	padding-inline: 1.5rem;
+	padding-inline: var(--wrapper-pad);
 }
 
 .stack {
@@ -612,22 +628,17 @@ h5 {
 }
 
 /* --- Section node draw-in ------------------------------------------------
- * The connector sits ABOVE its node (bottom: calc(100% + 0.35rem)) and its
- * gradient runs transparent-to-solid downward, so it has to grow from the node
- * upward. transform-origin: top would animate the faded end and read as a
- * rendering fault.
+ * The node no longer draws a connector of its own — the spine is one element
+ * for the whole page, drawn and animated by the controller in index.astro.
+ * What is left here is the node's own reveal: the hexagon draws, then the rule
+ * extends.
+ *
+ * The arrival flare is not here either. It has to fire when the travelling
+ * flare reaches this particular node, which depends on where the node sits on
+ * the spine and how long the spine currently is — neither of which CSS can
+ * know. The controller times it.
  */
 @media (prefers-reduced-motion: no-preference) {
-	.reveal-armed [data-reveal] .node::before {
-		transform: scaleY(0);
-		transform-origin: bottom;
-	}
-
-	.reveal-armed [data-reveal].is-revealed .node::before {
-		transform: scaleY(1);
-		transition: transform 0.5s ease-out 0.05s;
-	}
-
 	.reveal-armed [data-reveal] .hex path {
 		stroke-dasharray: 1;
 		stroke-dashoffset: 1;
@@ -635,7 +646,19 @@ h5 {
 
 	.reveal-armed [data-reveal].is-revealed .hex path {
 		stroke-dashoffset: 0;
-		transition: stroke-dashoffset 0.6s ease-out 0.15s;
+		transition: stroke-dashoffset 0.45s ease-out 0.1s;
+	}
+
+	/*
+	 * The flash on reveal, as the stroke closes.
+	 *
+	 * On .hex and not on .marker deliberately: the controller runs the
+	 * travelling flare's flash on .marker, and two animations on the same
+	 * element and property do not both show — the scripted one wins and this
+	 * one would never fire. Different element, same look, no collision.
+	 */
+	.reveal-armed [data-reveal].is-revealed .hex {
+		animation: node-arrive 0.55s ease-out 0.45s;
 	}
 
 	.reveal-armed [data-reveal] .node .rule {
@@ -645,6 +668,19 @@ h5 {
 
 	.reveal-armed [data-reveal].is-revealed .node .rule {
 		transform: scaleX(1);
-		transition: transform 0.6s ease-out 0.2s;
+		transition: transform 0.5s ease-out 0.25s;
+	}
+}
+
+/* No fill-mode: both ends are filter: none, so holding either would pin a
+   non-none filter on the element and keep it composited for the life of the
+   page. Without a fill the property is simply absent outside the run. */
+@keyframes node-arrive {
+	0%,
+	100% {
+		filter: none;
+	}
+	35% {
+		filter: drop-shadow(0 0 7px var(--accent-regular));
 	}
 }

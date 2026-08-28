@@ -56,15 +56,16 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 
 <BaseLayout>
 	<div class="spine">
+		<div class="spine-rail wrapper" aria-hidden="true"><span class="spine-beam"><span class="spine-line"></span><span class="spine-flare"></span></span></div>
 		<!-- 1 · Hook -->
 		<header class="wrapper hero" id="top">
 			<div class="hero-head">
 				<div class="hero-intro">
 					<p class="meta">{site.role} · {site.location}</p>
+					<h1>{site.heroName}</h1>
 				</div>
 				<Availability />
 			</div>
-			<h1>{site.heroName}</h1>
 			<hr class="rule" />
 			<p class="lede">
 				I model business domains the way I used to model materials — decompose the messy thing
@@ -110,6 +111,7 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 					)
 				}
 			</div>
+			<div class="spine-start" aria-hidden="true"></div>
 		</header>
 
 		<!-- 2 · Proof -->
@@ -275,19 +277,470 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 			}
 		}
 	</script>
+
+	<script>
+		/*
+		 * The spine controller.
+		 *
+		 * One line, one flare. Three things CSS cannot do on its own and which are
+		 * therefore here:
+		 *
+		 *  1. LENGTH. The spine is drawn as far down as the reader has been, so
+		 *     before any scroll it is the short stub under the hero and it extends
+		 *     as they go. That is a document measurement, not a style.
+		 *
+		 *  2. MASK. The line runs behind every marker, and a 1px line through a
+		 *     hollow hexagon would cross the numeral inside it. One linear-gradient
+		 *     mask with a transparent band per marker opens the line exactly where
+		 *     each marker sits — so the flare disappears into a node and comes out
+		 *     the other side, which is the whole point of the gesture.
+		 *
+		 *  3. FLARE TIMING. Each node lights when the flare reaches it. Its delay
+		 *     is its own offset as a fraction of the current length, so it changes
+		 *     every time the spine grows.
+		 *
+		 * Everything is recomputed on a debounced scroll-end rather than per frame:
+		 * the length is a cheap custom property written on every scroll, but the
+		 * animations restart only when the reader pauses, where a phase reset is
+		 * invisible. Restarting mid-scroll would stutter.
+		 */
+		const spine = document.querySelector<HTMLElement>('.spine');
+		const rail = document.querySelector<HTMLElement>('.spine-rail');
+		const line = document.querySelector<HTMLElement>('.spine-line');
+		const flare = document.querySelector<HTMLElement>('.spine-flare');
+		const start = document.querySelector<HTMLElement>('.spine-start');
+
+		if (spine && rail && line && flare && start) {
+			const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+			// Travel rate and the bounds it is clamped to.
+			//
+			// 0.16px/ms is 160px/s — slow enough that the eye can actually follow the
+			// flare down the page. It was 0.45 against a 7s ceiling, which on the full
+			// 4796px spine worked out at ~745px/s: it crossed a 900px viewport in just
+			// over a second, which is a flicker, not a signal travelling a wire.
+			//
+			// The ceiling is high because it must not bind at full length: at 160px/s
+			// the whole spine takes ~30s, and a lower cap would silently accelerate the
+			// flare again on long pages, which is the bug this replaces.
+			//
+			// The floor matters at the other end. Before any scroll the spine is only
+			// ~130px, and at rate that is a blink; at the floor it reads as the slow
+			// drift the hero cue used to have.
+			//
+			// The cost is honest: one pass down the full spine takes ~30s, so a reader
+			// sitting still waits longer between passes. That is the trade for being
+			// able to track it.
+			// The travel occupies 92% of the cycle; the tail is the pause before it
+			// runs again, which is what stops it reading as a loading shimmer.
+			const travel = 0.92;
+			const RATE = 0.16; // px per ms
+			const MIN = 2600;
+			const MAX = 36000;
+			const FLARE_MS = 550; // the per-node flash, inside the cycle
+
+			const docY = (el: Element) => el.getBoundingClientRect().top + window.scrollY;
+
+			let top = 0;
+			let extent = 0;
+			let reached = 0;
+			let markers: { offset: number; size: number; el: HTMLElement }[] = [];
+			let anims: Animation[] = [];
+			let drawn = -1;
+			// The length and cycle the running animations were built for — needed to
+			// work out where the head is before replacing them.
+			let curLength = 0;
+			let curDuration = 0;
+
+			function measure() {
+				const spineY = docY(spine!);
+				top = docY(start!) - spineY;
+
+				markers = [];
+				for (const marker of document.querySelectorAll<HTMLElement>(
+					'.node .marker, .entry-marker',
+				)) {
+					// Offsets are relative to the TOP OF THE LINE, not to the spine, so
+					// they can be used directly as mask stops and travel fractions.
+					// Height is read off the box rather than assumed: section markers are
+					// --marker-size and the timeline's are 12px.
+					markers.push({
+						offset: docY(marker) - spineY - top,
+						size: marker.getBoundingClientRect().height,
+						el: marker,
+					});
+				}
+
+				// The spine ends on the last marker's centre, so the line terminates at
+				// a node rather than in mid-air.
+				const last = markers[markers.length - 1];
+				extent = last ? last.offset + last.size / 2 : 0;
+
+				// On the rail, not the line: the beam sizes from these too, and one
+				// declaration is what stops the two boxes disagreeing.
+				rail!.style.setProperty('--spine-top', `${top}px`);
+
+				// One mask, one transparent band per marker, 2px of clearance either
+				// side so the line does not touch the stroke.
+				const bands: string[] = [];
+				for (const m of markers) {
+					bands.push(
+						`transparent ${m.offset - 2}px`,
+						`transparent ${m.offset + m.size + 2}px`,
+						`#000 ${m.offset + m.size + 2}px`,
+					);
+				}
+				const mask = `linear-gradient(to bottom, #000 0px, ${bands.join(', ')})`;
+				line!.style.maskImage = mask;
+				(line!.style as any).webkitMaskImage = mask;
+			}
+
+			function restart(length: number) {
+				// Read off the box rather than restated, so --flare-size stays the one
+				// place the flare's length is defined.
+				const size = flare!.offsetHeight;
+
+				/*
+				 * Where the head is RIGHT NOW, in px down the line.
+				 *
+				 * Every growth rebuilds these animations, and rebuilding used to mean
+				 * cancel-and-begin-again: the head vanished mid-run and restarted at the
+				 * top of the spine, far above wherever the reader was. Carrying the
+				 * position across means growth extends the run it is already on.
+				 *
+				 * It is the POSITION that carries over, not the progress fraction — the
+				 * same fraction of a longer line is a different place on the page, so
+				 * keeping the fraction would jump the head forward instead.
+				 */
+				let pos = -size;
+				const master = anims[0];
+				if (master && curLength > 0 && curDuration > 0) {
+					const phase = (Number(master.currentTime) || 0) % curDuration;
+					const prog = Math.min(phase / (curDuration * travel), 1);
+					pos = -size + prog * (curLength + size);
+				}
+
+				for (const a of anims) a.cancel();
+				anims = [];
+				if (reduced.matches || length <= 0) {
+					curLength = 0;
+					return;
+				}
+
+				const duration = Math.min(MAX, Math.max(MIN, length / RATE));
+				const span = length + size;
+
+				anims.push(
+					flare!.animate(
+						[
+							// Faded at both ends. At the bottom of the page the line ENDS on
+							// screen, so the terminus is visible, and stopping dead there
+							// reads as a fault rather than as the run finishing.
+							{ transform: `translateY(${-size}px)`, opacity: 0, offset: 0 },
+							{
+								transform: `translateY(${-size + 0.03 * span}px)`,
+								opacity: 1,
+								offset: travel * 0.03,
+							},
+							{
+								transform: `translateY(${-size + 0.96 * span}px)`,
+								opacity: 1,
+								offset: travel * 0.96,
+							},
+							{ transform: `translateY(${length}px)`, opacity: 0, offset: travel },
+							{ transform: `translateY(${length}px)`, opacity: 0, offset: 1 },
+						],
+						{ duration, iterations: Infinity, easing: 'linear' },
+					),
+				);
+
+				const frac = FLARE_MS / duration;
+				for (const m of markers) {
+					const at = m.offset;
+					if (at < 0 || at > length) continue;
+					anims.push(
+						m.el.animate(
+							[
+								{ filter: 'none', offset: 0 },
+								{
+									filter: 'drop-shadow(0 0 7px var(--accent-regular))',
+									offset: Math.min(frac * 0.35, 0.999),
+								},
+								{ filter: 'none', offset: Math.min(frac, 1) },
+								{ filter: 'none', offset: 1 },
+							],
+							{
+								duration,
+								/*
+								 * Its share of the travel, so it lights as the flare's HEAD
+								 * arrives — not its top edge. The head runs from 0 to
+								 * length + size, so the fraction is over that, not over
+								 * length. With a 20px flare the difference was noise; at
+								 * 4.5rem it is 72px, which at 174px/s is nearly half a
+								 * second of the flash firing early.
+								 */
+								delay: (at / (length + size)) * duration * travel,
+								iterations: Infinity,
+								easing: 'linear',
+							},
+						),
+					);
+				}
+
+				// Drop every animation onto the phase the head was already at, so the
+				// node flashes stay in step with the head they are timed to.
+				const resume =
+					Math.min(1, Math.max(0, (pos + size) / span)) * duration * travel;
+				for (const a of anims) a.currentTime = resume;
+
+				curLength = length;
+				curDuration = duration;
+			}
+
+			function grow() {
+				const spineY = docY(spine!);
+				reached = Math.max(reached, window.scrollY + window.innerHeight - spineY);
+				const next = Math.max(0, Math.min(reached - top, extent));
+				if (Math.abs(next - drawn) < 1) return false;
+				drawn = next;
+				rail!.style.setProperty('--spine-drawn', `${drawn}px`);
+				return true;
+			}
+
+			let idle = 0;
+			function settle() {
+				window.clearTimeout(idle);
+				idle = window.setTimeout(() => restart(drawn), 180);
+			}
+
+			function init() {
+				measure();
+				// Reduced motion gets the whole spine at once and no flare: the line is
+				// structure, the travel is the animation.
+				if (reduced.matches) {
+					reached = Infinity;
+				}
+				spine!.classList.add('spine-armed');
+				grow();
+				settle();
+			}
+
+			init();
+
+			window.addEventListener(
+				'scroll',
+				() => {
+					if (grow()) settle();
+				},
+				{ passive: true },
+			);
+
+			window.addEventListener('resize', () => {
+				measure();
+				drawn = -1;
+				grow();
+				settle();
+			});
+
+			// The reveal transition shifts sections by 8px as they land, so offsets
+			// measured before that are stale. One re-measure once the last one lands.
+			const done = new MutationObserver(() => {
+				if (document.documentElement.dataset.revealState === 'done') {
+					done.disconnect();
+					measure();
+					drawn = -1;
+					grow();
+					settle();
+				}
+			});
+			done.observe(document.documentElement, {
+				attributes: true,
+				attributeFilter: ['data-reveal-state'],
+			});
+		}
+	</script>
 </BaseLayout>
 
 <style>
 	.spine {
 		display: flex;
 		flex-direction: column;
-		gap: 5rem;
+		gap: var(--spine-gap);
+		position: relative;
 	}
 
+	/*
+	 * The spine. One line for the whole page rather than a connector per node.
+	 * The stubs could never be continuous: each had to fade at a top that met
+	 * nothing, and four independent flares read as four devices rather than one
+	 * signal travelling a wire.
+	 *
+	 * The rail is a .wrapper, so it inherits the same max-width, centring and
+	 * inline padding as every section — that is what puts the line on the marker
+	 * gutter without restating the container's geometry anywhere. The line is an
+	 * in-flow block inside it, so its margin-left measures from the CONTENT edge,
+	 * the same origin every marker is placed from.
+	 */
+	.spine-rail {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+	}
+
+	/*
+	 * The beam is the clip box, and it is --marker-size wide rather than 1px
+	 * because the travelling head has lateral bulk. It used to be the line itself
+	 * that clipped, which meant nothing could ever be wider than the line.
+	 *
+	 * Its width is centred on the spine by construction: half a marker in from
+	 * the content edge, minus half its own width, so the line inside it lands on
+	 * the same x as every marker whatever the two sizes are.
+	 */
+	.spine-beam {
+		--beam-width: var(--marker-size);
+		display: none;
+		position: relative;
+		width: var(--beam-width);
+		margin-left: calc(var(--marker-size) / 2 - var(--beam-width) / 2);
+		margin-top: var(--spine-top, 0px);
+		height: var(--spine-drawn, 0px);
+		overflow: hidden;
+	}
+
+	/* Drawn only once the controller has measured. With scripting off there is no
+	   spine at all, rather than a line of arbitrary length running through the
+	   hero — it is decoration, and this is the honest degradation. */
+	:global(.spine-armed) .spine-beam {
+		display: block;
+	}
+
+	.spine-line {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 50%;
+		width: 1px;
+		transform: translateX(-50%);
+		background: var(--rule-color);
+	}
+
+	/*
+	 * A travelling light: a bloom at the leading edge with a tail drawn back up
+	 * the line behind it. Two parts, because they are different shapes — the tail
+	 * is on the line and the head has width.
+	 *
+	 * --flare-size is the one place the length lives: the height, the parked
+	 * position and the controller's keyframes all derive from it, and the
+	 * controller reads it off the box rather than restating it.
+	 */
+	.spine-flare {
+		--flare-size: 8rem;
+		--flare-head: 1.1rem;
+		position: absolute;
+		inset-inline: 0;
+		top: 0;
+		height: var(--flare-size);
+		transform: translateY(calc(-1 * var(--flare-size)));
+	}
+
+	/* The filament: 1px on the line, brightening along its length. This is what
+	   keeps the beam anchored to the spine rather than floating over it. */
+	.spine-flare::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 50%;
+		width: 1px;
+		transform: translateX(-50%);
+		background: linear-gradient(
+			to bottom,
+			transparent 0%,
+			color-mix(in srgb, var(--accent-regular) 30%, transparent) 45%,
+			color-mix(in srgb, var(--accent-regular) 70%, transparent) 80%,
+			var(--accent-regular) 90%,
+			transparent 100%
+		);
+	}
+
+	/*
+	 * The halo. Two separate gradients doing two separate jobs, which is what
+	 * finally makes it a beam:
+	 *
+	 *   background   the profile ALONG the beam — where its mass sits
+	 *   mask         the falloff ACROSS it — the soft sides
+	 *
+	 * A single radial gradient could do neither properly. It falls off equally in
+	 * both directions from its centre, so the beam was symmetric head to tail
+	 * however the stops were tuned; and its vertical radius reached past the
+	 * bottom of the box, so the leading falloff was truncated by the edge — the
+	 * head looked sliced off because it was.
+	 *
+	 * The profile now rises over 90% of the length and falls over the last 10%,
+	 * so the mass leans hard into the leading edge and there is a long wake
+	 * behind it. It reaches transparent exactly AT 100%, so nothing is cut.
+	 */
+	.spine-flare::after {
+		content: '';
+		position: absolute;
+		left: 50%;
+		top: 0;
+		bottom: 0;
+		width: var(--flare-head);
+		transform: translateX(-50%);
+		background: linear-gradient(
+			to bottom,
+			transparent 0%,
+			color-mix(in srgb, var(--accent-regular) 8%, transparent) 34%,
+			color-mix(in srgb, var(--accent-regular) 20%, transparent) 62%,
+			color-mix(in srgb, var(--accent-regular) 46%, transparent) 80%,
+			color-mix(in srgb, var(--accent-regular) 78%, transparent) 90%,
+			color-mix(in srgb, var(--accent-regular) 34%, transparent) 96%,
+			transparent 100%
+		);
+		mask-image: linear-gradient(to right, transparent 0%, #000 50%, transparent 100%);
+		-webkit-mask-image: linear-gradient(
+			to right,
+			transparent 0%,
+			#000 50%,
+			transparent 100%
+		);
+	}
+
+	/* Reserves the length of spine that sits under the hero and gives the
+	   controller a box to measure the top of the line from. Paints nothing. */
+	.spine-start {
+		margin-top: auto;
+		width: 1px;
+		height: 3.5rem;
+	}
+
+	/*
+	 * Every section reserves the marker gutter, and the node hangs back out of
+	 * it. This is what makes ONE spine possible: content used to start at the
+	 * container edge, which is half a marker LEFT of the line, so any line
+	 * carried through a section crossed its cards. The timeline already did
+	 * exactly this — it is now the rule rather than the exception.
+	 *
+	 * Content lines up with the section LABEL rather than with the hexagon, which
+	 * is the stronger alignment anyway: the markers hang in the gutter and
+	 * everything you read shares one left edge.
+	 */
 	.section {
 		display: flex;
 		flex-direction: column;
 		gap: 2rem;
+		/* Adds to the wrapper's own inline padding rather than replacing it —
+		   padding-left alone overrides the left half of padding-inline and pulls
+		   every section 24px out of the container. */
+		padding-left: calc(var(--wrapper-pad) + var(--marker-size));
+	}
+
+	/* Pulled back out of the padding so the marker keeps the gutter and the rule
+	   still reaches the container's right edge. :global because the element is
+	   rendered by SectionNode and carries that component's scope, not this
+	   file's — a plain .node selector here would never match it. */
+	.section > :global(.node) {
+		margin-left: calc(-1 * var(--marker-size));
 	}
 
 	/* --- Hook ---
@@ -302,16 +755,39 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 		   The hero adding 5rem on top of that put 112px between the header and
 		   the first thing you read. */
 		padding-top: 1rem;
+		/*
+		 * Hold the fold. The hero starts at header + 2rem of nav margin, and the
+		 * spine puts 7rem below it, so a hero of 100svh minus those two clears the
+		 * next section off screen at every window height — with 2.5rem to spare so
+		 * the boundary is not a coin flip on rounding.
+		 *
+		 * This was previously accidental: it only held at roughly 900px tall, and
+		 * 96px of "Selected work" was showing at that height. svh, not dvh: dvh
+		 * resizes the hero mid-scroll as a mobile URL bar collapses.
+		 */
+		min-height: calc(100svh - var(--header-height) - 6.5rem);
 	}
 
-	/* Two columns above the breakpoint: the narrative keeps the left, the title
-	   block takes the right, which measured 415-694px of unused width per row. */
+	/* Two columns above the breakpoint: the name keeps the left, the title block
+	   takes the right — the 549px that measured empty beside the name.
+	   The name has to be *in* this row. With only the meta line on the left the
+	   row was 85px tall against a 20px column, so 66px under the meta line was
+	   dead and the h1 was pushed 114px down the page. */
 	.hero-head {
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
 		gap: 1.25rem;
 		width: 100%;
+	}
+
+	/* 1.25rem is not arbitrary: measured, meta 19.8 + 20 + h1 45.6 = 85.4px,
+	   which is the title block's height. The two columns end on the same line. */
+	.hero-intro {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 1.25rem;
 	}
 
 	.hero h1 {
@@ -372,11 +848,14 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 	/* --- Arc --- */
 	.timeline {
 		list-style: none;
-		padding: 0 0 0 var(--marker-size);
+		/* The gutter now comes from .section, like every other section's content.
+		   Keeping it here as well would indent the entries twice. */
+		padding: 0;
 		margin: 0;
 		display: flex;
 		flex-direction: column;
 	}
+
 
 	/* Roles are nodes on an edge running down the column: the career as a
 	   lineage graph, matching the schematics the work is made of. */
@@ -407,19 +886,7 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 		color: var(--accent-regular);
 	}
 
-	.entry::after {
-		content: '';
-		position: absolute;
-		left: calc(-1 * var(--marker-size) / 2 - 0.5px);
-		top: 1.35rem;
-		bottom: 0;
-		width: 1px;
-		background: var(--rule-color);
-	}
 
-	.entry:last-child::after {
-		display: none;
-	}
 
 	.entry-what h3 {
 		font-size: var(--text-2xl);
@@ -502,20 +969,9 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 	}
 
 	@media (min-width: 50em) {
-		.spine {
-			gap: 7rem;
-		}
-
 		.hero {
 			padding-top: 2rem;
 			gap: 1.75rem;
-		}
-
-		.hero-head {
-			flex-direction: row;
-			align-items: flex-start;
-			justify-content: space-between;
-			gap: 3rem;
 		}
 
 		.hero .lede {
@@ -525,6 +981,18 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 		.entry {
 			grid-template-columns: 11.5rem 1fr;
 			gap: 2rem;
+		}
+	}
+
+	/* 60em, not the 50em used elsewhere. At 800px the two columns need 745px of
+	   a 742px container and the name wraps; at 960px they need 795px of 902px.
+	   Below this it stacks meta -> name -> title block. */
+	@media (min-width: 60em) {
+		.hero-head {
+			flex-direction: row;
+			align-items: flex-start;
+			justify-content: space-between;
+			gap: 3rem;
 		}
 	}
 </style>

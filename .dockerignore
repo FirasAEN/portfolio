@@ -1,0 +1,13 @@
+# Everything the build does not need. node_modules especially: it is copied over
+# by `npm ci` inside the image, and shipping the host's copy would both bloat
+# the context and risk platform-specific binaries leaking in.
+node_modules
+dist
+.astro
+.git
+.github
+.claude
+.playwright-screenshots
+docs
+Dockerfile
+.dockerignore

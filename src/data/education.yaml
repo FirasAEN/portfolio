@@ -11,6 +11,15 @@
   location: France
   start: 2012-01-01
   end: 2016-01-01
+  # theses.fr is the stable national identifier; the nuxeo URL is a UUID-keyed
+  # file path, which is the kind that rots. Record first, full text beside it.
+  url: https://theses.fr/2016POIT2253
+  fullText:
+    # http only — the https form redirects back to http, so the reader lands on
+    # an insecure URL either way. Written as http so there is no pointless hop.
+    url: http://nuxeo.edel.univ-poitiers.fr/nuxeo/site/esupversions/095ae5fe-e05f-4382-9b68-cbf03625d46f
+    label: read the thesis
+    bytes: 17548038
 - id: msc
   title: MSc, Particle Physics
   institution: Université Grenoble Alpes

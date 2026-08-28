@@ -152,9 +152,28 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 						{
 							education.map((edu) => (
 								<p class="entry-summary">
-									<strong>{edu.data.title}</strong> — {edu.data.institution},{' '}
-									{edu.data.start.toLocaleDateString('en-GB', YEAR)}–
-									{edu.data.end.toLocaleDateString('en-GB', YEAR)}
+									{edu.data.url ? (
+										<a class="edu-link" href={edu.data.url}>
+											<strong>{edu.data.title}</strong>
+										</a>
+									) : (
+										<strong>{edu.data.title}</strong>
+									)}{' '}
+									— {edu.data.institution},{' '}
+									{`${edu.data.start.toLocaleDateString('en-GB', YEAR)}–${edu.data.end.toLocaleDateString('en-GB', YEAR)}`}
+									{edu.data.fullText && (
+										<>
+											{' · '}
+											<a class="edu-link" href={edu.data.fullText.url}>
+												{edu.data.fullText.label}
+											</a>
+											{edu.data.fullText.bytes && (
+												<span class="edu-note">
+													{' '}(PDF, {(edu.data.fullText.bytes / 1e6).toFixed(1)} MB)
+												</span>
+											)}
+										</>
+									)}
 								</p>
 							))
 						}
@@ -402,6 +421,27 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 	.entry-pill:focus-visible {
 		border-color: var(--accent-regular);
 		color: var(--accent-regular);
+	}
+
+	/* The size is stated because the full text is a 17 MB PDF: a reader on a phone
+	   should know before they tap, not after. */
+	.edu-link {
+		color: inherit;
+		text-decoration-color: var(--rule-color);
+		text-underline-offset: 0.2em;
+		transition: text-decoration-color var(--transition-fast), color var(--transition-fast);
+	}
+
+	.edu-link:hover,
+	.edu-link:focus-visible {
+		color: var(--accent-regular);
+		text-decoration-color: currentColor;
+	}
+
+	.edu-note {
+		font-family: var(--font-mono);
+		font-size: var(--text-xs);
+		color: var(--fg-subtle);
 	}
 
 	.languages {

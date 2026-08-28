@@ -59,6 +59,12 @@ export const collections = {
 			location: z.string().optional(),
 			start: z.coerce.date(),
 			end: z.coerce.date(),
+			/** Canonical catalogue record. Preferred over a direct file URL, which rots. */
+			url: z.string().url().optional(),
+			/** Direct full text. `bytes` exists so the link can warn before a large download. */
+			fullText: z
+				.object({ url: z.string().url(), label: z.string(), bytes: z.number().optional() })
+				.optional(),
 		}),
 	}),
 

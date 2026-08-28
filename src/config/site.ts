@@ -19,7 +19,7 @@ export const site = {
 	 * unpunctuated form the CV prints.
 	 */
 	heroName: 'Firas, François Abed El Nabi',
-	role: 'Tech Lead & Full-Stack Engineer',
+	role: 'Tech Lead & Full-Stack Engineer, PhD',
 	location: 'Grenoble, France',
 	email: 'francois.aen@gmail.com',
 	description:

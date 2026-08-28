@@ -21,6 +21,15 @@ services:
     image: portfolio:local
     container_name: portfolio
     restart: unless-stopped
+    # Without this the container is "up" the moment nginx starts, even if it is
+    # serving nothing — and Traefik would happily route to it. wget is in the
+    # nginx alpine image already, so this needs no extra layer.
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.portfolio.rule=Host(`firas-aen.portfolio.cyberonix.dev`)"

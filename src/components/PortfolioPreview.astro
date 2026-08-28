@@ -125,7 +125,18 @@ const accentColor = companies.get(company)?.accent || 'var(--accent-regular)';
 		font-weight: 500;
 		line-height: 1;
 		letter-spacing: 0.02em;
-		color: color-mix(in srgb, var(--card-accent) 70%, transparent);
+		/*
+		 * Mixed into --fg, not into transparent. Fading a brand colour toward the
+		 * page ground drops it straight through AA: every company accent measured
+		 * between 2.35 and 3.50 against a 4.5 requirement, in both themes.
+		 *
+		 * 60%, measured against the ambient layer at its most saturated point
+		 * rather than the flat ground — worst case 5.27 light / 5.10 dark across
+		 * all four accents. 70% looked fine on the flat ground and came out at
+		 * 4.46 on the real one; the ambient tint costs about half a point, which
+		 * is the whole margin.
+		 */
+		color: color-mix(in srgb, var(--card-accent) 60%, var(--fg));
 		font-variant-numeric: tabular-nums;
 	}
 
@@ -196,7 +207,9 @@ const accentColor = companies.get(company)?.accent || 'var(--accent-regular)';
 		font-weight: 500;
 		text-transform: uppercase;
 		letter-spacing: var(--tracking-meta);
-		color: var(--card-accent);
+		/* Same reason as .card-index: a raw brand colour is not a legible text
+		   colour. VISEO's red measured 4.19 here. */
+		color: color-mix(in srgb, var(--card-accent) 60%, var(--fg));
 		background: color-mix(in srgb, var(--card-accent) 12%, transparent);
 		padding: 0.15rem 0.55rem;
 		border-radius: 999rem;

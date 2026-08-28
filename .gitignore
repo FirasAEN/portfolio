@@ -26,3 +26,7 @@ pnpm-debug.log*
 # MCP / Playwright debug artefacts (ephemeral)
 .playwright-mcp/
 .playwright-screenshots/
+
+# Playwright
+test-results
+playwright-report

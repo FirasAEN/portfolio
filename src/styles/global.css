@@ -129,9 +129,14 @@
 		Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 	/* Display: Instrument Serif ships 400 only, so headline emphasis comes from
 	   size and spacing rather than weight. */
+	/* The two variable families are named "<Name> Variable" by @fontsource —
+	   NOT "Inter" / "JetBrains Mono". The plain names are kept after them so a
+	   locally installed copy is still used rather than falling all the way back
+	   to the system stack. Instrument Serif ships static only. */
 	--font-brand: 'Instrument Serif', Georgia, 'Times New Roman', serif;
-	--font-body: Inter, var(--font-system);
-	--font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+	--font-body: 'Inter Variable', Inter, var(--font-system);
+	--font-mono:
+		'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
 	/* Transitions */
 	--theme-transition: 0.2s ease-in-out;
@@ -592,10 +597,12 @@ main:focus {
 }
 
 .diagram .d-meta {
-	/* See the note in the contrast plan: this clears AA now, but 9px is the
-	   smallest text on the site and the size is its own problem. */
+	/* 11px, up from 9px. Contrast was fixed separately, but 9px was the smallest
+	   text on the site by a clear margin and no colour change makes 9px legible.
+	   The diagrams are laid out on a viewBox, so this scales with them rather
+	   than overflowing their boxes. */
 	fill: var(--fg-subtle);
-	font-size: 9px;
+	font-size: 11px;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
 }

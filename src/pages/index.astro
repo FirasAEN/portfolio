@@ -246,35 +246,53 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 				// No hiding and no observer at all — the content is already visible.
 				root.dataset.revealState = 'done';
 			} else {
-				root.classList.add('reveal-armed');
-
+				/*
+				 * ORDER MATTERS HERE, and it is the whole point of this block.
+				 *
+				 * .reveal-armed sets opacity: 0 on every [data-reveal] element — the
+				 * entire page. It used to be added FIRST, before the observer that
+				 * removes it again existed. Anything throwing in between left a blank
+				 * page with no error a visitor could see: the one failure mode that
+				 * takes the whole site down rather than degrading it.
+				 *
+				 * So: build the observer, arm only once it exists, and unwind on any
+				 * failure. Hiding content is only safe while something is guaranteed
+				 * to be able to un-hide it.
+				 */
 				const els = [...document.querySelectorAll<HTMLElement>('[data-reveal]')];
-				let remaining = els.length;
 
-				if (remaining === 0) {
+				if (els.length === 0) {
 					root.dataset.revealState = 'done';
 				} else {
-					root.dataset.revealState = 'armed';
+					let remaining = els.length;
 
-					const observer = new IntersectionObserver(
-						(entries) => {
-							for (const entry of entries) {
-								if (!entry.isIntersecting) continue;
-								entry.target.classList.add('is-revealed');
-								// Released as each element lands, not all at the end.
-								observer.unobserve(entry.target);
-								remaining -= 1;
-							}
-							if (remaining === 0) {
-								// Nothing left to watch: no live observer remains.
-								observer.disconnect();
-								root.dataset.revealState = 'done';
-							}
-						},
-						{ threshold: 0, rootMargin: '0px 0px -10% 0px' },
-					);
+					try {
+						const observer = new IntersectionObserver(
+							(entries) => {
+								for (const entry of entries) {
+									if (!entry.isIntersecting) continue;
+									entry.target.classList.add('is-revealed');
+									// Released as each element lands, not all at the end.
+									observer.unobserve(entry.target);
+									remaining -= 1;
+								}
+								if (remaining === 0) {
+									// Nothing left to watch: no live observer remains.
+									observer.disconnect();
+									root.dataset.revealState = 'done';
+								}
+							},
+							{ threshold: 0, rootMargin: '0px 0px -10% 0px' },
+						);
 
-					els.forEach((el) => observer.observe(el));
+						root.classList.add('reveal-armed');
+						root.dataset.revealState = 'armed';
+						els.forEach((el) => observer.observe(el));
+					} catch {
+						// Whatever went wrong, the page must not stay invisible.
+						root.classList.remove('reveal-armed');
+						root.dataset.revealState = 'done';
+					}
 				}
 			}
 		}
@@ -340,7 +358,29 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 			const MAX = 36000;
 			const FLARE_MS = 550; // the per-node flash, inside the cycle
 
-			const docY = (el: Element) => el.getBoundingClientRect().top + window.scrollY;
+			/*
+			 * Layout position, walking the offsetParent chain — NOT
+			 * getBoundingClientRect, which includes transforms.
+			 *
+			 * The reveal shifts every section by translateY(8px) until it lands, so
+			 * rect-based offsets are wrong for exactly as long as the animation
+			 * runs. That put an 8px error in the spine's length and left mask holes
+			 * misaligned enough to clip the markers they exist to open for, and no
+			 * amount of waiting for the right moment fixes it robustly — the
+			 * measurement simply must not depend on the animation.
+			 *
+			 * offsetTop is unaffected by transforms, so this is correct at any point
+			 * in the reveal, including halfway through it.
+			 */
+			const docY = (el: Element) => {
+				let y = 0;
+				let node = el as HTMLElement | null;
+				while (node) {
+					y += node.offsetTop;
+					node = node.offsetParent as HTMLElement | null;
+				}
+				return y;
+			};
 
 			let top = 0;
 			let extent = 0;
@@ -543,21 +583,12 @@ const period = (start: Date, end: Date | null) => `${fmt(start)} – ${end ? fmt
 				settle();
 			});
 
-			// The reveal transition shifts sections by 8px as they land, so offsets
-			// measured before that are stale. One re-measure once the last one lands.
-			const done = new MutationObserver(() => {
-				if (document.documentElement.dataset.revealState === 'done') {
-					done.disconnect();
-					measure();
-					drawn = -1;
-					grow();
-					settle();
-				}
-			});
-			done.observe(document.documentElement, {
-				attributes: true,
-				attributeFilter: ['data-reveal-state'],
-			});
+			/*
+			 * No re-measure on reveal any more. Offsets come from offsetTop, which
+			 * the reveal's transform does not affect, so there is nothing to correct
+			 * once it finishes — the earlier MutationObserver and transitionend
+			 * dance existed only to chase an error this removes at the source.
+			 */
 		}
 	</script>
 </BaseLayout>

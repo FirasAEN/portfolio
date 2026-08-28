@@ -17,7 +17,7 @@ const { index, label, first = false } = Astro.props;
 		<span class="hex"><HexMarker size="100%" /></span>
 		<span class="index">{index}</span>
 	</span>
-	<p class="label meta">{label}</p>
+	<h2 class="label">{label}</h2>
 	<span class="rule" aria-hidden="true"></span>
 </div>
 
@@ -88,8 +88,17 @@ const { index, label, first = false } = Astro.props;
 		font-variant-numeric: tabular-nums;
 	}
 
+	/*
+	 * A real h2, not a styled paragraph. The document outline previously ran
+	 * h1 -> h3 with nothing between, so section navigation was broken for screen
+	 * readers in the same way the visual hierarchy was: the label rendered at
+	 * 12px mono, smaller than the 25px entry headings inside it and smaller than
+	 * their body copy. The global h2 rule supplies --font-brand at --text-3xl,
+	 * which lands at 32px — above the entries, below the 48px hero.
+	 */
 	.label {
 		flex: none;
+		margin: 0;
 		color: var(--fg);
 	}
 

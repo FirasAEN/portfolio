@@ -20,6 +20,8 @@ description: |
   search, and a faithful reimplementation of git's layered ignore semantics, pruning
   behaviour included.
 company: independent
+featured: true
+order: 5
 ---
 
 ## Reading a vault the way git reads a repository

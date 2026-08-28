@@ -15,9 +15,9 @@ tags:
   - Dev
   - Frontend
   - DevOps
-featured: true
-order: 1
 company: adobis
+featured: true
+order: 4
 ---
 
 ## Restructuring the front end so five apps release independently

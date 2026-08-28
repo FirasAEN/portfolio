@@ -20,9 +20,9 @@ tags:
   - Dev
   - Full-Stack
   - 3D
-featured: true
-order: 4
 company: viseo
+featured: true
+order: 7
 ---
 
 ## Spatial Augmented Reality for an EU research project

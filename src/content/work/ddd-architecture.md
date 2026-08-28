@@ -18,9 +18,9 @@ tags:
   - Dev
   - Backend
   - Architecture
+company: adobis
 featured: true
 order: 2
-company: adobis
 ---
 
 ## Untangling an inherited Java monolith

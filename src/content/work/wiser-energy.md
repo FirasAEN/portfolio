@@ -18,9 +18,9 @@ tags:
   - Dev
   - Frontend
   - IoT
-featured: true
-order: 3
 company: capgemini
+featured: true
+order: 6
 ---
 
 ## Energy monitoring and BLE home automation for Schneider Electric

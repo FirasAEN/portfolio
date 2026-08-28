@@ -19,6 +19,8 @@ description: |
   An independently built Material-style UI kit — 35 components, 265 stories — where each
   component is its own Angular library and every style resolves through a three-tier token
   system rather than a hardcoded value.
+featured: true
+order: 3
 ---
 
 An independently built Material-style UI kit, published as a Storybook of **265 stories

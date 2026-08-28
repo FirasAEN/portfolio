@@ -19,6 +19,8 @@ description: |
   tenant, and one organisational model has to fit both a one-person practice and a medical
   group — without making the small customer pay for the large one's structure.
 company: independent
+featured: true
+order: 1
 ---
 
 ## Every customer is a tenant, and customers are not the same size

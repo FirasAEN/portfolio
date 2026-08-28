@@ -11,3 +11,6 @@ dist
 docs
 Dockerfile
 .dockerignore
+
+# Deployment scripts are not needed inside the image.
+deploy

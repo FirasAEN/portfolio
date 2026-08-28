@@ -1,0 +1,39 @@
+# Portfolio — static CV site. Public, stateless, no volumes.
+#
+# Lives in the app repo rather than alongside the other self-hosted apps,
+# because unlike them this one is BUILT rather than pulled: there is no
+# published image, so the compose file has to sit next to the source it builds.
+# The checkout IS the deploy directory — /opt/apps/portfolio is this repo.
+#
+# The hostname is a BUILD arg, not a runtime env var. A static site bakes its
+# origin into every page — canonical, og: tags, sitemap, JSON-LD — so changing
+# it means rebuilding the image, not restarting the container. DEPLOY_TARGET
+# selects the host; see TARGETS in astro.config.mjs.
+name: portfolio
+
+services:
+  portfolio:
+    build:
+      # The repo root, one level up from this file.
+      context: ..
+      args:
+        DEPLOY_TARGET: vps
+    image: portfolio:local
+    container_name: portfolio
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portfolio.rule=Host(`firas-aen.portfolio.cyberonix.dev`)"
+      - "traefik.http.routers.portfolio.entrypoints=websecure"
+      - "traefik.http.routers.portfolio.tls=true"
+      - "traefik.http.routers.portfolio.tls.certresolver=le"
+      - "traefik.http.services.portfolio.loadbalancer.server.port=80"
+      # NO auth middleware, deliberately. Other apps on this host gate behind
+      # SSO; copying those labels would put a login in front of a public CV.
+    networks:
+      - web
+
+networks:
+  # The shared Traefik network, created outside this file.
+  web:
+    external: true
